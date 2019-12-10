@@ -13,3 +13,5 @@ Rubbish
 *.suo
 *.xcodeproj
 *.xcworkspace
+Build/WindowsNoEditor/FileOpenOrder/CookerOpenOrder.log
+Build/WindowsNoEditor/FileOpenOrder/EditorOpenOrder.log
