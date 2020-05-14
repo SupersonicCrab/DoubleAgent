@@ -3,17 +3,18 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "BaseCharacter_CHARACTER_CPP.h"
-#include "AICharacterBase_CHARACTER_CPP.generated.h"
+#include "GameFramework/Character.h"
+#include "Perception/AISightTargetInterface.h"
+#include "BaseCharacter_CHARACTER_CPP.generated.h"
 
 UCLASS()
-class PROJECTSPY_API AAICharacterBase_CHARACTER_CPP : public ABaseCharacter_CHARACTER_CPP
+class PROJECTSPY_API ABaseCharacter_CHARACTER_CPP : public ACharacter, public IAISightTargetInterface
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this character's properties
-	AAICharacterBase_CHARACTER_CPP();
+	ABaseCharacter_CHARACTER_CPP();
 
 protected:
 	// Called when the game starts or when spawned
@@ -26,6 +27,6 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	// Override base function to set NPC vision to headSocket
-	virtual void GetActorEyesViewPoint(FVector& Location, FRotator& Rotation) const override;
+	//Overide base function to add socket locations to raycast
+	virtual bool CanBeSeenFrom(const FVector& ObserverLocation, FVector& OutSeenLocation, int32& NumberOfLoSChecksPerformed, float& OutSightStrength, const AActor* IgnoreActor = NULL) const;
 };
