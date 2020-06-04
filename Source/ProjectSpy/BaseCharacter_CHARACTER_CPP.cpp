@@ -59,8 +59,8 @@ bool ABaseCharacter_CHARACTER_CPP::CanBeSeenFrom(const FVector& ObserverLocation
     sockets.Add("headSocket");
     sockets.Add("armLeftSocket");
     sockets.Add("armRightSocket");
-    sockets.Add("Foot_LSocket");
-    sockets.Add("Foot_RSocket");
+    sockets.Add("calfLeftSocket");
+    sockets.Add("calfRightSocket");
 
     //Iterate through all sockets to check LOS
     for (int i = 0; i < sockets.Num(); i++)
