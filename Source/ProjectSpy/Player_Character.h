@@ -3,17 +3,17 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "BaseCharacter_CHARACTER_CPP.h"
-#include "Player_Character_CPP.generated.h"
+#include "BaseCharacter_CHARACTER.h"
+#include "Player_Character.generated.h"
 
 UCLASS()
-class PROJECTSPY_API APlayer_Character_CPP : public ABaseCharacter_CHARACTER_CPP
+class PROJECTSPY_API APlayer_Character : public ABaseCharacter_CHARACTER
 {
 	GENERATED_BODY()
 
 public:
 	//Constructor
-	APlayer_Character_CPP();
+	APlayer_Character();
 
 	//Variables
 	UPROPERTY(BlueprintReadWrite, Category = "Default", EditAnywhere = "True")

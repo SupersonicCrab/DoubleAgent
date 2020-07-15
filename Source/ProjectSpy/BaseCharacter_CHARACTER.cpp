@@ -1,15 +1,15 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "BaseCharacter_CHARACTER_CPP.h"
+#include "BaseCharacter_CHARACTER.h"
 #include "Engine/SkeletalMeshSocket.h"
 
 // Sets default values
-ABaseCharacter_CHARACTER_CPP::ABaseCharacter_CHARACTER_CPP()
+ABaseCharacter_CHARACTER::ABaseCharacter_CHARACTER()
 {
 }
 
-bool ABaseCharacter_CHARACTER_CPP::CanBeSeenFrom(const FVector& ObserverLocation, FVector& OutSeenLocation, int32& NumberOfLoSChecksPerformed, float& OutSightStrength, const AActor* IgnoreActor) const
+bool ABaseCharacter_CHARACTER::CanBeSeenFrom(const FVector& ObserverLocation, FVector& OutSeenLocation, int32& NumberOfLoSChecksPerformed, float& OutSightStrength, const AActor* IgnoreActor) const
 {
     //Shorthand for FName value
     static const FName NAME_AILineOfSight = FName(TEXT("TestPawnLineOfSight"));

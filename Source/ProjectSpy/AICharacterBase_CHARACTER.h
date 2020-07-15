@@ -3,17 +3,17 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "BaseCharacter_CHARACTER_CPP.h"
-#include "AICharacterBase_CHARACTER_CPP.generated.h"
+#include "BaseCharacter_CHARACTER.h"
+#include "AICharacterBase_CHARACTER.generated.h"
 
 UCLASS()
-class PROJECTSPY_API AAICharacterBase_CHARACTER_CPP : public ABaseCharacter_CHARACTER_CPP
+class PROJECTSPY_API AAICharacterBase_CHARACTER : public ABaseCharacter_CHARACTER
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this character's properties
-	AAICharacterBase_CHARACTER_CPP();
+	AAICharacterBase_CHARACTER();
 
 	// Override base function to set NPC vision to headSocket
 	virtual void GetActorEyesViewPoint(FVector& Location, FRotator& Rotation) const override;
