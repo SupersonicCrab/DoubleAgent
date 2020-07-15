@@ -4,14 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "LightSwitch_BP_CPP.generated.h"
+#include "LightSwitch.generated.h"
 
 UCLASS()
-class PROJECTSPY_API ALightSwitch_BP_CPP : public AActor
+class PROJECTSPY_API ALightSwitch : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	//Constructor
-	ALightSwitch_BP_CPP();
+	ALightSwitch();
 };

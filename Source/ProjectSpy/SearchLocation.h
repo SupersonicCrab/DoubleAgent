@@ -4,14 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "SearchLocation_BP_CPP.generated.h"
+#include "SearchLocation.generated.h"
 
 UCLASS()
-class PROJECTSPY_API ASearchLocation_BP_CPP : public AActor
+class PROJECTSPY_API ASearchLocation : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	//Constructor
-	ASearchLocation_BP_CPP();
+	ASearchLocation();
 };

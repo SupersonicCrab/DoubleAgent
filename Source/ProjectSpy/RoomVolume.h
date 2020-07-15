@@ -4,9 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "Engine/TriggerVolume.h"
-#include "LightSwitch_BP_CPP.h"
-#include "SearchLocation_BP_CPP.h"
-#include "RoomVolume_BP_CPP.generated.h"
+#include "LightSwitch.h"
+#include "SearchLocation.h"
+#include "RoomVolume.generated.h"
 
 //Room type enum
 UENUM(BlueprintType, meta = (DisplayName="RoomType", ToolTip="The room type of the selected room volume"))
@@ -32,7 +32,7 @@ enum class ERoomType : uint8
  * 
  */
 UCLASS()
-class PROJECTSPY_API ARoomVolume_BP_CPP : public ATriggerVolume
+class PROJECTSPY_API ARoomVolume : public ATriggerVolume
 {
 	GENERATED_BODY()
 	
@@ -41,7 +41,7 @@ protected:
 
 public:
 	//Constructor
-	ARoomVolume_BP_CPP();
+	ARoomVolume();
 	
 	//Variables
 	UPROPERTY(BlueprintReadWrite, Category = "Default", EditAnywhere = "True")
@@ -51,13 +51,13 @@ public:
 	bool roomLit = true;
 	
 	UPROPERTY(BlueprintReadWrite, Category = "Default")
-	ALightSwitch_BP_CPP* lightSwitch = nullptr;
+	ALightSwitch* lightSwitch = nullptr;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Default", EditAnywhere = "True")
 	ERoomType roomType;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Default")
-	TArray<ASearchLocation_BP_CPP*> searchLocations;
+	TArray<ASearchLocation*> searchLocations;
 	
 	FTimerHandle delayHandle;
 
