@@ -12,7 +12,7 @@ ABaseCharacter_CHARACTER::ABaseCharacter_CHARACTER()
 bool ABaseCharacter_CHARACTER::CanBeSeenFrom(const FVector& ObserverLocation, FVector& OutSeenLocation, int32& NumberOfLoSChecksPerformed, float& OutSightStrength, const AActor* IgnoreActor) const
 {
     //Shorthand for FName value
-    static const FName NAME_AILineOfSight = FName(TEXT("TestPawnLineOfSight"));
+    static const FName NAME_AILineOfSight = FName(TEXT("SocketLineOfSight"));
 
     FHitResult HitResult;
 
@@ -31,27 +31,27 @@ bool ABaseCharacter_CHARACTER::CanBeSeenFrom(const FVector& ObserverLocation, FV
     }
 
     //Array of sockets to check
-    TArray<FName> sockets;
-    sockets.Add("headSocket");
-    sockets.Add("armLeftSocket");
-    sockets.Add("armRightSocket");
-    sockets.Add("calfLeftSocket");
-    sockets.Add("calfRightSocket");
+    TArray<FName> Sockets;
+    Sockets.Add("headSocket");
+    Sockets.Add("armLeftSocket");
+    Sockets.Add("armRightSocket");
+    Sockets.Add("calfLeftSocket");
+    Sockets.Add("calfRightSocket");
 
     //Iterate through all sockets to check LOS
-    for (int i = 0; i < sockets.Num(); i++)
+    for (int i = 0; i < Sockets.Num(); i++)
     {
         //Shorthand for FVector
-        FVector socketLocation = GetMesh()->GetSocketLocation(sockets[i]);
+        FVector SocketLocation = GetMesh()->GetSocketLocation(Sockets[i]);
 
         //Raycast to socket location
-        const bool bHitSocket = GetWorld()->LineTraceSingleByChannel(HitResult, ObserverLocation, socketLocation, ECollisionChannel(ECC_Visibility), FCollisionQueryParams(NAME_AILineOfSight, true, IgnoreActor));
+        const bool bHitSocket = GetWorld()->LineTraceSingleByChannel(HitResult, ObserverLocation, SocketLocation, ECollisionChannel(ECC_Visibility), FCollisionQueryParams(NAME_AILineOfSight, true, IgnoreActor));
 
         NumberOfLoSChecksPerformed++;
 
         //Return true if raycast hit actor
         if (bHitSocket == false || (HitResult.Actor.IsValid() && HitResult.Actor->IsOwnedBy(this))) {
-            OutSeenLocation = socketLocation;
+            OutSeenLocation = SocketLocation;
             OutSightStrength = 1;
 
             return true;
