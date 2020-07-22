@@ -8,7 +8,7 @@ ACamera::ACamera()
 {
 }
 
-//Base implementation if not override
+//Base implementation if not overridden
 void ACamera::GetPerceptionLocationRotation_Implementation(FVector& OutLocation, FRotator& OutRotation) const
 {
     OutLocation = GetActorLocation();

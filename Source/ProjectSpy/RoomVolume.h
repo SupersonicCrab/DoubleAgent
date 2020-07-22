@@ -29,7 +29,7 @@ enum class ERoomType : uint8
 };
 
 /**
- * 
+ * Used to dictate "logical rooms" meaning any areas that should be assumed to be cleared after a guard sees another guard clearing such area
  */
 UCLASS()
 class PROJECTSPY_API ARoomVolume : public ATriggerVolume
