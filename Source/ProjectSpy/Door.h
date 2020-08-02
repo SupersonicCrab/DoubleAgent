@@ -20,6 +20,10 @@ public:
 	UFUNCTION(BlueprintNativeEvent)
 	FVector GetSocketLocation(FName Socket) const;
 	
+	//Blueprint function to set center location
+	UFUNCTION(BlueprintNativeEvent)
+    FVector GetCenterLocation() const;
+	
 	// Overide base function to add socket locations to raycast
 	UFUNCTION(BlueprintCallable)
     virtual bool CanBeSeenFrom(const FVector& ObserverLocation, FVector& OutSeenLocation, int32& NumberOfLoSChecksPerformed, float& OutSightStrength, const AActor* IgnoreActor = NULL) const override;

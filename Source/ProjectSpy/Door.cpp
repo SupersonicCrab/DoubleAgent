@@ -11,6 +11,11 @@ FVector ADoor::GetSocketLocation_Implementation(FName Socket) const
 }
 
 
+FVector ADoor::GetCenterLocation_Implementation() const
+{
+    return FVector();
+}
+
 //Raycasts to the root actor component first, if it cannot hit that it checks DoorHandle and Center socket for extra los checks
 bool ADoor::CanBeSeenFrom(const FVector& ObserverLocation, FVector& OutSeenLocation, int32& NumberOfLoSChecksPerformed,
                           float& OutSightStrength, const AActor* IgnoreActor) const
@@ -21,7 +26,7 @@ bool ADoor::CanBeSeenFrom(const FVector& ObserverLocation, FVector& OutSeenLocat
     FHitResult HitResult;
 
     //Raycast to actor location
-    const bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, ObserverLocation, GetActorLocation() , ECollisionChannel(ECC_Visibility), FCollisionQueryParams(NAME_AILineOfSight, true, IgnoreActor));
+    bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, ObserverLocation, GetActorLocation() , ECollisionChannel(ECC_Visibility), FCollisionQueryParams(NAME_AILineOfSight, true, IgnoreActor));
 
     NumberOfLoSChecksPerformed++;
 
@@ -31,6 +36,20 @@ bool ADoor::CanBeSeenFrom(const FVector& ObserverLocation, FVector& OutSeenLocat
         OutSeenLocation = GetActorLocation();
         OutSightStrength = 1;
 
+        return true;
+    }
+    
+    //Raycast to center of door frame
+    bHit = GetWorld()->LineTraceSingleByChannel(HitResult, ObserverLocation, GetCenterLocation() , ECollisionChannel(ECC_Visibility), FCollisionQueryParams(NAME_AILineOfSight, true, IgnoreActor));
+    
+    NumberOfLoSChecksPerformed++;
+    
+    //Return true if raycast hit actor or nothing
+    if (!HitResult.Actor.IsValid() || (HitResult.Actor.IsValid() && HitResult.Actor->IsOwnedBy(this)))
+    {
+        OutSeenLocation = GetCenterLocation();
+        OutSightStrength = 1;
+    
         return true;
     }
 
