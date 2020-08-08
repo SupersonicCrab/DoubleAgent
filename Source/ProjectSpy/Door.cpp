@@ -45,7 +45,7 @@ bool ADoor::CanBeSeenFrom(const FVector& ObserverLocation, FVector& OutSeenLocat
     NumberOfLoSChecksPerformed++;
     
     //Return true if raycast hit actor or nothing
-    if (!HitResult.Actor.IsValid() || (HitResult.Actor.IsValid() && HitResult.Actor->IsOwnedBy(this)))
+    if (bHit==false || (HitResult.Actor.IsValid() && HitResult.Actor->IsOwnedBy(this)))
     {
         OutSeenLocation = GetCenterLocation();
         OutSightStrength = 1;
