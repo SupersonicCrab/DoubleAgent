@@ -45,21 +45,21 @@ public:
 	
 	//Variables
 	UPROPERTY(BlueprintReadWrite, Category = "Default", EditAnywhere = "True")
-	bool playerSafe;
+	bool bPlayerSafe;
 	
 	UPROPERTY(BlueprintReadWrite, Category = "Default", EditAnywhere = "True")
-	bool roomLit = true;
+	bool bRoomLit = true;
 	
 	UPROPERTY(BlueprintReadWrite, Category = "Default")
-	ALightSwitch* lightSwitch = nullptr;
+	ALightSwitch* LightSwitch = nullptr;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Default", EditAnywhere = "True")
-	ERoomType roomType;
+	ERoomType ERoomType;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Default")
-	TArray<ASearchLocation*> searchLocations;
+	TArray<ASearchLocation*> SearchLocations;
 	
-	FTimerHandle delayHandle;
+	FTimerHandle DelayHandle;
 
 	//Overlap functions
 	UFUNCTION()
@@ -72,7 +72,7 @@ public:
 	void UpdateOverlappingActors();
 
 	UFUNCTION(BlueprintCallable)
-	void UpdateLight(bool roomLit_);
+	void UpdateLight(bool bRoomLit_);
 
 	UFUNCTION(BlueprintCallable)
 	void UpdateNPC(class AActor* NPC);

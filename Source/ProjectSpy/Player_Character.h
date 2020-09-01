@@ -17,5 +17,5 @@ public:
 
 	//Variables
 	UPROPERTY(BlueprintReadWrite, Category = "Default", EditAnywhere = "True")
-	bool roomSafe;
+	bool bRoomSafe;
 };

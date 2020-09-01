@@ -12,6 +12,9 @@ ARoomVolume::ARoomVolume()
 	//Register overlap events
 	OnActorBeginOverlap.AddDynamic(this, &ARoomVolume::OnOverlapBegin);
 	OnActorEndOverlap.AddDynamic(this, &ARoomVolume::OnOverlapEnd);
+
+	bOnlyRelevantToOwner=false;
+	bNetLoadOnClient=false;
 }
 
 void ARoomVolume::BeginPlay()
@@ -19,7 +22,7 @@ void ARoomVolume::BeginPlay()
 	Super::BeginPlay();
 
 	//Call a timer with a half a second delay as circumvent the beginplay execution order
-	GetWorld()->GetTimerManager().SetTimer(delayHandle, this, &ARoomVolume::UpdateOverlappingActors, 0.5f, false);
+	GetWorld()->GetTimerManager().SetTimer(DelayHandle, this, &ARoomVolume::UpdateOverlappingActors, 0.5f, false);
 }
 
 void ARoomVolume::OnOverlapBegin(AActor* OverlappedActor, AActor* OtherActor)
@@ -27,7 +30,7 @@ void ARoomVolume::OnOverlapBegin(AActor* OverlappedActor, AActor* OtherActor)
 	//Update player
 	if (OtherActor->IsA(APlayer_Character::StaticClass()))
 	{
-		Cast<APlayer_Character>(OtherActor)->roomSafe = playerSafe;
+		Cast<APlayer_Character>(OtherActor)->bRoomSafe = bPlayerSafe;
 	}
 
 	//Update NPC
@@ -42,7 +45,7 @@ void ARoomVolume::OnOverlapEnd(AActor* OverlappedActor, AActor* OtherActor)
 	//Update player
 	if (OtherActor->IsA(APlayer_Character::StaticClass()))
 	{
-		Cast<APlayer_Character>(OtherActor)->roomSafe = false;
+		Cast<APlayer_Character>(OtherActor)->bRoomSafe = false;
 	}
 
 	//Update NPC
@@ -63,7 +66,7 @@ void ARoomVolume::UpdateOverlappingActors()
 		//Update player
 		if (Actors[a]->IsA(APlayer_Character::StaticClass()))
 		{
-			Cast<APlayer_Character>(Actors[a])->roomSafe = playerSafe;
+			Cast<APlayer_Character>(Actors[a])->bRoomSafe = bPlayerSafe;
 		}
 
 		//Update NPC
@@ -74,9 +77,9 @@ void ARoomVolume::UpdateOverlappingActors()
 	}
 }
 
-void ARoomVolume::UpdateLight(bool roomLit_)
+void ARoomVolume::UpdateLight(bool bRoomLit_)
 {
-	roomLit = roomLit_;
+	bRoomLit = bRoomLit_;
 	UpdateOverlappingActors();
 }
 
@@ -85,11 +88,11 @@ void ARoomVolume::UpdateNPC(AActor* NPC)
 	//Get NPC blackboard
 	UBlackboardComponent* NPCBlackboard = UAIBlueprintHelperLibrary::GetBlackboard(NPC);
 
-	if (roomLit)
+	if (bRoomLit)
 	{
 		//Removing light switch from NPC if room is now lit
 		ALightSwitch* NPCLightSwitch = Cast<ALightSwitch>(NPCBlackboard->GetValueAsObject("LightSwitch"));
-		if (NPCLightSwitch != nullptr && lightSwitch == NPCLightSwitch)
+		if (NPCLightSwitch != nullptr && LightSwitch == NPCLightSwitch)
 		{
 			NPCBlackboard->ClearValue("LightSwitch");
 		}
@@ -97,9 +100,9 @@ void ARoomVolume::UpdateNPC(AActor* NPC)
 	else
 	{
 		//Setting light switch if room is no longer lit
-		if (NPCBlackboard->GetValueAsObject("LightSwitch") == nullptr && lightSwitch)
+		if (NPCBlackboard->GetValueAsObject("LightSwitch") == nullptr && LightSwitch)
 		{
-			NPCBlackboard->SetValueAsObject("LightSwitch",	lightSwitch);
+			NPCBlackboard->SetValueAsObject("LightSwitch",	LightSwitch);
 		}
 	}
 }
