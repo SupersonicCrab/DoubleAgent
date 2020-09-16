@@ -3,8 +3,6 @@
 
 #include "SpyGameInstance.h"
 
-#include <steam/steam_api.h>
-
 EOnlineStatus USpyGameInstance::GetPlayerOnline(APlayerController* PlayerController){
     IOnlineSubsystem* OSystem = IOnlineSubsystem::Get(FName("Steam"));
     if(OSystem == nullptr){
