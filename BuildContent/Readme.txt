@@ -1,13 +1,22 @@
 Thank you for playtesting project spy!
 
-How to play:
 Launching:
 In this folder you should see the "WindowsNoEditor" folder which contains "ProjectSpy.exe" which is what you use to launch the game
 You will also see a web link bringing you to a google form webpage that we use for bug reports and feedback
 
+Hosting a multiplayer game:
+- Open game to main menu
+- Click the plus(+) icon next to your steam profile picture in the top right corner
+- This should open up a list of your friends with a corresponding "invite" button
+- The game is only built supports 2 players, the host and 1 client: please keep that in mind
+- After your friend joins, you should receive confirmation in the top left corner in red that your friend has connected to your session
+- Click "New Game" and you'll join the game with your friend
 
-
-
+Joining a multiplayer game:
+- After your friend has hosted and invited you, you should have an invite from them on steam
+- Make sure you have Double Agent open, and then accept the invite from the steam overlay
+- After you've successfully connected, you'll lose the "New Game" and "Load Game" buttons on your screen
+- Wait for the host to start the game
 
 In this build:
 - Starting room
