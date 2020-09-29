@@ -2,9 +2,9 @@
 
 using UnrealBuildTool;
 
-public class ProjectSpy : ModuleRules
+public class DoubleAgent : ModuleRules
 {
-	public ProjectSpy(ReadOnlyTargetRules Target) : base(Target)
+	public DoubleAgent(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	

@@ -8,7 +8,7 @@
 #include "BaseCharacter_CHARACTER.generated.h"
 
 UCLASS()
-class PROJECTSPY_API ABaseCharacter_CHARACTER : public ACharacter, public IAISightTargetInterface
+class DOUBLEAGENT_API ABaseCharacter_CHARACTER : public ACharacter, public IAISightTargetInterface
 {
 	GENERATED_BODY()
 

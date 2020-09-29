@@ -4,22 +4,25 @@
 
 #include "CoreMinimal.h"
 #include "Perception/AISightTargetInterface.h"
-#include "Navigation/NavLinkProxy.h"
-#include "Door.generated.h"
+#include "GameFramework/Actor.h"
+#include "Camera.generated.h"
 
-/**
- * 
- */
 UCLASS()
-class PROJECTSPY_API ADoor : public ANavLinkProxy, public IAISightTargetInterface
+class DOUBLEAGENT_API ACamera : public AActor, public IAISightTargetInterface
 {
 	GENERATED_BODY()
-
-public:
-	//Blueprint function to set socket locations
-	UFUNCTION(BlueprintNativeEvent)
-	FVector GetSocketLocation(FName Socket) const;
 	
+public:	
+	// Sets default values for this actor's properties
+	ACamera();
+
+	//Setter for blueprints
+	UFUNCTION(BlueprintNativeEvent)
+	void GetPerceptionLocationRotation(FVector& OutLocation, FRotator& OutRotation) const;
+
+	//Overriding base function for perception
+	virtual void GetActorEyesViewPoint(FVector& OutLocation, FRotator& OutRotation) const override;
+
 	//Blueprint function to set center location
 	UFUNCTION(BlueprintNativeEvent)
     FVector GetCenterLocation() const;

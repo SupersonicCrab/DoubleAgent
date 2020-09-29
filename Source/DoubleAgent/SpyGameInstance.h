@@ -23,7 +23,7 @@ enum class EOnlineStatus : uint8{
 };
 
 UCLASS()
-class PROJECTSPY_API USpyGameInstance : public UAdvancedFriendsGameInstance{
+class DOUBLEAGENT_API USpyGameInstance : public UAdvancedFriendsGameInstance{
 	GENERATED_BODY()
 public:
 

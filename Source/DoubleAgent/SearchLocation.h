@@ -4,14 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "LightSwitch.generated.h"
+#include "SearchLocation.generated.h"
 
 UCLASS()
-class PROJECTSPY_API ALightSwitch : public AActor
+class DOUBLEAGENT_API ASearchLocation : public AActor
 {
 	GENERATED_BODY()
 	
 public:	
 	//Constructor
-	ALightSwitch();
+	ASearchLocation();
 };

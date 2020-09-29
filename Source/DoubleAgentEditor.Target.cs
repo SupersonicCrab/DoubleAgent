@@ -3,13 +3,13 @@
 using UnrealBuildTool;
 using System.Collections.Generic;
 
-public class ProjectSpyEditorTarget : TargetRules
+public class DoubleAgentEditorTarget : TargetRules
 {
-	public ProjectSpyEditorTarget(TargetInfo Target) : base(Target)
+	public DoubleAgentEditorTarget(TargetInfo Target) : base(Target)
 	{
 		Type = TargetType.Editor;
 		DefaultBuildSettings = BuildSettingsVersion.V2;
 
-		ExtraModuleNames.AddRange( new string[] { "ProjectSpy" } );
+		ExtraModuleNames.AddRange( new string[] { "DoubleAgent" } );
 	}
 }

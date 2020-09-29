@@ -7,7 +7,7 @@
 #include "Player_Character.generated.h"
 
 UCLASS()
-class PROJECTSPY_API APlayer_Character : public ABaseCharacter_CHARACTER
+class DOUBLEAGENT_API APlayer_Character : public ABaseCharacter_CHARACTER
 {
 	GENERATED_BODY()
 

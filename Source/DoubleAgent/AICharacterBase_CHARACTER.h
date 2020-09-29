@@ -7,7 +7,7 @@
 #include "AICharacterBase_CHARACTER.generated.h"
 
 UCLASS()
-class PROJECTSPY_API AAICharacterBase_CHARACTER : public ABaseCharacter_CHARACTER
+class DOUBLEAGENT_API AAICharacterBase_CHARACTER : public ABaseCharacter_CHARACTER
 {
 	GENERATED_BODY()
 
