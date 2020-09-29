@@ -1,8 +1,9 @@
-Thank you for playtesting project spy!
+Thank you for playing Double Agent v0.0.1.0!
 
 Launching:
-In this folder you should see the "WindowsNoEditor" folder which contains "ProjectSpy.exe" which is what you use to launch the game
-You will also see a web link bringing you to a google form webpage that we use for bug reports and feedback
+In this folder you should see an application named "DoubleAgent" this is what you will use to launch the game
+There is also a web link bringing you to a google form webpage that we use for bug reports and feedback
+Finally, there is a folder "DoubleAgent" which contains all of the core game files, as well as log files troubleshooting files
 
 Hosting a multiplayer game:
 - Open game to main menu
