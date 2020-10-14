@@ -16,7 +16,7 @@ public:
 	// Sets default values for this character's properties
 	ABaseCharacter_CHARACTER();
 
-	//Overide base function to add socket locations to raycast
+	//Override base function to add socket locations to raycast
 	UFUNCTION(BlueprintCallable)
-	virtual bool CanBeSeenFrom(const FVector& ObserverLocation, FVector& OutSeenLocation, int32& NumberOfLoSChecksPerformed, float& OutSightStrength, const AActor* IgnoreActor = NULL) const override;
+	virtual bool CanBeSeenFrom(const FVector& ObserverLocation, FVector& OutSeenLocation, int32& NumberOfLoSChecksPerformed, float& OutSightStrength, const AActor* IgnoreActor = nullptr) const override;
 };

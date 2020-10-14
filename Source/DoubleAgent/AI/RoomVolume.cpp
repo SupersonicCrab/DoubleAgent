@@ -3,7 +3,7 @@
 
 #include "RoomVolume.h"
 #include "AICharacterBase_CHARACTER.h"
-#include "Player_Character.h"
+#include "../Player_Character.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
@@ -13,6 +13,7 @@ ARoomVolume::ARoomVolume()
 	OnActorBeginOverlap.AddDynamic(this, &ARoomVolume::OnOverlapBegin);
 	OnActorEndOverlap.AddDynamic(this, &ARoomVolume::OnOverlapEnd);
 
+	//Network relevancy 
 	bOnlyRelevantToOwner=false;
 	bNetLoadOnClient=false;
 }

@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/TriggerVolume.h"
-#include "LightSwitch.h"
+#include "../LightSwitch.h"
 #include "SearchLocation.h"
 #include "RoomVolume.generated.h"
 

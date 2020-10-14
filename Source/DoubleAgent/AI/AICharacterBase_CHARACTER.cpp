@@ -3,9 +3,12 @@
 
 #include "AICharacterBase_CHARACTER.h"
 
+#include "AIController.h"
+
 // Sets default values
 AAICharacterBase_CHARACTER::AAICharacterBase_CHARACTER()
 {
+
 }
 
 void AAICharacterBase_CHARACTER::GetActorEyesViewPoint(FVector& Location, FRotator& Rotation) const
