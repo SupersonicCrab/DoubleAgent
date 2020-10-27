@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "AIController.h"
 #include "BehaviorTree/BehaviorTree.h"
-#include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISenseConfig_Hearing.h"
 #include "Perception/AISenseConfig_Sight.h"
 #include "AIControllerBase.generated.h"
@@ -17,10 +16,7 @@ UCLASS()
 class DOUBLEAGENT_API AAIControllerBase : public AAIController
 {
     GENERATED_BODY()
-public:
-    AAIControllerBase();
 
-private:
     //Range in cm based on fov
     UPROPERTY(EditAnywhere)
     float SightRadius = 3000;
@@ -41,9 +37,6 @@ private:
     UPROPERTY(EditAnywhere)
     float HearingRange = 3250;
 
-    //Perception component
-    UAIPerceptionComponent* PerceptionComponent;
-
     //Perception configurations
     UAISenseConfig_Sight* SightConfig;
     UAISenseConfig_Hearing* HearingConfig;
@@ -52,24 +45,33 @@ private:
     UPROPERTY(EditAnywhere)
     UBehaviorTree* BehaviourTree;
 
-    //Overrides
+    //Override
     virtual void OnPossess(APawn* InPawn) override;
-
-    virtual void Tick(float DeltaSeconds) override;
     
     //Called when perceived actors is updated
     UFUNCTION()
     void OnPerceptionUpdated(const TArray<AActor*>& DetectedActors);
     
-    //Process hearing perception
-    UFUNCTION()
-    bool HandleHearing(AActor* CurrentActor, FAIStimulus& CurrentStimulus);
-
-    //Process sight perception
-    UFUNCTION()
-    void HandleSight(AActor* CurrentActor, FAIStimulus& CurrentStimulus);
+public:
+    AAIControllerBase();
 
     //NPC spotted tick
     UFUNCTION()
-    void NPCVisionTick(AActor* CurrentActor, FAIStimulus& CurrentStimulus);
+    virtual void NPCVisionTick(AActor* CurrentActor, FAIStimulus& CurrentStimulus);
+
+    //Process hearing perception
+    UFUNCTION()
+    virtual bool HandleHearing(AActor* CurrentActor, FAIStimulus& CurrentStimulus);
+
+    //Process sight perception
+    UFUNCTION()
+    virtual void HandleSight(AActor* CurrentActor, FAIStimulus& CurrentStimulus){};
+    UFUNCTION()
+    virtual void HandleSightTick(AActor* CurrentActor, FAIStimulus& CurrentStimulus, float DeltaTime);
+
+    //Override
+    virtual void Tick(float DeltaTime) override;
+
+    //Perception component
+    UAIPerceptionComponent* PerceptionComponent;
 };

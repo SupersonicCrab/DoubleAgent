@@ -7,59 +7,42 @@
 // Sets default values
 ABaseCharacter_CHARACTER::ABaseCharacter_CHARACTER()
 {
-}
-
-bool ABaseCharacter_CHARACTER::CanBeSeenFrom(const FVector& ObserverLocation, FVector& OutSeenLocation, int32& NumberOfLoSChecksPerformed, float& OutSightStrength, const AActor* IgnoreActor) const
-{
-    //Shorthand for FName value
-    static const FName NAME_AILineOfSight = FName(TEXT("SocketLineOfSight"));
-
-    FHitResult HitResult;
-
-    //Raycast to actor location
-    const bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, ObserverLocation, GetActorLocation() , ECollisionChannel(ECC_Visibility), FCollisionQueryParams(NAME_AILineOfSight, true, IgnoreActor));
-
-    NumberOfLoSChecksPerformed++;
-
-    //Return true if raycast hit actor
-    if (bHit == false || (HitResult.Actor.IsValid() && HitResult.Actor->IsOwnedBy(this)))
-    {
-        OutSeenLocation = GetActorLocation();
-        OutSightStrength = 1;
-
-        return true;
-    }
-
-    //Array of sockets to check
-    TArray<FName> Sockets;
+    //Important locations on the characters body to check against
+    Sockets.Add("spineSocket");
     Sockets.Add("headSocket");
     Sockets.Add("armLeftSocket");
     Sockets.Add("armRightSocket");
     Sockets.Add("calfLeftSocket");
     Sockets.Add("calfRightSocket");
+}
 
-    //Iterate through all sockets to check LOS
+bool ABaseCharacter_CHARACTER::CanBeSeenFrom(const FVector& ObserverLocation, FVector& OutSeenLocation, int32& NumberOfLoSChecksPerformed, float& OutSightStrength, const AActor* IgnoreActor) const
+{
+    //Setup
+    OutSeenLocation = FVector(0);
+    OutSightStrength = 0;
+    FHitResult SocketHitResult;
+    
     for (int i = 0; i < Sockets.Num(); i++)
     {
-        //Shorthand for FVector
-        FVector SocketLocation = GetMesh()->GetSocketLocation(Sockets[i]);
-
-        //Raycast to socket location
-        const bool bHitSocket = GetWorld()->LineTraceSingleByChannel(HitResult, ObserverLocation, SocketLocation, ECollisionChannel(ECC_Visibility), FCollisionQueryParams(NAME_AILineOfSight, true, IgnoreActor));
-
+        //Used for debug purposes
         NumberOfLoSChecksPerformed++;
 
-        //Return true if raycast hit actor
-        if (bHitSocket == false || (HitResult.Actor.IsValid() && HitResult.Actor->IsOwnedBy(this))) {
-            OutSeenLocation = SocketLocation;
-            OutSightStrength = 1;
-
-            return true;
+        //If raycast hits nothing or itself
+        if (!GetWorld()->LineTraceSingleByChannel(SocketHitResult, ObserverLocation, GetMesh()->GetSocketLocation(Sockets[i]), ECollisionChannel(ECC_Visibility), FCollisionQueryParams(FName(TEXT("SocketLineOfSight")), true, IgnoreActor)) || SocketHitResult.Actor->IsOwnedBy(this))
+        {
+            //Set location if there already isn't one
+            if (OutSeenLocation.IsZero())
+                OutSeenLocation = GetMesh()->GetSocketLocation(Sockets[i]);
+            //Increment strength
+            OutSightStrength++;
+            //Return true if strength is at 2
+            if (OutSightStrength == 2)
+                return true;
         }
     }
 
-    //Return false if nothing was hit
-    OutSightStrength = 0;
-    return false;
+    //Return true if above 0
+    return OutSightStrength > 0;
 }
 

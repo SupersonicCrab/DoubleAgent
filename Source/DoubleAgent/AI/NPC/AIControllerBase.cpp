@@ -2,11 +2,14 @@
 
 #include "AIControllerBase.h"
 
-#include "AICharacterBase_CHARACTER.h"
+#include <string>
+
+#include "Perception/AIPerceptionComponent.h"
 #include "NavigationPath.h"
 #include "NavigationSystem.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
+#include "DoubleAgent/AI/AICharacterBase_CHARACTER.h"
 
 AAIControllerBase::AAIControllerBase()
 {
@@ -65,48 +68,16 @@ void AAIControllerBase::OnPerceptionUpdated(const TArray<AActor*>& DetectedActor
         TArray<FAIStimulus> Stimuli = PerceptionComponent->GetActorInfo(*DetectedActors[a])->LastSensedStimuli;
 
         //Handle different perception of actors
-        HandleHearing(DetectedActors[a], Stimuli[0]);
-        HandleSight(DetectedActors[a], Stimuli[1]);
+        if (Stimuli[0].GetAge() == 0)
+            HandleHearing(DetectedActors[a], Stimuli[0]);
+        if (Stimuli[1].GetAge() == 0 && DetectedActors[a]!=this)
+            HandleSight(DetectedActors[a], Stimuli[1]);
     }
 }
 
-void AAIControllerBase::HandleSight(AActor* CurrentActor, FAIStimulus& CurrentStimulus)
+void AAIControllerBase::Tick(float DeltaTime)
 {
-    if (CurrentActor->GetClass()->IsChildOf(AAICharacterBase_CHARACTER::StaticClass()))
-    {
-        NPCVisionTick(CurrentActor, CurrentStimulus);
-    }
-}
-
-void AAIControllerBase::NPCVisionTick(AActor* CurrentActor, FAIStimulus& CurrentStimulus)
-{
-    AAIController* OtherNPCController = Cast<AAIController>(Cast<APawn>(CurrentActor)->GetController());
-    UBlackboardComponent* OtherNPCBlackboard = OtherNPCController->GetBlackboardComponent();
-    
-    //UnconsciousNPC
-    UObject* UnconsciousNPC = Blackboard->GetValueAsObject("UnconsciousNPC");
-    if (IsValid(UnconsciousNPC) && UnconsciousNPC == CurrentActor && OtherNPCController->BrainComponent->IsRunning())
-        {
-            Blackboard->ClearValue("UnconsciousNPC");
-        }
-    else if (!IsValid(UnconsciousNPC))
-        {
-            Blackboard->SetValueAsObject("UnconsciousNPC", CurrentActor);
-        }
-
-    //Speaker
-    Blackboard->SetValueAsBool("CanSeeSpeaker",IsValid(Blackboard->GetValueAsObject("Speaker")) && Blackboard->GetValueAsObject("Speaker") == CurrentActor);
-
-    //Copy detection
-    if (Blackboard->GetValueAsFloat("Detection") < 90 && OtherNPCBlackboard->GetValueAsFloat("Detection") >= 90)
-    {
-        Blackboard->SetValueAsFloat("Detection", 90);
-    }
-}
-
-void AAIControllerBase::Tick(float DeltaSeconds)
-{
-    Super::Tick(DeltaSeconds);
+    Super::Tick(DeltaTime);
 
     //Get visible actors
     TArray<AActor*> DetectedActors;
@@ -118,36 +89,76 @@ void AAIControllerBase::Tick(float DeltaSeconds)
         //Get last sensed stimuli for each sense
         TArray<FAIStimulus> Stimuli = PerceptionComponent->GetActorInfo(*DetectedActors[a])->LastSensedStimuli;
 
-        //Handle sight perception
-        HandleSight(DetectedActors[a], Stimuli[1]);
+        if (Stimuli[1].GetAge() == 0)
+        {
+            //Handle sight perception
+            HandleSightTick(DetectedActors[a], Stimuli[1], DeltaTime);
+        }
+    }
+}
+
+void AAIControllerBase::HandleSightTick(AActor* CurrentActor, FAIStimulus& CurrentStimulus, float DeltaTime)
+{
+    //NPC
+    if (CurrentActor->IsA(AAICharacterBase_CHARACTER::StaticClass()))
+    {
+        NPCVisionTick(CurrentActor, CurrentStimulus);
+    }
+}
+
+void AAIControllerBase::NPCVisionTick(AActor* CurrentActor, FAIStimulus& CurrentStimulus)
+{
+    AAIController* OtherNPCController = Cast<AAIController>(Cast<APawn>(CurrentActor)->GetController());
+    UBlackboardComponent* OtherNPCBlackboard = OtherNPCController->GetBlackboardComponent();
+
+    //UnconsciousNPC
+    UObject* UnconsciousNPC = Blackboard->GetValueAsObject("UnconsciousNPC");
+    if (IsValid(UnconsciousNPC) && UnconsciousNPC == CurrentActor && OtherNPCController->BrainComponent->IsRunning())
+    {
+        Blackboard->ClearValue("UnconsciousNPC");
+    }
+    else if (!IsValid(UnconsciousNPC) && !Cast<AAIControllerBase>(
+        Cast<AAICharacterBase_CHARACTER>(UnconsciousNPC)->GetController())->BrainComponent->IsRunning())
+    {
+        Blackboard->SetValueAsObject("UnconsciousNPC", CurrentActor);
+    }
+
+        //Speaker
+    else if (IsValid(Blackboard->GetValueAsObject("Speaker")))
+    {
+        Blackboard->SetValueAsBool("CanSeeSpeaker", Blackboard->GetValueAsObject("Speaker") == CurrentActor);
+    }
+
+        //Copy detection
+    else if (Blackboard->GetValueAsFloat("Detection") < 90 && OtherNPCBlackboard->GetValueAsFloat("Detection") >= 90)
+    {
+        Blackboard->SetValueAsFloat("Detection", 90);
     }
 }
 
 bool AAIControllerBase::HandleHearing(AActor* CurrentActor, FAIStimulus& CurrentStimulus)
 {
-    //Sound not coming from self and if sound was just heard
-    if (CurrentActor != this && CurrentStimulus.GetAge() == 0)
+    //Get path to sound
+    UNavigationPath* Path = UNavigationSystemV1::FindPathToLocationSynchronously(
+        GetWorld(), CurrentActor->GetActorLocation(), CurrentStimulus.StimulusLocation, nullptr);
+
+    //Path is not partial
+    if (!Path->IsPartial())
     {
-        //Get path to sound
-        UNavigationPath* Path = UNavigationSystemV1::FindPathToLocationSynchronously(GetWorld(), CurrentActor->GetActorLocation(), CurrentStimulus.StimulusLocation, nullptr);
-        //Path is not partial
-        if (!Path->IsPartial())
+        //Speaker
+        if (CurrentStimulus.Tag == "Speaker")
         {
-            //Speaker
-            if (CurrentStimulus.Tag == "Speaker")
-            {
-                Blackboard->SetValueAsObject("Speaker", CurrentActor);
-            }
-
-            //Noise
-            else if (CurrentStimulus.Tag == "LoudNoise")
-            {
-                Blackboard->SetValueAsVector("LoudNoiseLocation", CurrentStimulus.StimulusLocation);
-            }
-
-            //Something was perceived
-            return true;
+            Blackboard->SetValueAsObject("Speaker", CurrentActor);
         }
+
+            //LoudNoise
+        else if (CurrentStimulus.Tag == "LoudNoise")
+        {
+            Blackboard->SetValueAsVector("LoudNoiseLocation", CurrentStimulus.StimulusLocation);
+        }
+
+        //Something was perceived
+        return true;
     }
 
     //Nothing could be perceived
