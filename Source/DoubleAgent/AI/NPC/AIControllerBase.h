@@ -17,10 +17,6 @@ class DOUBLEAGENT_API AAIControllerBase : public AAIController
 {
     GENERATED_BODY()
 
-    //Range in cm based on fov
-    UPROPERTY(EditAnywhere)
-    float SightRadius = 3000;
-
     //Falloff range in cm based on fov
     UPROPERTY(EditAnywhere)
     float LoseSightRadius = 3500;
@@ -55,6 +51,10 @@ class DOUBLEAGENT_API AAIControllerBase : public AAIController
 public:
     AAIControllerBase();
 
+    //Range in cm based on fov
+    UPROPERTY(EditAnywhere)
+    float SightRadius = 3000;
+    
     //NPC spotted tick
     UFUNCTION()
     virtual void NPCVisionTick(AActor* CurrentActor, FAIStimulus& CurrentStimulus);

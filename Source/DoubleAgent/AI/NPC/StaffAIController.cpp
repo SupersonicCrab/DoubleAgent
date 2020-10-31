@@ -3,6 +3,7 @@
 #include "StaffAIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "DoubleAgent/Player_Character.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Perception/AIPerceptionComponent.h"
 
 void AStaffAIController::HandleSightTick(AActor* CurrentActor, FAIStimulus& CurrentStimulus, float DeltaTime)
@@ -36,7 +37,7 @@ void AStaffAIController::PlayerVisionTick(AActor* CurrentPlayer, FAIStimulus& Cu
 {
     //Setup
     float DetectionStep = 0;
-        
+
     //If no players have been seen before
     if (Memory.Players.Num() == 0)
     {
@@ -45,7 +46,7 @@ void AStaffAIController::PlayerVisionTick(AActor* CurrentPlayer, FAIStimulus& Cu
             DetectionStep = 40 + DetectionRate * CurrentStimulus.Strength * DeltaTime;
         else
             DetectionStep = DetectionRate * CurrentStimulus.Strength * DeltaTime;
-        
+
         //Add player to memory
         Memory.Players.Add(FTrackedPlayer(CurrentPlayer, CurrentStimulus.StimulusLocation, DetectionStep));
 
@@ -61,8 +62,17 @@ void AStaffAIController::PlayerVisionTick(AActor* CurrentPlayer, FAIStimulus& Cu
             //If current player is stored in memory
             if (Memory.Players[i].Actor == CurrentPlayer)
             {
+                //Distance modifier
+                float DistanceModifier = UKismetMathLibrary::Abs(SightRadius / FVector().Dist(CurrentStimulus.StimulusLocation, GetPawn()->GetActorLocation()));
+                //UE_LOG(LogTemp, Warning, TEXT("DistanceModifier %f"), DistanceModifier);
+                
+                //Angle modifier               
+                float AngleModifier = 1 - UKismetMathLibrary::Abs(FVector().DotProduct(Cast<ACharacter>(GetPawn())->GetMesh()->GetSocketLocation("headSocket").ForwardVector, UKismetMathLibrary::FindLookAtRotation(GetPawn()->GetActorLocation(), CurrentStimulus.StimulusLocation).Vector()));
+                //UE_LOG(LogTemp, Warning, TEXT("AngleModifier %f"), AngleModifier);
+                
                 //Detection calculations
-                DetectionStep = Memory.Players[i].Detection + DetectionRate * CurrentStimulus.Strength * DeltaTime;
+                DetectionStep = Memory.Players[i].Detection + DetectionRate * CurrentStimulus.Strength * (AngleModifier + DistanceModifier)/2 * DeltaTime;
+                //UE_LOG(LogTemp, Warning, TEXT("DetectionStep %f"), DetectionRate * CurrentStimulus.Strength * (AngleModifier + DistanceModifier)/2 * DeltaTime);
 
                 //Update memory
                 Memory.Players[i].Detection = DetectionStep;
@@ -86,7 +96,7 @@ void AStaffAIController::PlayerVisionTick(AActor* CurrentPlayer, FAIStimulus& Cu
                 DetectionStep = 40 + DetectionRate * CurrentStimulus.Strength * DeltaTime;
             else
                 DetectionStep = DetectionRate * CurrentStimulus.Strength * DeltaTime;
-        
+
             //Add player to memory
             Memory.Players.Add(FTrackedPlayer(CurrentPlayer, CurrentStimulus.StimulusLocation, DetectionStep));
 
@@ -108,7 +118,7 @@ void AStaffAIController::PlayerVisionUpdate(AActor* CurrentPlayer, FAIStimulus& 
             Blackboard->SetValueAsObject("LastPlayer", CurrentPlayer);
         }
     }
-    //If player was just lost
+        //If player was just lost
     else
     {
         //If player was being tracked
@@ -128,27 +138,57 @@ void AStaffAIController::Tick(float DeltaTime)
 
 void AStaffAIController::DetectionDecay(float DeltaTime)
 {
+    //Setup
+    float DecayStep = 0;
+
     //If no player is being targeted
     if (!IsValid(Blackboard->GetValueAsObject("LastPlayer")))
     {
         //Decay memory of players
         for (int i = 0; i < Memory.Players.Num(); i++)
         {
-            const int MemoryDetection = round (Memory.Players[i].Detection);
+            const int MemoryDetection = round(Memory.Players[i].Detection);
             if (MemoryDetection > 0 && MemoryDetection != 90 && MemoryDetection != 40)
             {
-                Memory.Players[i].Detection -= DetectionRate * DeltaTime;
+                //Decay calculations
+                DecayStep = DetectionRate * DeltaTime;
+
+                Memory.Players[i].Detection -= DecayStep;
                 //Clamp if needed
                 if (Memory.Players[i].Detection < 0)
                     Memory.Players[i].Detection = 0;
             }
         }
+    }
+    else
+    {
+        //Iterate through all players
+        for (int i = 0; i < Memory.Players.Num(); i++)
+        {
+            TArray<FAIStimulus> Stimuli = PerceptionComponent->GetActorInfo(*Memory.Players[i].Actor)->LastSensedStimuli;
+            if (!Stimuli[1].IsActive())
+            {
+                const int MemoryDetection = round(Memory.Players[i].Detection);
+                if (MemoryDetection > 0 && MemoryDetection != 90 && MemoryDetection != 40)
+                {
+                    //Decay calculations
+                    DecayStep = DetectionRate * DeltaTime;
 
+                    Memory.Players[i].Detection -= DecayStep;
+                    //Clamp if needed
+                    if (Memory.Players[i].Detection < 0)
+                        Memory.Players[i].Detection = 0;
+                }
+            }
+        }
+    }
+    if (DecayStep != 0)
+    {
         //Decay blackboard detection if greater than 0 and not 40 or 90
         const int BlackboardDetection = round(Blackboard->GetValueAsFloat("Detection"));
         if (BlackboardDetection > 0 && BlackboardDetection != 90 && BlackboardDetection != 40)
         {
-            Blackboard->SetValueAsFloat("Detection", Blackboard->GetValueAsFloat("Detection") - DetectionRate * DeltaTime);
+            Blackboard->SetValueAsFloat("Detection",Blackboard->GetValueAsFloat("Detection") - DetectionRate * DeltaTime);
             //Clamp if needed
             if (Blackboard->GetValueAsFloat("Detection") < 0)
                 Blackboard->SetValueAsFloat("Detection", 0);
@@ -169,13 +209,13 @@ void AStaffAIController::NPCVisionTick(AActor* CurrentActor, FAIStimulus& Curren
         Blackboard->SetValueAsVector("PlayerLastSeen", OtherNPCBlackboard->GetValueAsVector("PlayerLastSeen"));
     }
 
-        //Backup
+    //Backup
     else if (Blackboard->GetValueAsBool("BackupAvailable") && !OtherNPCBlackboard->GetValueAsBool("BackupAvailable"))
     {
         Blackboard->SetValueAsBool("BackupAvailable", false);
     }
 
-        //Vocal status
+    //Vocal status
     else if (Blackboard->GetValueAsEnum("VocalStatus") < OtherNPCBlackboard->GetValueAsEnum("VocalStatus"))
     {
         Blackboard->SetValueAsEnum("VocalStatus", OtherNPCBlackboard->GetValueAsEnum("VocalStatus"));
