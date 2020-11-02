@@ -3,6 +3,8 @@
 #include "StaffAIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "DoubleAgent/Player_Character.h"
+#include "DoubleAgent/AI/RoomVolume.h"
+#include "Kismet/KismetArrayLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Perception/AIPerceptionComponent.h"
 
@@ -125,6 +127,32 @@ void AStaffAIController::PlayerVisionUpdate(AActor* CurrentPlayer, FAIStimulus& 
         if (Blackboard->GetValueAsObject("LastPlayer") == CurrentPlayer)
         {
             Blackboard->ClearValue("LastPlayer");
+        }
+    }
+}
+
+void AStaffAIController::MarkSearchLocationSearched(ASearchLocation* SearchLocation)
+{
+    //Iterate through all rooms that contain this search location
+    for (int i = 0; i < SearchLocation->RoomVolumes.Num(); i++)
+    {
+        //Iterate through search locations in that room
+        ARoomVolume* CurrentRoom = SearchLocation->RoomVolumes[i];
+        for (int a = 0; a < CurrentRoom->SearchLocations.Num(); a++)
+        {
+            //If current search location has not already been searched
+            if (SearchedLocations.Find(CurrentRoom->SearchLocations[i]) == -1)
+            {
+                //Add search location to searched list
+                SearchedLocations.Add(CurrentRoom->SearchLocations[i]);
+
+                //If search location was being searched
+                if (Blackboard->GetValueAsEnum("ActionStatus") == static_cast<uint8>(EActionStatus::Action_Searching) && Cast<ASearchLocation>(Blackboard->GetValueAsObject("TempObject")) == CurrentRoom->SearchLocations[i])
+                {
+                    //Set action status to idle
+                    Blackboard->SetValueAsEnum("ActionStatus", static_cast<uint8>(EActionStatus::Action_Idle));
+                }
+            }
         }
     }
 }
