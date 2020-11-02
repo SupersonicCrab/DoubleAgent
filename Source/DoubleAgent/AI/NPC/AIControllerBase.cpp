@@ -14,14 +14,9 @@ AAIControllerBase::AAIControllerBase()
     SightConfig = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("Sight Config"));
     HearingConfig = CreateDefaultSubobject<UAISenseConfig_Hearing>(TEXT("Hearing Config"));
 
-    //Setup sight
-    SightConfig->SightRadius = SightRadius;
-    SightConfig->LoseSightRadius = LoseSightRadius;
-    SightConfig->PeripheralVisionAngleDegrees = FOV;
-    SightConfig->SetMaxAge(MaxStimulusAge);
-    SightConfig->DetectionByAffiliation.bDetectEnemies = true;
-    SightConfig->DetectionByAffiliation.bDetectNeutrals = true;
-    SightConfig->DetectionByAffiliation.bDetectFriendlies = true;
+    //Create perception component
+    SetPerceptionComponent(*CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("Perception Component")));
+    PerceptionComponent = GetPerceptionComponent();
 
     //Setup hearing
     HearingConfig->HearingRange = HearingRange;
@@ -31,12 +26,16 @@ AAIControllerBase::AAIControllerBase()
     HearingConfig->DetectionByAffiliation.bDetectEnemies = true;
     HearingConfig->DetectionByAffiliation.bDetectNeutrals = true;
     HearingConfig->DetectionByAffiliation.bDetectFriendlies = true;
-
-    //Create perception component
-    SetPerceptionComponent(*CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("Perception Component")));
-    PerceptionComponent = GetPerceptionComponent();
-    PerceptionComponent->SetDominantSense(*SightConfig->GetSenseImplementation());
     PerceptionComponent->ConfigureSense(*HearingConfig);
+        
+    //Setup sight
+    SightConfig->SightRadius = SightRadius;
+    SightConfig->LoseSightRadius = LoseSightRadius;
+    SightConfig->PeripheralVisionAngleDegrees = FOV;
+    SightConfig->SetMaxAge(MaxStimulusAge);
+    SightConfig->DetectionByAffiliation.bDetectEnemies = true;
+    SightConfig->DetectionByAffiliation.bDetectNeutrals = true;
+    SightConfig->DetectionByAffiliation.bDetectFriendlies = true;
     PerceptionComponent->ConfigureSense(*SightConfig);
 
     //Disable control rotation
@@ -59,16 +58,33 @@ void AAIControllerBase::OnPossess(APawn* InPawn)
 
 void AAIControllerBase::OnPerceptionUpdated(const TArray<AActor*>& DetectedActors)
 {
+    //Iterate through detected actors
     for (int a = 0; a < DetectedActors.Num(); a++)
     {
-        //Get last sensed stimuli for each sense
-        TArray<FAIStimulus> Stimuli = PerceptionComponent->GetActorInfo(*DetectedActors[a])->LastSensedStimuli;
-
-        //Handle different perception of actors
-        if (Stimuli[0].GetAge() == 0)
-            HandleHearing(DetectedActors[a], Stimuli[0]);
-        if (Stimuli[1].GetAge() == 0 && DetectedActors[a]!=this)
-            HandleSight(DetectedActors[a], Stimuli[1]);
+        //If actor is not self
+        if (DetectedActors[a] != this)
+        {
+            //Get last sensed stimuli for each sense
+            TArray<FAIStimulus> Stimuli = PerceptionComponent->GetActorInfo(*DetectedActors[a])->LastSensedStimuli;
+            //Iterate through sense
+            for (int i = 0; i < Stimuli.Num(); i++)
+            {
+                //If stimuli just happened
+                if (Stimuli[i].GetAge() == 0)
+                {
+                    //If sense is hearing
+                    if (Stimuli[i].Type.Name == "Default__AISense_Hearing")
+                    {
+                        HandleHearing(DetectedActors[a], Stimuli[i]);
+                    }
+                    //If sense is sight
+                    else if (Stimuli[i].Type.Name == "Default__AISense_Sight")
+                    {
+                        HandleSight(DetectedActors[a], Stimuli[i]);
+                    }
+                }
+            }
+        }
     }
 }
 
@@ -81,16 +97,19 @@ void AAIControllerBase::Tick(float DeltaTime)
     TSubclassOf<UAISense> SightSense;
     PerceptionComponent->GetCurrentlyPerceivedActors(SightSense, DetectedActors);
 
+    //Iterate through all visible actors
     for (int a = 0; a < DetectedActors.Num(); a++)
     {
         //Get last sensed stimuli for each sense
         TArray<FAIStimulus> Stimuli = PerceptionComponent->GetActorInfo(*DetectedActors[a])->LastSensedStimuli;
-
-        if (Stimuli[1].GetAge() == 0)
+        //Iterate through all sense
+        for (int i = 0; i < Stimuli.Num(); i++)
         {
-            //Handle sight perception
-            HandleSightTick(DetectedActors[a], Stimuli[1], DeltaTime);
-        }
+            if (Stimuli[i].GetAge() == 0 && Stimuli[i].Type.Name == "Default__AISense_Sight")
+            {
+                HandleSightTick(DetectedActors[a], Stimuli[i], DeltaTime);
+            }
+        }      
     }
 }
 
