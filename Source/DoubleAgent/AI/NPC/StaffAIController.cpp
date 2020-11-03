@@ -157,6 +157,34 @@ void AStaffAIController::MarkSearchLocationSearched(ASearchLocation* SearchLocat
     }
 }
 
+void AStaffAIController::RaiseDetection(float NewDetection)
+{
+    //If new detection is greater than current
+    if (Blackboard->GetValueAsFloat("Detection") < NewDetection)
+    {
+        Blackboard->SetValueAsFloat("Detection", NewDetection);
+    }
+}
+
+void AStaffAIController::RaiseVocalStatus(EVocalStatus NewVocalStatus)
+{
+    //If new vocal status is greater than current
+    if (static_cast<EVocalStatus>(Blackboard->GetValueAsEnum("VocalStatus")) < NewVocalStatus)
+    {
+        Blackboard->SetValueAsEnum("VocalStatus", static_cast<uint8>(NewVocalStatus));
+        //If cautious
+        if (NewVocalStatus == EVocalStatus::Vocal_Cautious)
+        {
+            RaiseDetection(40);
+        }
+        //If greater than cautious
+        else if (NewVocalStatus > EVocalStatus::Vocal_Cautious)
+        {
+            RaiseDetection(90);
+        }
+    }
+}
+
 void AStaffAIController::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
