@@ -24,11 +24,14 @@ enum class ERadioEvent : uint8
 };
 
 
-USTRUCT(BlueprintType, meta = (ToolTip = "Used to communicate with NPCs who have a radio"))
+USTRUCT()
 struct FRadioEvent
 {
 	GENERATED_BODY()
-
+	
+	FRadioEvent();
+	FRadioEvent(ERadioEvent RadioEvent_, FVector Location_, float Delay_, AAICharacterBase_CHARACTER* NPC_);
+	
 	//Type of event
 	ERadioEvent RadioEvent;
 	//Important location if any
@@ -36,7 +39,7 @@ struct FRadioEvent
 	//Delay used for speech
 	float Delay;
 	//Character that sent the event
-	AAICharacterBase_CHARACTER NPC;
+	AAICharacterBase_CHARACTER* NPC;
 };
 
 UCLASS()
