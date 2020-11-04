@@ -131,6 +131,30 @@ void AStaffAIController::PlayerVisionUpdate(AActor* CurrentPlayer, FAIStimulus& 
     }
 }
 
+void AStaffAIController::HandleRadioEvent(FRadioEvent RadioEvent)
+{
+    switch (RadioEvent.RadioEvent)
+    {
+        //Check in
+        case ERadioEvent::Radio_CheckInCall:
+            Blackboard->SetValueAsBool("CheckIn", true);
+        break;
+
+        //Alert
+        case ERadioEvent::Radio_Alert:
+            Blackboard->SetValueAsVector("PlayerLastSeen", RadioEvent.Location);
+            RaiseVocalStatus(EVocalStatus::Vocal_Alert);
+        break;
+
+        //Engage
+        case ERadioEvent::Radio_Engage:
+            Blackboard->SetValueAsVector("PlayerLastSeen", RadioEvent.Location);
+            Blackboard->ClearValue("InitialLastSeen");
+            RaiseVocalStatus(EVocalStatus::Vocal_Engaging);
+        break;
+    }
+}
+
 void AStaffAIController::MarkSearchLocationSearched(ASearchLocation* SearchLocation)
 {
     //Iterate through all rooms that contain this search location

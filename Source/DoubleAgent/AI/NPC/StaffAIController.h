@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AIControllerBase.h"
+#include "DoubleAgent/Radio.h"
 #include "DoubleAgent/AI/RoomVolume.h"
 #include "StaffAIController.generated.h"
 
@@ -96,7 +97,14 @@ public:
 	//Player spotted 
 	virtual void PlayerVisionTick(AActor* CurrentPlayer, FAIStimulus& CurrentStimulus, float DeltaTime);
 	virtual void PlayerVisionUpdate(AActor* CurrentPlayer, FAIStimulus& CurrentStimulus);
+	/*Todo
+	 *Camera hub
+	 *Camera vision
+	*/
 
+	//Radio event
+	void HandleRadioEvent(FRadioEvent RadioEvent);
+	
 	//Percent change per second
 	UPROPERTY(EditAnywhere)
 	float DetectionRate;
