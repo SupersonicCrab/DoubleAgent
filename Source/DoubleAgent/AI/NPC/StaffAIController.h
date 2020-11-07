@@ -83,6 +83,18 @@ class DOUBLEAGENT_API AStaffAIController : public AAIControllerBase
 {
 	GENERATED_BODY()
 
+	//Staff memory of specific actors
+	UPROPERTY(EditAnywhere)
+	FStaffMemory Memory;
+
+	//Override
+	virtual void Tick(float DeltaTime) override;
+
+	//Detection fall off
+	void DetectionDecay(float DeltaTime);
+
+	void OnPossess(APawn* InPawn) override;
+	
 public:
 	//NPC spotted tick
 	virtual void NPCVisionTick(AActor* CurrentActor, FAIStimulus& CurrentStimulus) override;
@@ -110,22 +122,14 @@ public:
 	float DetectionRate;
 
 	//Searched locations
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<ASearchLocation*> SearchedLocations;
 
 	//Helper functions
+	UFUNCTION(BlueprintCallable)
 	void MarkSearchLocationSearched(ASearchLocation* SearchLocation);
+	UFUNCTION(BlueprintCallable)
 	void RaiseDetection(float NewDetection);
+	UFUNCTION(BlueprintCallable)
 	void RaiseVocalStatus(EVocalStatus NewVocalStatus);
-	
-private:
-	//Staff memory of specific actors
-	UPROPERTY(EditAnywhere)
-	FStaffMemory Memory;
-
-	//Override
-	virtual void Tick(float DeltaTime) override;
-
-	//Detection fall off
-	void DetectionDecay(float DeltaTime);
 };

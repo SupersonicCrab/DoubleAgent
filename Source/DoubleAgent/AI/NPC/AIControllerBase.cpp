@@ -133,8 +133,7 @@ void AAIControllerBase::NPCVisionTick(AActor* CurrentActor, FAIStimulus& Current
     {
         Blackboard->ClearValue("UnconsciousNPC");
     }
-    else if (!IsValid(UnconsciousNPC) && !Cast<AAIControllerBase>(
-        Cast<AAICharacterBase_CHARACTER>(UnconsciousNPC)->GetController())->BrainComponent->IsRunning())
+    else if (UnconsciousNPC != nullptr && !Cast<AAIControllerBase>(Cast<AAICharacterBase_CHARACTER>(UnconsciousNPC)->GetController())->BrainComponent->IsRunning())
     {
         Blackboard->SetValueAsObject("UnconsciousNPC", CurrentActor);
     }

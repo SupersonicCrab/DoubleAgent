@@ -40,9 +40,6 @@ class DOUBLEAGENT_API AAIControllerBase : public AAIController
     //Behaviour tree asset
     UPROPERTY(EditAnywhere)
     UBehaviorTree* BehaviourTree;
-
-    //Override
-    virtual void OnPossess(APawn* InPawn) override;
     
     //Called when perceived actors is updated
     UFUNCTION()
@@ -51,6 +48,9 @@ class DOUBLEAGENT_API AAIControllerBase : public AAIController
 public:
     AAIControllerBase();
 
+    //Override
+    virtual void OnPossess(APawn* InPawn) override;
+  
     //Range in cm based on fov
     UPROPERTY(EditAnywhere)
     float SightRadius = 3000;

@@ -40,6 +40,14 @@ void AStaffAIController::PlayerVisionTick(AActor* CurrentPlayer, FAIStimulus& Cu
     //Setup
     float DetectionStep = 0;
 
+    //Set player last seen
+    if (Blackboard->GetValueAsObject("LastPlayer") == CurrentPlayer)
+        Blackboard->SetValueAsVector("PlayerLastSeen", CurrentStimulus.StimulusLocation);
+
+    //Set suspicious
+    if (Blackboard->GetValueAsFloat("Detection") >= 40)
+        Blackboard->SetValueAsBool("Suspicious", true);
+
     //If no players have been seen before
     if (Memory.Players.Num() == 0)
     {
@@ -65,16 +73,21 @@ void AStaffAIController::PlayerVisionTick(AActor* CurrentPlayer, FAIStimulus& Cu
             if (Memory.Players[i].Actor == CurrentPlayer)
             {
                 //Distance modifier
-                float DistanceModifier = UKismetMathLibrary::Abs(SightRadius / FVector().Dist(CurrentStimulus.StimulusLocation, GetPawn()->GetActorLocation()));
-                //UE_LOG(LogTemp, Warning, TEXT("DistanceModifier %f"), DistanceModifier);
-                
+                float DistanceModifier = UKismetMathLibrary::Abs(
+                    SightRadius / FVector().Dist(CurrentStimulus.StimulusLocation, GetPawn()->GetActorLocation()));
+
                 //Angle modifier               
-                float AngleModifier = 1 - UKismetMathLibrary::Abs(FVector().DotProduct(Cast<ACharacter>(GetPawn())->GetMesh()->GetSocketLocation("headSocket").ForwardVector, UKismetMathLibrary::FindLookAtRotation(GetPawn()->GetActorLocation(), CurrentStimulus.StimulusLocation).Vector()));
-                //UE_LOG(LogTemp, Warning, TEXT("AngleModifier %f"), AngleModifier);
-                
+                float AngleModifier = 1 - UKismetMathLibrary::Abs(FVector().DotProduct(
+                    Cast<ACharacter>(GetPawn())->GetMesh()->GetSocketLocation("headSocket").ForwardVector,
+                    UKismetMathLibrary::FindLookAtRotation(GetPawn()->GetActorLocation(),
+                                                           CurrentStimulus.StimulusLocation).Vector()));
+
                 //Detection calculations
-                DetectionStep = Memory.Players[i].Detection + DetectionRate * CurrentStimulus.Strength * (AngleModifier + DistanceModifier)/2 * DeltaTime;
-                //UE_LOG(LogTemp, Warning, TEXT("DetectionStep %f"), DetectionRate * CurrentStimulus.Strength * (AngleModifier + DistanceModifier)/2 * DeltaTime);
+                DetectionStep = Memory.Players[i].Detection + DetectionRate * CurrentStimulus.Strength * (AngleModifier
+                    + DistanceModifier) / 2 * DeltaTime;
+                //Clamp if needed
+                if (DetectionStep < 0)
+                    DetectionStep = 0;
 
                 //Update memory
                 Memory.Players[i].Detection = DetectionStep;
@@ -136,21 +149,21 @@ void AStaffAIController::HandleRadioEvent(FRadioEvent RadioEvent)
     switch (RadioEvent.RadioEvent)
     {
         //Check in
-        case ERadioEvent::Radio_CheckInCall:
-            Blackboard->SetValueAsBool("CheckIn", true);
+    case ERadioEvent::Radio_CheckInCall:
+        Blackboard->SetValueAsBool("CheckIn", true);
         break;
 
         //Alert
-        case ERadioEvent::Radio_Alert:
-            Blackboard->SetValueAsVector("PlayerLastSeen", RadioEvent.Location);
-            RaiseVocalStatus(EVocalStatus::Vocal_Alert);
+    case ERadioEvent::Radio_Alert:
+        Blackboard->SetValueAsVector("PlayerLastSeen", RadioEvent.Location);
+        RaiseVocalStatus(EVocalStatus::Vocal_Alert);
         break;
 
         //Engage
-        case ERadioEvent::Radio_Engage:
-            Blackboard->SetValueAsVector("PlayerLastSeen", RadioEvent.Location);
-            Blackboard->ClearValue("InitialLastSeen");
-            RaiseVocalStatus(EVocalStatus::Vocal_Engaging);
+    case ERadioEvent::Radio_Engage:
+        Blackboard->SetValueAsVector("PlayerLastSeen", RadioEvent.Location);
+        Blackboard->ClearValue("InitialLastSeen");
+        RaiseVocalStatus(EVocalStatus::Vocal_Engaging);
         break;
     }
 }
@@ -171,7 +184,9 @@ void AStaffAIController::MarkSearchLocationSearched(ASearchLocation* SearchLocat
                 SearchedLocations.Add(CurrentRoom->SearchLocations[i]);
 
                 //If search location was being searched
-                if (Blackboard->GetValueAsEnum("ActionStatus") == static_cast<uint8>(EActionStatus::Action_Searching) && Cast<ASearchLocation>(Blackboard->GetValueAsObject("TempObject")) == CurrentRoom->SearchLocations[i])
+                if (Blackboard->GetValueAsEnum("ActionStatus") == static_cast<uint8>(EActionStatus::Action_Searching) &&
+                    Cast<ASearchLocation>(Blackboard->GetValueAsObject("TempObject")) == CurrentRoom->SearchLocations[i]
+                )
                 {
                     //Set action status to idle
                     Blackboard->SetValueAsEnum("ActionStatus", static_cast<uint8>(EActionStatus::Action_Idle));
@@ -201,7 +216,7 @@ void AStaffAIController::RaiseVocalStatus(EVocalStatus NewVocalStatus)
         {
             RaiseDetection(40);
         }
-        //If greater than cautious
+            //If greater than cautious
         else if (NewVocalStatus > EVocalStatus::Vocal_Cautious)
         {
             RaiseDetection(90);
@@ -246,18 +261,23 @@ void AStaffAIController::DetectionDecay(float DeltaTime)
         for (int i = 0; i < Memory.Players.Num(); i++)
         {
             TArray<FAIStimulus> Stimuli = PerceptionComponent->GetActorInfo(*Memory.Players[i].Actor)->LastSensedStimuli;
-            if (!Stimuli[1].IsActive())
-            {
-                const int MemoryDetection = round(Memory.Players[i].Detection);
-                if (MemoryDetection > 0 && MemoryDetection != 90 && MemoryDetection != 40)
-                {
-                    //Decay calculations
-                    DecayStep = DetectionRate * DeltaTime;
 
-                    Memory.Players[i].Detection -= DecayStep;
-                    //Clamp if needed
-                    if (Memory.Players[i].Detection < 0)
-                        Memory.Players[i].Detection = 0;
+            for (int a = 0; a < Stimuli.Num(); a++)
+            {
+                if (Stimuli[a].Type.Name == "Default__AISense_Sight" && !Stimuli[a].IsActive())
+                {
+                    const int MemoryDetection = round(Memory.Players[i].Detection);
+                    if (MemoryDetection > 0 && MemoryDetection != 90 && MemoryDetection != 40)
+                    {
+                        //Decay calculations
+                        DecayStep = DetectionRate * DeltaTime;
+
+                        Memory.Players[i].Detection -= DecayStep;
+                        //Clamp if needed
+                        if (Memory.Players[i].Detection < 0)
+                            Memory.Players[i].Detection = 0;
+                    }
+                    break;
                 }
             }
         }
@@ -265,15 +285,30 @@ void AStaffAIController::DetectionDecay(float DeltaTime)
     if (DecayStep != 0)
     {
         //Decay blackboard detection if greater than 0 and not 40 or 90
-        const int BlackboardDetection = round(Blackboard->GetValueAsFloat("Detection"));
+        int BlackboardDetection = round(Blackboard->GetValueAsFloat("Detection"));
         if (BlackboardDetection > 0 && BlackboardDetection != 90 && BlackboardDetection != 40)
         {
             Blackboard->SetValueAsFloat("Detection",Blackboard->GetValueAsFloat("Detection") - DetectionRate * DeltaTime);
             //Clamp if needed
-            if (Blackboard->GetValueAsFloat("Detection") < 0)
+            BlackboardDetection = Blackboard->GetValueAsFloat("Detection");
+            if (BlackboardDetection < 0)
                 Blackboard->SetValueAsFloat("Detection", 0);
+            if (BlackboardDetection < 91)
+                Blackboard->SetValueAsFloat("Detection", 90);
+            if (BlackboardDetection < 41)
+                Blackboard->SetValueAsFloat("Detection", 40);
         }
     }
+}
+
+void AStaffAIController::OnPossess(APawn* InPawn)
+{
+    Super::OnPossess(InPawn);
+
+    Blackboard->SetValueAsBool("CamerasActive", true);
+    Blackboard->SetValueAsBool("Power", true);
+    Blackboard->SetValueAsBool("BackupAvailable", true);
+    Blackboard->SetValueAsObject("SelfActor", GetPawn());
 }
 
 void AStaffAIController::NPCVisionTick(AActor* CurrentActor, FAIStimulus& CurrentStimulus)
@@ -289,13 +324,13 @@ void AStaffAIController::NPCVisionTick(AActor* CurrentActor, FAIStimulus& Curren
         Blackboard->SetValueAsVector("PlayerLastSeen", OtherNPCBlackboard->GetValueAsVector("PlayerLastSeen"));
     }
 
-    //Backup
+        //Backup
     else if (Blackboard->GetValueAsBool("BackupAvailable") && !OtherNPCBlackboard->GetValueAsBool("BackupAvailable"))
     {
         Blackboard->SetValueAsBool("BackupAvailable", false);
     }
 
-    //Vocal status
+        //Vocal status
     else if (Blackboard->GetValueAsEnum("VocalStatus") < OtherNPCBlackboard->GetValueAsEnum("VocalStatus"))
     {
         Blackboard->SetValueAsEnum("VocalStatus", OtherNPCBlackboard->GetValueAsEnum("VocalStatus"));
@@ -312,7 +347,7 @@ bool AStaffAIController::HandleHearing(AActor* CurrentActor, FAIStimulus& Curren
             Blackboard->SetValueAsVector("NoiseLocation", CurrentStimulus.StimulusLocation);
         }
 
-        //Movement
+            //Movement
         else if (CurrentStimulus.Tag == "Movement" && Blackboard->GetValueAsFloat("Detection") < 90)
         {
             Blackboard->SetValueAsVector("NoiseLocation", CurrentStimulus.StimulusLocation);
