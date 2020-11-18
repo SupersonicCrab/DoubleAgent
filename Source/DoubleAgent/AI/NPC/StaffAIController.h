@@ -89,15 +89,16 @@ class DOUBLEAGENT_API AStaffAIController : public AAIControllerBase
 
 	//Override
 	virtual void Tick(float DeltaTime) override;
-
+	void OnPossess(APawn* InPawn) override;
+	
 	//Detection fall off
 	void DetectionDecay(float DeltaTime);
-
-	void OnPossess(APawn* InPawn) override;
 	
 public:
 	//NPC spotted tick
 	virtual void NPCVisionTick(AActor* CurrentActor, FAIStimulus& CurrentStimulus) override;
+	void StaffVisionTick(AActor* CurrentActor, FAIStimulus& CurrentStimulus);
+	void StaffVisionUpdate(AActor* CurrentActor, FAIStimulus& CurrentStimulus);
 
 	//Process hearing perception
 	virtual bool HandleHearing(AActor* CurrentActor, FAIStimulus& CurrentStimulus) override;

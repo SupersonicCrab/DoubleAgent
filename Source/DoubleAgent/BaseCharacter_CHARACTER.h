@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Please don't steal
 
 #pragma once
 
@@ -17,6 +17,9 @@ class DOUBLEAGENT_API ABaseCharacter_CHARACTER : public ACharacter, public IAISi
 public:
 	// Sets default values for this character's properties
 	ABaseCharacter_CHARACTER();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool BCanBeSeen = true;
 	
 	//Override base function to add socket locations to raycast
 	UFUNCTION(BlueprintCallable)

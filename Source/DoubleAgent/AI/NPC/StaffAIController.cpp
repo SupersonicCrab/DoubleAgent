@@ -7,6 +7,7 @@
 #include "Kismet/KismetArrayLibrary.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Perception/AIPerceptionComponent.h"
+#include "NavigationSystem.h"
 
 void AStaffAIController::HandleSightTick(AActor* CurrentActor, FAIStimulus& CurrentStimulus, float DeltaTime)
 {
@@ -22,10 +23,17 @@ void AStaffAIController::HandleSight(AActor* CurrentActor, FAIStimulus& CurrentS
 {
     Super::HandleSight(CurrentActor, CurrentStimulus);
 
+    //If actor is player
     if (CurrentActor->IsA(APlayer_Character::StaticClass()))
-    {
         PlayerVisionUpdate(CurrentActor, CurrentStimulus);
-    }
+
+    //If actor is staffAI
+    if (Cast<APawn>(CurrentActor) != nullptr && Cast<AStaffAIController>(Cast<APawn>(CurrentActor)->GetController()) != nullptr)
+        StaffVisionUpdate(CurrentActor, CurrentStimulus);
+}
+
+void AStaffAIController::StaffVisionUpdate(AActor* CurrentActor, FAIStimulus& CurrentStimulus)
+{
 }
 
 FTrackedPlayer::FTrackedPlayer(AActor* Actor_, FVector Location_, float Detection_)
@@ -39,10 +47,6 @@ void AStaffAIController::PlayerVisionTick(AActor* CurrentPlayer, FAIStimulus& Cu
 {
     //Setup
     float DetectionStep = 0;
-
-    //Set player last seen
-    if (Blackboard->GetValueAsObject("LastPlayer") == CurrentPlayer)
-        Blackboard->SetValueAsVector("PlayerLastSeen", CurrentStimulus.StimulusLocation);
 
     //Set suspicious
     if (Blackboard->GetValueAsFloat("Detection") >= 40)
@@ -94,7 +98,12 @@ void AStaffAIController::PlayerVisionTick(AActor* CurrentPlayer, FAIStimulus& Cu
                 Memory.Players[i].Location = CurrentStimulus.ReceiverLocation;
                 //Clamp if needed
                 if (Memory.Players[i].Detection > 100)
+                {
+                    //Set player last seen
+                    if (Blackboard->GetValueAsObject("LastPlayer") == CurrentPlayer)
+                        Blackboard->SetValueAsVector("PlayerLastSeen", CurrentStimulus.StimulusLocation);
                     Memory.Players[i].Detection = 100;
+                }
 
                 //Update blackboard detection if needed
                 if (Blackboard->GetValueAsFloat("Detection") < Memory.Players[i].Detection)
@@ -170,6 +179,7 @@ void AStaffAIController::HandleRadioEvent(FRadioEvent RadioEvent)
 
 void AStaffAIController::MarkSearchLocationSearched(ASearchLocation* SearchLocation)
 {
+    SearchedLocations.Add(SearchLocation);
     //Iterate through all rooms that contain this search location
     for (int i = 0; i < SearchLocation->RoomVolumes.Num(); i++)
     {
@@ -315,25 +325,82 @@ void AStaffAIController::NPCVisionTick(AActor* CurrentActor, FAIStimulus& Curren
 {
     Super::NPCVisionTick(CurrentActor, CurrentStimulus);
 
-    AAIController* OtherNPCController = Cast<AAIController>(Cast<APawn>(CurrentActor)->GetController());
-    UBlackboardComponent* OtherNPCBlackboard = OtherNPCController->GetBlackboardComponent();
+    UBlackboardComponent* OtherNPCBlackboard = Cast<AAIController>(Cast<APawn>(CurrentActor)->GetController())->GetBlackboardComponent();
 
-    //PlayerLastSeen
+    //Get player last seen if set
     if (!Blackboard->IsVectorValueSet("PlayerLastSeen") && OtherNPCBlackboard->IsVectorValueSet("PlayerLastSeen"))
     {
         Blackboard->SetValueAsVector("PlayerLastSeen", OtherNPCBlackboard->GetValueAsVector("PlayerLastSeen"));
     }
 
-        //Backup
+    //Disable backup if not sets
     else if (Blackboard->GetValueAsBool("BackupAvailable") && !OtherNPCBlackboard->GetValueAsBool("BackupAvailable"))
     {
         Blackboard->SetValueAsBool("BackupAvailable", false);
     }
 
-        //Vocal status
+    //Inherit vocal status if higher
     else if (Blackboard->GetValueAsEnum("VocalStatus") < OtherNPCBlackboard->GetValueAsEnum("VocalStatus"))
     {
         Blackboard->SetValueAsEnum("VocalStatus", OtherNPCBlackboard->GetValueAsEnum("VocalStatus"));
+    }
+
+    if (Cast<AStaffAIController>(Cast<APawn>(CurrentActor)->GetController()) != nullptr)
+        StaffVisionTick(CurrentActor, CurrentStimulus);
+}
+
+void AStaffAIController::StaffVisionTick(AActor* CurrentActor, FAIStimulus& CurrentStimulus)
+{
+    UBlackboardComponent* OtherNPCBlackboard = Cast<AAIController>(Cast<APawn>(CurrentActor)->GetController())->GetBlackboardComponent();
+    EActionStatus ActionStatus = static_cast<EActionStatus>(Blackboard->GetValueAsEnum("ActionStatus"));
+
+    //If action status is not idle and both staffAI are performing the same action
+    if (ActionStatus != EActionStatus::Action_Idle && static_cast<EActionStatus>(OtherNPCBlackboard->
+        GetValueAsEnum("ActionStatus")) == ActionStatus)
+    {
+        //If both staff is going to turn back on the same light switch
+        if (ActionStatus == EActionStatus::Action_LightSwitch && Blackboard->GetValueAsObject("LightSwitch") == OtherNPCBlackboard->GetValueAsObject("LightSwitch"))
+        {
+            Blackboard->ClearValue("LightSwitch");
+            Blackboard->SetValueAsEnum("ActionStatus", static_cast<uint8>(EActionStatus::Action_Idle));
+        }
+
+        //If both staff is going to check out the same noise
+        else if (ActionStatus == EActionStatus::Action_NoiseInvestigation && Blackboard->GetValueAsVector("NoiseLocation").Equals(OtherNPCBlackboard->GetValueAsVector("NoiseLocation"),50))
+        {
+            Blackboard->ClearValue("NoiseLocation");
+            Blackboard->SetValueAsEnum("ActionStatus", static_cast<uint8>(EActionStatus::Action_Idle));
+        }
+
+        //If both staff are going to search location
+        else if (ActionStatus == EActionStatus::Action_Searching || ActionStatus == EActionStatus::Action_SearchInvestigation)
+        {
+            //If both search locations are properly set
+            if (Blackboard->GetValueAsObject("TempObject") != nullptr && OtherNPCBlackboard->GetValueAsObject("TempObject") != nullptr)
+            {
+                //If both going to the same location
+                if (Blackboard->GetValueAsObject("TempObject") == OtherNPCBlackboard->GetValueAsObject("TempObject"))
+                {
+                    AActor* ContestedLocation = static_cast<AActor*>(Blackboard->GetValueAsObject("TempObject"));
+                    //If other npc is closer to search location
+                    if (GetPawn()->GetDistanceTo(ContestedLocation) > CurrentActor->GetDistanceTo(ContestedLocation))
+                    {
+                        Blackboard->SetValueAsEnum("ActionStatus", static_cast<uint8>(EActionStatus::Action_Idle));
+                        MarkSearchLocationSearched(Cast<ASearchLocation>(Blackboard->GetValueAsObject("TempObject")));
+                    }
+                }
+                
+                //If going to different locations and other location has not been searched
+                else if (SearchedLocations.Find(Cast<ASearchLocation>(Blackboard->GetValueAsObject("TempObject"))) == -1)
+                    //Take note of the other area that npc is searching
+                    MarkSearchLocationSearched(Cast<ASearchLocation>(Blackboard->GetValueAsObject("TempObject")));
+                
+                //Mark last searched area of other staff if not already searched
+                AStaffAIController* OtherStaff = Cast<AStaffAIController>(Cast<APawn>(CurrentActor)->GetController());
+                if (OtherStaff->SearchedLocations.Num() != 0 && SearchedLocations.Find(OtherStaff->SearchedLocations[OtherStaff->SearchedLocations.Num()-1]) == -1)
+                    MarkSearchLocationSearched(OtherStaff->SearchedLocations[OtherStaff->SearchedLocations.Num()-1]);
+            }
+        }
     }
 }
 
@@ -347,7 +414,7 @@ bool AStaffAIController::HandleHearing(AActor* CurrentActor, FAIStimulus& Curren
             Blackboard->SetValueAsVector("NoiseLocation", CurrentStimulus.StimulusLocation);
         }
 
-            //Movement
+        //Movement
         else if (CurrentStimulus.Tag == "Movement" && Blackboard->GetValueAsFloat("Detection") < 90)
         {
             Blackboard->SetValueAsVector("NoiseLocation", CurrentStimulus.StimulusLocation);

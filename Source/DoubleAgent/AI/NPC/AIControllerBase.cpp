@@ -62,7 +62,7 @@ void AAIControllerBase::OnPerceptionUpdated(const TArray<AActor*>& DetectedActor
     for (int a = 0; a < DetectedActors.Num(); a++)
     {
         //If actor is not self
-        if (DetectedActors[a] != this)
+        if (DetectedActors[a] != GetPawn())
         {
             //Get last sensed stimuli for each sense
             TArray<FAIStimulus> Stimuli = PerceptionComponent->GetActorInfo(*DetectedActors[a])->LastSensedStimuli;
@@ -102,7 +102,7 @@ void AAIControllerBase::Tick(float DeltaTime)
     {
         //Get last sensed stimuli for each sense
         TArray<FAIStimulus> Stimuli = PerceptionComponent->GetActorInfo(*DetectedActors[a])->LastSensedStimuli;
-        //Iterate through all sense
+        //Iterate through all senses
         for (int i = 0; i < Stimuli.Num(); i++)
         {
             if (Stimuli[i].GetAge() == 0 && Stimuli[i].Type.Name == "Default__AISense_Sight")
@@ -133,7 +133,7 @@ void AAIControllerBase::NPCVisionTick(AActor* CurrentActor, FAIStimulus& Current
     {
         Blackboard->ClearValue("UnconsciousNPC");
     }
-    else if (UnconsciousNPC != nullptr && !Cast<AAIControllerBase>(Cast<AAICharacterBase_CHARACTER>(UnconsciousNPC)->GetController())->BrainComponent->IsRunning())
+    else if (UnconsciousNPC == NULL && !Cast<AAIControllerBase>(Cast<AAICharacterBase_CHARACTER>(CurrentActor)->GetController())->BrainComponent->IsRunning())
     {
         Blackboard->SetValueAsObject("UnconsciousNPC", CurrentActor);
     }
