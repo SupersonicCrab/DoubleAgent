@@ -18,6 +18,7 @@ public:
 	// Sets default values for this character's properties
 	ABaseCharacter_CHARACTER();
 
+	//Disables CanBeSeenFrom()
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool BCanBeSeen = true;
 	
