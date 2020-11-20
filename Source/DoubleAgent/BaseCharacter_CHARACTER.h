@@ -19,7 +19,7 @@ public:
 	ABaseCharacter_CHARACTER();
 
 	//Disables CanBeSeenFrom()
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Debug")
 	bool BCanBeSeen = true;
 	
 	//Override base function to add socket locations to raycast

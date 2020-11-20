@@ -3,6 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
+
+#include <winerror.h>
+
 #include "AIController.h"
 #include "BehaviorTree/BehaviorTree.h"
 #include "Perception/AISenseConfig_Hearing.h"
@@ -63,6 +66,10 @@ public:
     UFUNCTION()
     virtual bool HandleHearing(AActor* CurrentActor, FAIStimulus& CurrentStimulus);
 
+    //Used to disable perception
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    bool BPerceptionEnabled = true;
+    
     //Process sight perception
     UFUNCTION()
     virtual void HandleSight(AActor* CurrentActor, FAIStimulus& CurrentStimulus){};

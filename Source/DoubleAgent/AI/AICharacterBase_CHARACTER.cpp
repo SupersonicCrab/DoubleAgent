@@ -7,12 +7,16 @@
 
 void AAICharacterBase_CHARACTER::DisableNPC()
 {
-	Cast<AAIControllerBase>(GetController())->BrainComponent->StopLogic(FString("NPCTakedown"));
+	AAIControllerBase* NPCController = Cast<AAIControllerBase>(GetController());
+	NPCController->BrainComponent->StopLogic(FString("NPCTakedown"));
+	NPCController->BPerceptionEnabled = false;
 }
 
 void AAICharacterBase_CHARACTER::EnableNPC()
 {
-	Cast<AAIControllerBase>(GetController())->BrainComponent->StartLogic();
+	AAIControllerBase* NPCController = Cast<AAIControllerBase>(GetController());
+	NPCController->BrainComponent->StartLogic();
+	NPCController->BPerceptionEnabled = true;
 }
 
 void AAICharacterBase_CHARACTER::GetActorEyesViewPoint(FVector& Location, FRotator& Rotation) const

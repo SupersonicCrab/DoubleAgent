@@ -10,21 +10,6 @@
 #include "Navigation/NavLinkProxy.h"
 #include "Door.generated.h"
 
-USTRUCT()
-struct FInteractingNPC
-{
-	GENERATED_BODY()
-	FInteractingNPC(){};
-	FInteractingNPC(AAICharacterBase_CHARACTER* NPC_, FVector Destination_)
-	{
-		NPC = NPC_;
-		Destination = Destination_;
-	};
-
-	AAICharacterBase_CHARACTER* NPC;
-	FVector Destination;
-};
-
 /**
  * 
  */
@@ -46,14 +31,17 @@ class DOUBLEAGENT_API ADoor : public ANavLinkProxy, public IAISightTargetInterfa
 
 	//Timeline for animation
 	UTimelineComponent* DoorTimeline;
-
+	
 	//NPC opening interaction
 	UFUNCTION()
 	void NPCInteraction(AActor* NPC, const FVector& Destination);
+
+	//Unlock navmesh access
 	UFUNCTION()
-    void UnlockNPC();
-	//NPC reference that is interacting with the door
-	FInteractingNPC InteractingNPC;
+    void Unlock();
+
+	//Used to prevent NPCs from breaking 
+	void ForceOpenDoor(AActor* Interactor);
 	
 public:
 	//Animation data
