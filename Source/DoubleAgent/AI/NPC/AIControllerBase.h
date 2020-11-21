@@ -34,7 +34,7 @@ class DOUBLEAGENT_API AAIControllerBase : public AAIController
 
     //Range in cm based on location
     UPROPERTY(EditAnywhere)
-    float HearingRange = 3250;
+    float HearingRange = 3000;
 
     //Perception configurations
     UAISenseConfig_Sight* SightConfig;
