@@ -90,7 +90,7 @@ void ADoor::ForceOpenDoor(AActor* Interactor)
     bDoorOpen = true;
 }
 
-void ADoor::OpenDoor(AActor* Interactor)
+void ADoor::OpenDoor_Implementation(AActor* Interactor)
 {
     //Get all overlapping characters
     TArray<AActor*> Characters;
@@ -125,7 +125,7 @@ void ADoor::OpenDoor(AActor* Interactor)
     }
 }
 
-void ADoor::CloseDoor(AActor* Interactor)
+void ADoor::CloseDoor_Implementation(AActor* Interactor)
 {
     //If door is actually open and there isn't an animation playing
     if (bDoorOpen && DoorTimeline == NULL && (!HasMovingAgents() || Interactor->IsA(AAICharacterBase_CHARACTER::StaticClass())))
@@ -165,12 +165,4 @@ void ADoor::Tick(float DeltaTime)
             DoorTimeline = NULL;
         }
     }
-}
-
-//Raycasts to the root actor component first, if it cannot hit that it checks DoorHandle and Center socket for extra los checks
-bool ADoor::CanBeSeenFrom(const FVector& ObserverLocation, FVector& OutSeenLocation, int32& NumberOfLoSChecksPerformed, float& OutSightStrength, const AActor* IgnoreActor) const
-{
-    //Return false if nothing was hit
-    OutSightStrength = 0;
-    return false;
 }

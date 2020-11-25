@@ -54,18 +54,24 @@ enum class EActionStatus : uint8
 
 //A tracked player is any player that has been considered a threat
 USTRUCT()
-struct FTrackedPlayer
+struct FTrackedActor
 {
 	GENERATED_BODY()
 
-	FTrackedPlayer(){}
-	FTrackedPlayer(AActor* Actor_, FVector Location_, float Detection_);
+	FTrackedActor(){};
+	FTrackedActor(AActor* Actor_, FVector Location_, float Detection_);
 	UPROPERTY(EditAnywhere)
 	AActor* Actor;
 	UPROPERTY(EditAnywhere)
 	FVector Location;
 	UPROPERTY(EditAnywhere)
 	float Detection;
+};
+
+USTRUCT()
+struct FTrackedDoor
+{
+	FTrackedDoor(){};	
 };
 
 //Memory structure used to hold all important actors
@@ -75,7 +81,7 @@ struct FStaffMemory
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere)
-	TArray<FTrackedPlayer> Players;
+	TArray<FTrackedActor> Players;
 };
 
 UCLASS()

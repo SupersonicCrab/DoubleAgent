@@ -14,7 +14,7 @@
  * 
  */
 UCLASS()
-class DOUBLEAGENT_API ADoor : public ANavLinkProxy, public IAISightTargetInterface
+class DOUBLEAGENT_API ADoor : public ANavLinkProxy
 {
 	GENERATED_BODY()
 
@@ -58,9 +58,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UArrowComponent* OpenDirection;
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	void OpenDoor(AActor* Interactor);
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	void CloseDoor(AActor* Interactor);
 	
 	//Whether or not the door is open
@@ -69,8 +69,4 @@ public:
 
 	//Override base function to add timeline functionality
 	virtual void Tick(float DeltaTime) override;
-	
-	//Override base function to add socket locations to raycast
-	UFUNCTION(BlueprintCallable)
-    virtual bool CanBeSeenFrom(const FVector& ObserverLocation, FVector& OutSeenLocation, int32& NumberOfLoSChecksPerformed, float& OutSightStrength, const AActor* IgnoreActor = NULL) const override;
 };

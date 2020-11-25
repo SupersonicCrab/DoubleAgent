@@ -36,7 +36,7 @@ void AStaffAIController::StaffVisionUpdate(AActor* CurrentActor, FAIStimulus& Cu
 {
 }
 
-FTrackedPlayer::FTrackedPlayer(AActor* Actor_, FVector Location_, float Detection_)
+FTrackedActor::FTrackedActor(AActor* Actor_, FVector Location_, float Detection_)
 {
     Actor = Actor_;
     Location = Location_;
@@ -62,7 +62,7 @@ void AStaffAIController::PlayerVisionTick(AActor* CurrentPlayer, FAIStimulus& Cu
             DetectionStep = DetectionRate * CurrentStimulus.Strength * DeltaTime;
 
         //Add player to memory
-        Memory.Players.Add(FTrackedPlayer(CurrentPlayer, CurrentStimulus.StimulusLocation, DetectionStep));
+        Memory.Players.Add(FTrackedActor(CurrentPlayer, CurrentStimulus.StimulusLocation, DetectionStep));
 
         //Update blackboard detection if needed
         if (Blackboard->GetValueAsFloat("Detection") < Memory.Players[0].Detection)
@@ -122,7 +122,7 @@ void AStaffAIController::PlayerVisionTick(AActor* CurrentPlayer, FAIStimulus& Cu
                 DetectionStep = DetectionRate * CurrentStimulus.Strength * DeltaTime;
 
             //Add player to memory
-            Memory.Players.Add(FTrackedPlayer(CurrentPlayer, CurrentStimulus.StimulusLocation, DetectionStep));
+            Memory.Players.Add(FTrackedActor(CurrentPlayer, CurrentStimulus.StimulusLocation, DetectionStep));
 
             //Update blackboard detection if needed
             if (Blackboard->GetValueAsFloat("Detection") < Memory.Players[0].Detection)
