@@ -3,6 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
+
+#include <winerror.h>
+
 #include "AIController.h"
 #include "BehaviorTree/BehaviorTree.h"
 #include "Perception/AISenseConfig_Hearing.h"
@@ -16,10 +19,6 @@ UCLASS()
 class DOUBLEAGENT_API AAIControllerBase : public AAIController
 {
     GENERATED_BODY()
-
-    //Range in cm based on fov
-    UPROPERTY(EditAnywhere)
-    float SightRadius = 3000;
 
     //Falloff range in cm based on fov
     UPROPERTY(EditAnywhere)
@@ -35,7 +34,7 @@ class DOUBLEAGENT_API AAIControllerBase : public AAIController
 
     //Range in cm based on location
     UPROPERTY(EditAnywhere)
-    float HearingRange = 3250;
+    float HearingRange = 3000;
 
     //Perception configurations
     UAISenseConfig_Sight* SightConfig;
@@ -44,9 +43,6 @@ class DOUBLEAGENT_API AAIControllerBase : public AAIController
     //Behaviour tree asset
     UPROPERTY(EditAnywhere)
     UBehaviorTree* BehaviourTree;
-
-    //Override
-    virtual void OnPossess(APawn* InPawn) override;
     
     //Called when perceived actors is updated
     UFUNCTION()
@@ -55,6 +51,13 @@ class DOUBLEAGENT_API AAIControllerBase : public AAIController
 public:
     AAIControllerBase();
 
+    //Override
+    virtual void OnPossess(APawn* InPawn) override;
+  
+    //Range in cm based on fov
+    UPROPERTY(EditAnywhere)
+    float SightRadius = 3000;
+    
     //NPC spotted tick
     UFUNCTION()
     virtual void NPCVisionTick(AActor* CurrentActor, FAIStimulus& CurrentStimulus);
@@ -63,6 +66,10 @@ public:
     UFUNCTION()
     virtual bool HandleHearing(AActor* CurrentActor, FAIStimulus& CurrentStimulus);
 
+    //Used to disable perception
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    bool BPerceptionEnabled = true;
+    
     //Process sight perception
     UFUNCTION()
     virtual void HandleSight(AActor* CurrentActor, FAIStimulus& CurrentStimulus){};

@@ -1,14 +1,22 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
+// Please don't steal
 
 #include "AICharacterBase_CHARACTER.h"
-
 #include "AIController.h"
+#include "NPC/AIControllerBase.h"
+#include "Perception/AIPerceptionComponent.h"
 
-// Sets default values
-AAICharacterBase_CHARACTER::AAICharacterBase_CHARACTER()
+void AAICharacterBase_CHARACTER::DisableNPC()
 {
+	AAIControllerBase* NPCController = Cast<AAIControllerBase>(GetController());
+	NPCController->BrainComponent->StopLogic(FString("NPCTakedown"));
+	NPCController->BPerceptionEnabled = false;
+}
 
+void AAICharacterBase_CHARACTER::EnableNPC()
+{
+	AAIControllerBase* NPCController = Cast<AAIControllerBase>(GetController());
+	NPCController->BrainComponent->StartLogic();
+	NPCController->BPerceptionEnabled = true;
 }
 
 void AAICharacterBase_CHARACTER::GetActorEyesViewPoint(FVector& Location, FRotator& Rotation) const

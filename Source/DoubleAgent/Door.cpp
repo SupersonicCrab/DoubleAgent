@@ -1,84 +1,168 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
+// Please don't steal
 
 #include "Door.h"
+#include "AIController.h"
+#include "Editor.h"
+#include "Blueprint/AIBlueprintHelperLibrary.h"
+#include "Builders/CubeBuilder.h"
 #include "Components/StaticMeshComponent.h"
+#include "Components/TimelineComponent.h"
 #include "Engine/SkeletalMeshSocket.h"
+#include "Tasks/AITask_MoveTo.h"
+#include "Kismet/KismetMathLibrary.h"
 
-FVector ADoor::GetSocketLocation_Implementation(FName Socket) const
+ADoor::ADoor()
 {
-    return FVector();
+    //Setup door mesh
+    DoorMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DoorMesh"));
+    DoorMesh->SetupAttachment(RootComponent);
+
+    //Setup open direction
+    OpenDirection = CreateDefaultSubobject<UArrowComponent>(TEXT("OpenDirection"));
+    OpenDirection->SetupAttachment(DoorMesh);
+
+    //Adding NPCInteraction as delegate
+    OnSmartLinkReached.AddDynamic(this, &ADoor::NPCInteraction);
+    
+    //Enable tick
+    PrimaryActorTick.bCanEverTick = true;
 }
 
-
-FVector ADoor::GetCenterLocation_Implementation() const
+void ADoor::OpenAnimation()
 {
-    return FVector();
+    //Set door rotation to current to curve value
+    DoorMesh->SetRelativeRotation(FQuat(FRotator(0.f, Direction*OpenCurve->GetFloatValue(DoorTimeline->GetPlaybackPosition()), 0.f)), false, NULL, ETeleportType::TeleportPhysics);
 }
 
-//Raycasts to the root actor component first, if it cannot hit that it checks DoorHandle and Center socket for extra los checks
-bool ADoor::CanBeSeenFrom(const FVector& ObserverLocation, FVector& OutSeenLocation, int32& NumberOfLoSChecksPerformed,
-                          float& OutSightStrength, const AActor* IgnoreActor) const
+void ADoor::CloseAnimation()
 {
-    //Shorthand for FName value
-    static const FName NAME_AILineOfSight = FName(TEXT("SocketLineOfSight"));
+    //Set door rotation to current to curve value
+    DoorMesh->SetRelativeRotation(FQuat(FRotator(0.f, Direction*CloseCurve->GetFloatValue(DoorTimeline->GetPlaybackPosition()), 0.f)), false, NULL, ETeleportType::TeleportPhysics);
+}
 
-    FHitResult HitResult;
-
-    //Raycast to actor location
-    bool bHit = GetWorld()->LineTraceSingleByChannel(HitResult, ObserverLocation, GetActorLocation() , ECollisionChannel(ECC_Visibility), FCollisionQueryParams(NAME_AILineOfSight, true, IgnoreActor));
-
-    NumberOfLoSChecksPerformed++;
-
-    //Return true if raycast hit actor
-    if (bHit == false || (HitResult.Actor.IsValid() && HitResult.Actor->IsOwnedBy(this)))
+void ADoor::NPCInteraction(AActor* NPC, const FVector& Destination)
+{
+    //If a player tries to interact with the door the same frame the NPC is
+    if (DoorTimeline != NULL)
     {
-        OutSeenLocation = GetActorLocation();
-        OutSightStrength = 1;
+        ForceOpenDoor(NPC);
 
-        return true;
+        UBlackboardComponent* NPCBlackboard = UAIBlueprintHelperLibrary::GetBlackboard(NPC);
+        NPCBlackboard->SetValueAsVector("NoiseLocation", GetActorLocation());
     }
     
-    //Raycast to center of door frame
-    bHit = GetWorld()->LineTraceSingleByChannel(HitResult, ObserverLocation, GetCenterLocation() , ECollisionChannel(ECC_Visibility), FCollisionQueryParams(NAME_AILineOfSight, true, IgnoreActor));
-    
-    NumberOfLoSChecksPerformed++;
-    
-    //Return true if raycast hit actor or nothing
-    if (bHit==false || (HitResult.Actor.IsValid() && HitResult.Actor->IsOwnedBy(this)))
+    //If door is closed
+    if (!bDoorOpen)
+        OpenDoor(NPC);
+}
+
+void ADoor::Unlock()
+{
+    //Unlock smart link
+    bSmartLinkIsRelevant = true;
+    SetSmartLinkEnabled(true);
+}
+
+void ADoor::ForceOpenDoor(AActor* Interactor)
+{
+    //Determine direction
+    if (FVector().DotProduct(UKismetMathLibrary::FindLookAtRotation(Interactor->GetActorLocation(), GetActorLocation()).Vector(), OpenDirection->GetForwardVector()) > 0)
+        Direction = 1;
+    else
+        Direction = -1;
+        
+    //Setup timeline
+    FOnTimelineFloat TimelineCallback;
+    TimelineCallback.BindUFunction(this, FName("OpenAnimation"));
+    DoorTimeline = NewObject<UTimelineComponent>(this, FName("DoorAnimation"));
+    DoorTimeline->AddInterpFloat(OpenCurve, TimelineCallback);
+    FOnTimelineEventStatic TimelineFinishedCallback;
+    TimelineFinishedCallback.BindUFunction(this, FName("Unlock"));
+    DoorTimeline->SetTimelineFinishedFunc(TimelineFinishedCallback);
+    DoorTimeline->RegisterComponent();
+
+    //Lock smart link
+    bSmartLinkIsRelevant = false;
+    SetSmartLinkEnabled(false);
+        
+    //Play timeline
+    DoorTimeline->PlayFromStart();
+    bDoorOpen = true;
+}
+
+void ADoor::OpenDoor_Implementation(AActor* Interactor)
+{
+    //Get all overlapping characters
+    TArray<AActor*> Characters;
+    GetOverlappingActors(Characters, ABaseCharacter_CHARACTER::StaticClass());
+
+    //If the door is actually closed and there isn't an animation playing
+    if (!bDoorOpen && DoorTimeline == NULL && (!HasMovingAgents() || Interactor->IsA(AAICharacterBase_CHARACTER::StaticClass())))
     {
-        OutSeenLocation = GetCenterLocation();
-        OutSightStrength = 1;
-    
-        return true;
+        //Determine direction
+        if (FVector().DotProduct(UKismetMathLibrary::FindLookAtRotation(Interactor->GetActorLocation(), GetActorLocation()).Vector(), OpenDirection->GetForwardVector()) > 0)
+            Direction = 1;
+        else
+            Direction = -1;
+        
+        //Setup timeline
+        FOnTimelineFloat TimelineCallback;
+        TimelineCallback.BindUFunction(this, FName("OpenAnimation"));
+        DoorTimeline = NewObject<UTimelineComponent>(this, FName("DoorAnimation"));
+        DoorTimeline->AddInterpFloat(OpenCurve, TimelineCallback);
+        FOnTimelineEventStatic TimelineFinishedCallback;
+        TimelineFinishedCallback.BindUFunction(this, FName("Unlock"));
+        DoorTimeline->SetTimelineFinishedFunc(TimelineFinishedCallback);
+        DoorTimeline->RegisterComponent();
+
+        //Lock smart link
+        bSmartLinkIsRelevant = false;
+        SetSmartLinkEnabled(false);
+        
+        //Play timeline
+        DoorTimeline->PlayFromStart();
+        bDoorOpen = true;
     }
+}
 
-    //Array of sockets to check
-    TArray<FName> Sockets;
-    Sockets.Add("DoorHandle");
-    Sockets.Add("Center");
-
-    //Iterate through all sockets to check LOS
-    for (int i = 0; i < Sockets.Num(); i++)
+void ADoor::CloseDoor_Implementation(AActor* Interactor)
+{
+    //If door is actually open and there isn't an animation playing
+    if (bDoorOpen && DoorTimeline == NULL && (!HasMovingAgents() || Interactor->IsA(AAICharacterBase_CHARACTER::StaticClass())))
     {
-        //Shorthand for FVector
-        FVector SocketLocation = GetSocketLocation(Sockets[i]);
+        //Setup timeline
+        FOnTimelineFloat TimelineCallback;
+        TimelineCallback.BindUFunction(this, FName("CloseAnimation"));
+        DoorTimeline = NewObject<UTimelineComponent>(this, FName("DoorAnimation"));
+        DoorTimeline->AddInterpFloat(CloseCurve, TimelineCallback);
+        FOnTimelineEventStatic TimelineFinishedCallback;
+        TimelineFinishedCallback.BindUFunction(this, FName("Unlock"));
+        DoorTimeline->SetTimelineFinishedFunc(TimelineFinishedCallback);
+        DoorTimeline->RegisterComponent();
 
-        //Raycast to socket location
-        const bool bHitSocket = GetWorld()->LineTraceSingleByChannel(HitResult, ObserverLocation, SocketLocation, ECollisionChannel(ECC_Visibility), FCollisionQueryParams(NAME_AILineOfSight, true, IgnoreActor));
+        //Lock smart link
+        bSmartLinkIsRelevant = false;
+        SetSmartLinkEnabled(false);
+        
+        //Play timeline
+        DoorTimeline->PlayFromStart();
+        bDoorOpen = false;
+    }
+}
 
-        NumberOfLoSChecksPerformed++;
+void ADoor::Tick(float DeltaTime)
+{
+    Super::Tick(DeltaTime);
 
-        //Return true if raycast hit actor
-        if (bHitSocket == false || (HitResult.Actor.IsValid() && HitResult.Actor->IsOwnedBy(this))) {
-            OutSeenLocation = SocketLocation;
-            OutSightStrength = 1;
-
-            return true;
+    //If there is an animation to be played
+    if (DoorTimeline != NULL)
+    {
+        DoorTimeline->TickComponent(DeltaTime, ELevelTick::LEVELTICK_TimeOnly, NULL);
+        //Delete component after timeline has finished
+        if (DoorTimeline->GetPlaybackPosition() == DoorTimeline->GetTimelineLength())
+        {
+            DoorTimeline->DestroyComponent();
+            DoorTimeline = NULL;
         }
     }
-
-    //Return false if nothing was hit
-    OutSightStrength = 0;
-    return false;
 }

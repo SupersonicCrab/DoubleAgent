@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Please don't steal
 
 #pragma once
 
@@ -16,7 +16,15 @@ class DOUBLEAGENT_API AAICharacterBase_CHARACTER : public ABaseCharacter_CHARACT
 
 public:
 	// Sets default values for this character's properties
-	AAICharacterBase_CHARACTER();
+	AAICharacterBase_CHARACTER(){};
+
+	//Disable NPC behaviour and perceptions
+	UFUNCTION(CallInEditor, BlueprintCallable, Category = "Debug")
+	virtual void DisableNPC();
+
+	//Enable NPC behaviour and perceptions
+	UFUNCTION(CallInEditor, BlueprintCallable, Category = "Debug")
+	virtual void EnableNPC();
 	
 	// Override base function to set NPC vision to headSocket
 	virtual void GetActorEyesViewPoint(FVector& Location, FRotator& Rotation) const override;

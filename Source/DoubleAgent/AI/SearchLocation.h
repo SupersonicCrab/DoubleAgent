@@ -1,10 +1,12 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// Please don't steal
 
 #pragma once
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "SearchLocation.generated.h"
+
+class ARoomVolume;
 
 UCLASS()
 class DOUBLEAGENT_API ASearchLocation : public AActor
@@ -14,4 +16,7 @@ class DOUBLEAGENT_API ASearchLocation : public AActor
 public:	
 	//Constructor
 	ASearchLocation();
+
+	//Room reference
+	TArray<ARoomVolume*> RoomVolumes;
 };
