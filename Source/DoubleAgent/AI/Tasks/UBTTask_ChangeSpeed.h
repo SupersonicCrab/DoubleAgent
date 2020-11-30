@@ -5,7 +5,6 @@
 #include "CoreMinimal.h"
 #include "BehaviorTree/BTTaskNode.h"
 #include "UObject/ObjectMacros.h"
-
 #include "UBTTask_ChangeSpeed.generated.h"
 
 UENUM()

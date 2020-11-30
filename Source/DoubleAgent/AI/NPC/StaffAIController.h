@@ -8,25 +8,6 @@
 #include "DoubleAgent/AI/RoomVolume.h"
 #include "StaffAIController.generated.h"
 
-UENUM(BlueprintType, meta = (DisplayName = "VocalStatus", ToolTip = "Used to communicate vocally between NPCs via a bark system"))
-enum class EVocalStatus :uint8
-{
-	//Default state
-	Vocal_Idle UMETA(DisplayName = "Idle"),
-	//Patrolling designated route
-    Vocal_Patrol UMETA(DisplayName = "Patrol"),
-	//Cautious due to suspicion
-    Vocal_Cautious UMETA(DisplayName = "Cautious"),
-	//Heightened alert state, may attack player depending on NPC type
-    Vocal_Alert UMETA(DisplayName = "Alert"),
-	//Searching building for player
-    Vocal_Searching UMETA(DisplayName = "Searching"),
-	//Arresting player
-    Vocal_Subduing UMETA(DisplayName = "Subduing"),
-	//Attacking player
-    Vocal_Engaging UMETA(DisplayName = "Engaging"),
-};
-
 UENUM(BlueprintType, meta = (DisplayName = "ActionStatus", ToolTip = "Special actions staff can preform, most actions have a limit on the amount of staff that can be performing said action"))
 enum class EActionStatus : uint8
 {
@@ -71,6 +52,8 @@ struct FTrackedActor
 USTRUCT()
 struct FTrackedDoor
 {
+	GENERATED_BODY()
+	
 	FTrackedDoor(){};	
 };
 
