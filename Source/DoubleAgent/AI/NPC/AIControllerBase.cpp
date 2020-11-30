@@ -4,6 +4,7 @@
 #include "Perception/AIPerceptionComponent.h"
 #include "NavigationPath.h"
 #include "NavigationSystem.h"
+#include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "DoubleAgent/AI/AICharacterBase_CHARACTER.h"

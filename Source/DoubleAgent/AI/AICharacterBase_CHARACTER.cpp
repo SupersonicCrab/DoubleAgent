@@ -8,7 +8,7 @@
 void AAICharacterBase_CHARACTER::DisableNPC()
 {
 	AAIControllerBase* NPCController = Cast<AAIControllerBase>(GetController());
-	NPCController->BrainComponent->StopLogic(FString("NPCTakedown"));
+	NPCController->BrainComponent->StopLogic(FString("DisablingNPCBehaviour"));
 	NPCController->BPerceptionEnabled = false;
 }
 

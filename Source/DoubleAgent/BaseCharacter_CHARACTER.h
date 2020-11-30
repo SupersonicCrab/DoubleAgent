@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Perception/AISightTargetInterface.h"
+#include "Sound/DialogueVoice.h"
 #include "BaseCharacter_CHARACTER.generated.h"
 
 UCLASS()
@@ -21,6 +22,9 @@ public:
 	//Disables CanBeSeenFrom()
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Debug")
 	bool BCanBeSeen = true;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Default")
+	UDialogueVoice* Voice;
 	
 	//Override base function to add socket locations to raycast
 	UFUNCTION(BlueprintCallable)

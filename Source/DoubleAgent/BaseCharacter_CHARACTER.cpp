@@ -20,7 +20,7 @@ bool ABaseCharacter_CHARACTER::CanBeSeenFrom(const FVector& ObserverLocation, FV
 {
     if (!BCanBeSeen)
         return false;
-        
+    
     //Setup
     OutSeenLocation = FVector(0);
     OutSightStrength = 0;
