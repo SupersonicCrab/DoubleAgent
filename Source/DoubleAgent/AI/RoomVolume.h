@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/TriggerVolume.h"
-#include "../LightSwitch.h"
+#include "../Power/LightSwitch.h"
 #include "SearchLocation.h"
 #include "RoomVolume.generated.h"
 
@@ -55,6 +55,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, Category = "Default", EditAnywhere = "True")
 	ERoomType ERoomType;
+
+	UPROPERTY()
+	bool lit;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Default")
 	TArray<ASearchLocation*> SearchLocations;
