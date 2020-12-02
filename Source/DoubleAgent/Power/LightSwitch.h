@@ -27,7 +27,7 @@ public:
 	bool bLightGroupOn = true; //The boolean that tracks if this light group is currently on
 	UPROPERTY(EditAnywhere)
 	APowerBox* PowerBox; //The pointer to the power box
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Replicated)
 	TArray<AHouseLight*> Lights; //The array of pointers to all the lights in the associated light group
 	
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="Interaction") //Setting up the Interact interface to use it's functionality in C++
@@ -37,13 +37,19 @@ public:
 	//Constructor
 	ALightSwitch();
 	
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Server, Reliable)
 	void EnableLightGroup(); //This is the function that turns on all the lights in the associated light group
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Server, Reliable)
 	void DisableLightGroup(bool  bFromPowerBox); //This is the function that turns off all the lights in the associated light group
 
-	UFUNCTION()
+	UFUNCTION(NetMulticast, Reliable, BlueprintCallable)
+	void MulticastEnableLights(AHouseLight* Light);
+
+	UFUNCTION(NetMulticast, Reliable, BlueprintCallable)
+    void MulticastDisableLights(AHouseLight* Light);
+
+	UFUNCTION(Server, Reliable)
 	void RestoreLights(); //This is the function that gets called when the power to the lights was shut off and then turned back on - Instead of just turning all lights back on, it'll check if that light group was on when the power went out
 	
 	// Called every frame
@@ -53,7 +59,7 @@ public:
 	UFUNCTION()
 	void FindAllActors(UWorld* World, TArray<T>& Out);
 
-	UFUNCTION()
+	UFUNCTION(Server, Reliable)
 	void HandleAssociatedRoom();
 protected:
         // Called when the game starts or when spawned

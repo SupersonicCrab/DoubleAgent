@@ -27,10 +27,17 @@ public:
 	UPROPERTY(Category="Power States", BlueprintReadWrite)
 	bool bPowerCut = false;
 
-	UFUNCTION(BlueprintCallable)
+	UPROPERTY(Replicated)
+	TArray<AActor*> tempArray;
+
+	UFUNCTION(BlueprintCallable, Server, Reliable)
 	void TurnLightsOn();
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, Server, Reliable)
 	void TurnLightsOff();
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastLightsOn();
+	UFUNCTION(NetMulticast, Reliable)
+	void MulticastLightsOff();
 	// UFUNCTION()
 	// void TurnCamerasOff();
 	// UFUNCTION()

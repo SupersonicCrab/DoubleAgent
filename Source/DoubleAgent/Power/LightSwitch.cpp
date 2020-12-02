@@ -6,11 +6,23 @@
 #include "../AI/RoomVolume.h"
 #include "DoubleAgent/AI/AICharacterBase_CHARACTER.h"
 #include "Kismet/GameplayStatics.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values
-ALightSwitch::ALightSwitch(){}
+ALightSwitch::ALightSwitch(){
+    //Allow replication
+    bReplicates = true;
+}
 
-void ALightSwitch::RestoreLights(){
+void ALightSwitch::MulticastEnableLights_Implementation(AHouseLight* Light){
+    Light->TurnOn();
+}
+
+void ALightSwitch::MulticastDisableLights_Implementation(AHouseLight* Light){
+    Light->TurnOff();
+}
+
+void ALightSwitch::RestoreLights_Implementation(){
     if(bLightGroupOn){
         EnableLightGroup();
     }else{
@@ -18,10 +30,10 @@ void ALightSwitch::RestoreLights(){
     }
 }
 
-void ALightSwitch::EnableLightGroup(){
+void ALightSwitch::EnableLightGroup_Implementation(){
     TArray<AActor*> overlapping; //Stores NPCs that are within the light collision
     for(auto Light: Lights){ //Loops through all the lights in the light group and turn them on
-        Light->TurnOn();
+        MulticastEnableLights(Light);
     }
     bLightGroupOn = true;
     AssociatedRoom->UpdateLight(true); //Update the rooms understanding of the light
@@ -35,10 +47,10 @@ void ALightSwitch::EnableLightGroup(){
     }
 }
 
-void ALightSwitch::DisableLightGroup(bool bFromPowerBox){ //Check comments for EnableLightGroup(), it's just that but reversed
+void ALightSwitch::DisableLightGroup_Implementation(bool bFromPowerBox){ //Check comments for EnableLightGroup(), it's just that but reversed
     TArray<AActor*> overlapping;
     for(auto Light: Lights){
-        Light->TurnOff();
+        MulticastDisableLights(Light);
     }
     if(!bFromPowerBox){
         bLightGroupOn = false;
@@ -88,9 +100,13 @@ void FindAllActors(UWorld* World, TArray<T>& Out){
     }
 }
 
-void ALightSwitch::HandleAssociatedRoom(){
+void ALightSwitch::HandleAssociatedRoom_Implementation(){
     AssociatedRoom->LightSwitch = this;
     for(auto Light : Lights){
         Light->Room = AssociatedRoom;
     }
+}
+//Needed to replicate the light array
+void ALightSwitch::GetLifetimeReplicatedProps( TArray< FLifetimeProperty > & OutLifetimeProps ) const{ 
+    DOREPLIFETIME( ALightSwitch, Lights); 
 }
