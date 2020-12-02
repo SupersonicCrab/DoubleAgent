@@ -7,11 +7,14 @@
 #include "Blueprint/UserWidget.h"
 #include "DoubleAgent/Player_Character.h"
 #include "Engine/Light.h"
+#include "Net/UnrealNetwork.h"
 
 // Sets default values
 APowerBox::APowerBox(){
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+	//Allow replication
+	bReplicates = true;
 }
 
 // Called when the game starts or when spawned
@@ -30,24 +33,12 @@ void APowerBox::Interact_Implementation(AActor* Interactor){
 	}	
 }
 
-void APowerBox::TurnLightsOn(){
-	bLightsOn = true;
-	TArray<AActor*> tempArray;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ALightSwitch::StaticClass(), tempArray);
-	for(auto Switch: tempArray){
-		dynamic_cast<ALightSwitch*>(Switch)->bPowerOn = true;
-		dynamic_cast<ALightSwitch*>(Switch)->RestoreLights();
-	}
+void APowerBox::TurnLightsOn_Implementation(){
+	MulticastLightsOn();
 }
 
-void APowerBox::TurnLightsOff(){
-	bLightsOn = false;
-	TArray<AActor*> tempArray;
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ALightSwitch::StaticClass(), tempArray);
-	for(auto Switch: tempArray){
-		dynamic_cast<ALightSwitch*>(Switch)->DisableLightGroup(true);
-		dynamic_cast<ALightSwitch*>(Switch)->bPowerOn = false;
-	}
+void APowerBox::TurnLightsOff_Implementation(){
+	MulticastLightsOff();
 }
 
 // void APowerBox::TurnCamerasOn(){
@@ -74,6 +65,30 @@ void APowerBox::TurnLightsOff(){
 // 	
 // }
 
+void APowerBox::MulticastLightsOn_Implementation(){
+	bLightsOn = true;
+	tempArray.Empty();
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ALightSwitch::StaticClass(), tempArray);
+	for(auto Switch: tempArray){
+		dynamic_cast<ALightSwitch*>(Switch)->bPowerOn = true;
+		dynamic_cast<ALightSwitch*>(Switch)->RestoreLights();
+	}
+}
+
+void APowerBox::MulticastLightsOff_Implementation(){
+	bLightsOn = false;
+	tempArray.Empty();
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ALightSwitch::StaticClass(), tempArray);
+	for(auto Switch: tempArray){
+		dynamic_cast<ALightSwitch*>(Switch)->DisableLightGroup(true);
+		dynamic_cast<ALightSwitch*>(Switch)->bPowerOn = false;
+	}
+}
+
 void APowerBox::CutPower(){
 	bPowerCut = true;
+}
+
+void APowerBox::GetLifetimeReplicatedProps( TArray< FLifetimeProperty > & OutLifetimeProps ) const{ 
+    DOREPLIFETIME( APowerBox, tempArray); 
 }

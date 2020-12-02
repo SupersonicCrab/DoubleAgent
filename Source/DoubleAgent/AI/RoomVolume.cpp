@@ -78,8 +78,7 @@ void ARoomVolume::UpdateOverlappingActors()
 	}
 }
 
-void ARoomVolume::UpdateLight(bool bRoomLit_)
-{
+void ARoomVolume::UpdateLight(bool bRoomLit_){
 	bRoomLit = bRoomLit_;
 	UpdateOverlappingActors();
 }
