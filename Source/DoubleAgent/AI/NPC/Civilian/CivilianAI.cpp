@@ -2,22 +2,6 @@
 
 #include "CivilianAI.h"
 
-bool WanderCondition::TestCondition()
+ACivilianAI::ACivilianAI()
 {
-    return false;
-}
-
-bool TalkCondition::TestCondition()
-{
-    return false;
-}
-
-bool DespawnCondition::TestCondition()
-{
-    return false;
-}
-
-bool CowerCondition::TestCondition()
-{
-    return false;
 }

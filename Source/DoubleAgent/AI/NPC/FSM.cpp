@@ -1,7 +1,4 @@
-// Please don't steal
-
-
-#include "FSMController.h"
+﻿#include "FSM.h"
 
 void AFSMController::Update()
 {
@@ -39,5 +36,5 @@ void AFSMController::Update()
     for (int a = 0; a < CurrentState.Actions.Num(); a++)
     {
         CurrentState.Actions[a].PerformAction();
-    }
+    } 
 }
