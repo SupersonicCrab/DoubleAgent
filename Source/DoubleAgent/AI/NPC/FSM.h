@@ -5,12 +5,15 @@
 #include "AIControllerBase.h"
 #include "FSM.generated.h"
 
+
+class AFSMController;
+
 class FSMCondition
 {
 public:
     FSMCondition(){};
 
-    virtual bool TestCondition()
+    virtual bool TestCondition(AFSMController* Controller)
     {
         return false;
     };
@@ -20,15 +23,14 @@ class FSMAction
 {
 public:
     FSMAction(){};
-
-    virtual bool PerformAction()
+    
+    virtual bool PerformAction(AFSMController* Controller)
     {
       return false;  
     };
 };
 
 class FSMTransition;
-class AFSMController;
 
 class FSMState
 {
@@ -55,7 +57,10 @@ public:
 
     FSMAction Action;
 
-    FSMState NewState;
+    virtual FSMState GetNewState()
+    {
+        return FSMState();
+    } 
 };
 
 UCLASS()
@@ -65,5 +70,8 @@ class AFSMController : public AAIControllerBase
 public:
     FSMState CurrentState;
 
-    void Update();
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    UBlackboardData* BlackboardData;
+
+    virtual void Tick(float DeltaSeconds) override;
 };
