@@ -3,6 +3,7 @@
 #pragma once
 
 #include "AIControllerBase.h"
+#include "EnvironmentQuery/EnvQuery.h"
 #include "FSM.generated.h"
 
 
@@ -76,4 +77,7 @@ public:
     UBlackboardData* BlackboardData;
 
     virtual void Tick(float DeltaSeconds) override;
+
+    void FindEQS(UEnvQuery* Query);
+    void GoToEQS(TSharedPtr<FEnvQueryResult> Result);
 };

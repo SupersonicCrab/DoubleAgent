@@ -2,18 +2,21 @@
 
 #include "States.h"
 #include "Actions.h"
+#include "Animation/AnimInstance.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "GameFramework/Character.h"
 #include "Runtime/CoreUObject/Public/UObject/ConstructorHelpers.h"
 
 Despawn::Despawn()
 {
     Actions.Add(new DeleteSelf());
+    Transitions.Add(new CowerTransition());
 }
 
 bool DespawnCondition::TestCondition(AFSMController* Controller)
 {
     UBlackboardComponent* Blackboard = Controller->GetBlackboardComponent();
-    return Blackboard->GetValueAsFloat("Detection") > 90 && !Blackboard->IsVectorValueSet("LoudNoiseLocation");
+    return Blackboard->GetValueAsFloat("Detection") > 90 && !Controller->GetBlackboardComponent()->IsVectorValueSet("LoudNoiseLocation") && !Cast<ACharacter>(Controller->GetPawn())->GetMesh()->GetAnimInstance()->IsAnyMontagePlaying();
 }
 
 FSMState* DespawnTransition::GetNewState()

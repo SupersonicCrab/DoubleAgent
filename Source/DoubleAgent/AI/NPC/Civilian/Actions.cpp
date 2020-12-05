@@ -4,26 +4,41 @@
 #include "Animation/AnimInstance.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "EnvironmentQuery/EnvQuery.h"
-#include "EnvironmentQuery/EnvQueryManager.h"
 #include "GameFramework/Character.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include "UObject/ConstructorHelpers.h"
 
 
 bool DeleteSelf::PerformAction(AFSMController* Controller)
 {
+    //If NPC is not moving or animating
+    if (Controller->GetMoveStatus() == EPathFollowingStatus::Idle && !Cast<ACharacter>(Controller->GetPawn())->GetMesh()->GetAnimInstance()->IsAnyMontagePlaying())
+    {
+        Controller->GetPawn()->Destroy();
+        Controller->Destroy();
+        return true;
+    }
+       
     return false;
 }
 
 bool CowerAnimation::PerformAction(AFSMController* Controller)
 {
+    //Stop all movement if any
+    Controller->StopMovement();
+
+    //If another animation is already playing
+    if (Cast<ACharacter>(Controller->GetPawn())->GetMesh()->GetAnimInstance()->IsAnyMontagePlaying())
+        return false;
+    
     //Update blackboard
     UBlackboardComponent* Blackboard = Controller->GetBlackboardComponent();
     Blackboard->SetValueAsFloat("Detection", 100);
     Blackboard->ClearValue("LoudNoiseLocation");
-    
+
     //Load animation
-    UAnimSequence* AnimationToPlay = LoadObject<UAnimSequence>(NULL, TEXT("AnimSequence'/Game/Animations/Sequences/Crouched/A_Crouch_Idle.A_Crouch_Idle'"));
+    UAnimSequence* AnimationToPlay = LoadObject<UAnimSequence>(
+        NULL, TEXT("AnimSequence'/Game/Animations/Sequences/Crouched/A_Crouch_Idle.A_Crouch_Idle'"));
 
     //If animation wasn't found
     if (AnimationToPlay == NULL)
@@ -48,9 +63,13 @@ bool GotoCrowd::PerformAction(AFSMController* Controller)
 
 bool GoToDespawn::PerformAction(AFSMController* Controller)
 {
-    UEnvQuery* Query = LoadObject<UEnvQuery>(NULL, TEXT("'EnvQuery'/Content/AI/EQS/Queries/FindCivlianDespawn_EQSQUERY.FindCivlianDespawn_EQSQUERY'"));
+    //Change characters speed to running
+    Cast<ACharacter>(Controller->GetPawn())->GetCharacterMovement()->MaxWalkSpeed = 630;
 
-    FEnvQueryRequest QueryRequest = FEnvQueryRequest(Query, Controller);
-    
-    return false;
+    //Load eqs query to be run
+    UEnvQuery* Query = LoadObject<UEnvQuery>(NULL, TEXT("EnvQuery'/Game/AI/EQS/Queries/FindCivlianDespawn_EQSQUERY.FindCivlianDespawn_EQSQUERY'"));
+
+    //Run eqs behaviour
+    Controller->FindEQS(Query);
+    return true;
 }

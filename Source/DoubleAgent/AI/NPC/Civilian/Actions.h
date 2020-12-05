@@ -3,6 +3,7 @@
 #pragma once
 
 #include "DoubleAgent/AI/NPC/FSM.h"
+#include "EnvironmentQuery/EnvQueryTypes.h"
 
 class DeleteSelf : public FSMAction
 {

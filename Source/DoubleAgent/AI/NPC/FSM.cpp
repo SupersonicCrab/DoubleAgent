@@ -1,5 +1,7 @@
 ﻿#include "FSM.h"
 
+#include "EnvironmentQuery/EnvQueryManager.h"
+
 FSMState::~FSMState()
 {
     for (int i = 0; i < Transitions.Num(); i++)
@@ -46,7 +48,9 @@ void AFSMController::Tick(float DeltaSeconds)
 
             //Perform transition action if any
             if (CurrentState->Transitions[i]->Action != nullptr)
-                CurrentState->Transitions[i]->Action->PerformAction(this);
+                if (!CurrentState->Transitions[i]->Action->PerformAction(this))
+                    //Finish update if transition fails
+                    return;
 
             //Change state to new state
             FSMState* NewState = CurrentState->Transitions[i]->GetNewState();
@@ -70,4 +74,17 @@ void AFSMController::Tick(float DeltaSeconds)
     {
         CurrentState->Actions[a]->PerformAction(this);
     } 
+}
+
+void AFSMController::FindEQS(UEnvQuery* Query)
+{
+    FEnvQueryRequest QueryRequest = FEnvQueryRequest(Query, this);
+    QueryRequest.Execute(EEnvQueryRunMode::SingleResult, this, &AFSMController::GoToEQS);
+}
+
+void AFSMController::GoToEQS(TSharedPtr<FEnvQueryResult> Result)
+{
+    FVector Location = Result->GetItemAsLocation(0);
+
+    MoveToLocation(Location, 10.0f, true, true, true, true, 0, false);   
 }
