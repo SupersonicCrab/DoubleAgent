@@ -7,23 +7,24 @@
 
 Despawn::Despawn()
 {
-    Actions.Add(DeleteSelf());
+    Actions.Add(new DeleteSelf());
 }
 
 bool DespawnCondition::TestCondition(AFSMController* Controller)
 {
-    return false;
+    UBlackboardComponent* Blackboard = Controller->GetBlackboardComponent();
+    return Blackboard->GetValueAsFloat("Detection") > 90 && !Blackboard->IsVectorValueSet("LoudNoiseLocation");
 }
 
-FSMState DespawnTransition::GetNewState()
+FSMState* DespawnTransition::GetNewState()
 {
-    return Despawn();
+    return new Despawn();
 }
 
 Cower::Cower()
 {
-    Actions.Add(CowerAnimation());
-    Transitions.Add(DespawnTransition());
+    Actions.Add(new CowerAnimation());
+    Transitions.Add(new DespawnTransition());
 }
 
 bool CowerCondition::TestCondition(AFSMController* Controller)
@@ -31,17 +32,17 @@ bool CowerCondition::TestCondition(AFSMController* Controller)
     return Controller->GetBlackboardComponent()->IsVectorValueSet("LoudNoiseLocation");
 }
 
-FSMState CowerTransition::GetNewState()
+FSMState* CowerTransition::GetNewState()
 {
-    return Cower();
+    return new Cower();
 }
 
 Talk::Talk()
 {
-    Actions.Add(SpeakToCrowd());
-    Transitions.Add(CowerTransition());
-    Transitions.Add(DespawnTransition());
-    Transitions.Add(WanderTransition());
+    Actions.Add(new SpeakToCrowd());
+    Transitions.Add(new CowerTransition());
+    Transitions.Add(new DespawnTransition());
+    Transitions.Add(new WanderTransition());
 }
 
 bool TalkCondition::TestCondition(AFSMController* Controller)
@@ -49,17 +50,17 @@ bool TalkCondition::TestCondition(AFSMController* Controller)
     return false;
 }
 
-FSMState TalkTransition::GetNewState()
+FSMState* TalkTransition::GetNewState()
 {
-    return Talk();
+    return new Talk();
 }
 
 Wander::Wander()
 {
-    Actions.Add(GotoCrowd());
-    Transitions.Add(CowerTransition());
-    Transitions.Add(DespawnTransition());
-    Transitions.Add(TalkTransition());
+    Actions.Add(new GotoCrowd());
+    Transitions.Add(new CowerTransition());
+    Transitions.Add(new DespawnTransition());
+    Transitions.Add(new TalkTransition());
 }
 
 bool WanderCondition::TestCondition(AFSMController* Controller)
@@ -67,7 +68,7 @@ bool WanderCondition::TestCondition(AFSMController* Controller)
     return false;
 }
 
-FSMState WanderTransition::GetNewState()
+FSMState* WanderTransition::GetNewState()
 {
-    return Wander();
+    return new Wander();
 }

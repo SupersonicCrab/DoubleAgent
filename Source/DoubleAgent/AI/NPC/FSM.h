@@ -36,30 +36,32 @@ class FSMState
 {
 public:
     FSMState(){};
+    virtual ~FSMState();
 
     AFSMController* Controller;
     
-    TArray<FSMTransition> Transitions;
+    TArray<FSMTransition*> Transitions;
 
-    TArray<FSMAction> Actions;
+    TArray<FSMAction*> Actions;
 
-    TArray<FSMAction> EntryActions;
+    TArray<FSMAction*> EntryActions;
 
-    TArray<FSMAction> ExitActions;
+    TArray<FSMAction*> ExitActions;
 };
 
 class FSMTransition
 {
 public:
     FSMTransition(){};
+    virtual ~FSMTransition();
 
-    FSMCondition Condition;
+    FSMCondition* Condition = nullptr;
 
-    FSMAction Action;
+    FSMAction* Action = nullptr;
 
-    virtual FSMState GetNewState()
+    virtual FSMState* GetNewState()
     {
-        return FSMState();
+        return new FSMState();
     } 
 };
 
@@ -68,7 +70,7 @@ class AFSMController : public AAIControllerBase
 {
     GENERATED_BODY()
 public:
-    FSMState CurrentState;
+    FSMState* CurrentState;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     UBlackboardData* BlackboardData;

@@ -5,5 +5,5 @@
 
 ACivilianAI::ACivilianAI()
 {
-    CurrentState = Wander();
+    CurrentState = new Wander();
 }

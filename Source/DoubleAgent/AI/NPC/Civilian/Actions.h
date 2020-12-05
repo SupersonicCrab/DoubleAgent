@@ -32,3 +32,10 @@ public:
     GotoCrowd(){};
     virtual bool PerformAction(AFSMController* Controller) override;
 };
+
+class GoToDespawn : public FSMAction
+{
+public:
+    GoToDespawn(){};
+    virtual bool PerformAction(AFSMController* Controller) override;
+};

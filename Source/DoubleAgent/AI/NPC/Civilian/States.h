@@ -2,6 +2,7 @@
 
 #pragma once
 
+#include "Actions.h"
 #include "DoubleAgent/AI/NPC/FSM.h"
 
 class Despawn : public FSMState
@@ -21,9 +22,10 @@ class DespawnTransition : public FSMTransition
 public:
     DespawnTransition()
     {
-        Condition = DespawnCondition();
-    };
-    virtual FSMState GetNewState() override;
+        Action = new GoToDespawn();
+        Condition = new DespawnCondition();
+    };    
+    virtual FSMState* GetNewState() override;
 };
 
 class Cower : public FSMState
@@ -43,9 +45,9 @@ class CowerTransition : public FSMTransition
 public:
     CowerTransition()
     {
-        Condition = CowerCondition();
+        Condition = new CowerCondition();
     };
-    virtual FSMState GetNewState() override;
+    virtual FSMState* GetNewState() override;
 };
 
 class Talk : public FSMState
@@ -65,9 +67,9 @@ class TalkTransition : public FSMTransition
 public:
     TalkTransition()
     {
-        Condition = TalkCondition();
+        Condition = new TalkCondition();
     };
-    virtual FSMState GetNewState() override;
+    virtual FSMState* GetNewState() override;
 };
 
 class Wander : public FSMState
@@ -87,7 +89,7 @@ class WanderTransition : public FSMTransition
 public:
     WanderTransition()
     {
-        Condition = WanderCondition();
+        Condition = new WanderCondition();
     };
-    virtual FSMState GetNewState() override;
+    virtual FSMState* GetNewState() override;
 };
