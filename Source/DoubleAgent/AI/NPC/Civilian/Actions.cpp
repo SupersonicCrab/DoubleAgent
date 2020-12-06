@@ -3,6 +3,7 @@
 #include "Actions.h"
 #include "Animation/AnimInstance.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "DoubleAgent/BaseCharacter_CHARACTER.h"
 #include "EnvironmentQuery/EnvQuery.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -47,7 +48,7 @@ bool CowerAnimation::PerformAction(AFSMController* Controller)
     //Play animation as dynamic montage
     UAnimInstance* AnimInstance = Cast<ACharacter>(Controller->GetPawn())->GetMesh()->GetAnimInstance();
     if (!AnimInstance->IsAnyMontagePlaying())
-        AnimInstance->PlaySlotAnimationAsDynamicMontage(AnimationToPlay, FName("DefaultSlot"));
+        Cast<ABaseCharacter_CHARACTER>(Controller->GetPawn())->NetPlayAnimation(AnimationToPlay);
     return true;
 }
 

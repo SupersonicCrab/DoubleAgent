@@ -29,4 +29,23 @@ public:
 	//Override base function to add socket locations to raycast
 	UFUNCTION(BlueprintCallable)
 	virtual bool CanBeSeenFrom(const FVector& ObserverLocation, FVector& OutSeenLocation, int32& NumberOfLoSChecksPerformed, float& OutSightStrength, const AActor* IgnoreActor = nullptr) const override;
+
+
+	//Animation rpc
+	UFUNCTION(BlueprintCallable, NetMulticast, Reliable)
+	void NetPlayAnimation(UAnimSequence* AnimationSequence);
+
+	UFUNCTION(BlueprintCallable, NetMulticast, Reliable)
+	void NetResumeAnimation();
+
+	UFUNCTION(BlueprintCallable, NetMulticast, Reliable)
+	void NetPauseAnimation();
+
+
+	//Client only rpc
+	UFUNCTION(BlueprintCallable, NetMulticast, Reliable)
+	void NetPlayAnimationClient(UAnimSequence* AnimationSequence);
+
+	UFUNCTION(BlueprintCallable, NetMulticast, Reliable)
+	void NetStopAnimationClient();
 };

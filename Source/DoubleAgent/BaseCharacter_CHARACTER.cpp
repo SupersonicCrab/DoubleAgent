@@ -2,6 +2,7 @@
 
 
 #include "BaseCharacter_CHARACTER.h"
+#include "Animation/AnimInstance.h"
 #include "Engine/SkeletalMeshSocket.h"
 
 // Sets default values
@@ -47,5 +48,33 @@ bool ABaseCharacter_CHARACTER::CanBeSeenFrom(const FVector& ObserverLocation, FV
 
     //Return true if above 0
     return OutSightStrength > 0;
+}
+
+void ABaseCharacter_CHARACTER::NetStopAnimationClient_Implementation()
+{
+    GetMesh()->GetAnimInstance()->Montage_Stop(NULL);
+}
+
+
+void ABaseCharacter_CHARACTER::NetPlayAnimationClient_Implementation(UAnimSequence* AnimationSequence)
+{
+    //Play montage with default parameters
+    GetMesh()->GetAnimInstance()->PlaySlotAnimationAsDynamicMontage(AnimationSequence, "DefaultSlot");
+}
+
+void ABaseCharacter_CHARACTER::NetPauseAnimation_Implementation()
+{
+    GetMesh()->GetAnimInstance()->Montage_Pause();
+}
+
+void ABaseCharacter_CHARACTER::NetResumeAnimation_Implementation()
+{
+    GetMesh()->GetAnimInstance()->Montage_Resume(NULL);
+}
+
+void ABaseCharacter_CHARACTER::NetPlayAnimation_Implementation(UAnimSequence* AnimationSequence)
+{
+    //Play montage with default parameters
+    GetMesh()->GetAnimInstance()->PlaySlotAnimationAsDynamicMontage(AnimationSequence, "DefaultSlot");
 }
 
