@@ -18,7 +18,7 @@ public:
 	UPROPERTY(Category="Power States", BlueprintReadWrite)
 	bool bLightsOn = true;
 	UPROPERTY(Category="Power States", BlueprintReadWrite)
-	bool bLandlinesOn;
+	bool bLandlinesOn = true;
 	// UPROPERTY(Category="Power States", BlueprintReadWrite)
 	// bool bRadiosOn;
 	// UPROPERTY(Category="Power States", BlueprintReadWrite)

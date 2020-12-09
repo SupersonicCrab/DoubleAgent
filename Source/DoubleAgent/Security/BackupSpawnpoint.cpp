@@ -3,11 +3,13 @@
 
 #include "BackupSpawnpoint.h"
 #include "NavigationSystem.h"
+#include "BehaviorTree/BlackboardComponent.h"
+#include "DoubleAgent/AI/AICharacterBase_CHARACTER.h"
 #include "Kismet/KismetMathLibrary.h"
 
 // Sets default values
-ABackupSpawnpoint::ABackupSpawnpoint(){
-}
+ABackupSpawnpoint::ABackupSpawnpoint(){}
+
 void ABackupSpawnpoint::SpawnGuard(){
 	FVector loc = GetActorTransform().GetLocation();
 	FQuat rot = GetActorTransform().GetRotation();
@@ -24,6 +26,7 @@ FTransform trans = UKismetMathLibrary::MakeTransform(output, rot.Rotator(), FVec
 	}
 	FActorSpawnParameters spawnParams;
 	spawnParams.Owner = this;
-	GetWorld()->SpawnActor<ACharacter>(Backup, trans, spawnParams);
+	ACharacter* SpawnedCharacter = GetWorld()->SpawnActor<ACharacter>(Backup, trans, spawnParams);
+	//Do blackboard stuff once I find out how to access the characters blackboard
 }
 
