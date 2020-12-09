@@ -6,7 +6,6 @@
 #include "PowerBox.h"
 #include "PowerComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include "GameFramework/Actor.h"
 #include "../InteractInterface.h"
 #include "LightSwitch.generated.h"
 

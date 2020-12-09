@@ -17,11 +17,11 @@ public:
 
 	UPROPERTY(Category="Power States", BlueprintReadWrite)
 	bool bLightsOn = true;
-	// UPROPERTY()
-	// bool bLandlinesOn;
-	// UPROPERTY()
+	UPROPERTY(Category="Power States", BlueprintReadWrite)
+	bool bLandlinesOn;
+	// UPROPERTY(Category="Power States", BlueprintReadWrite)
 	// bool bRadiosOn;
-	// UPROPERTY()
+	// UPROPERTY(Category="Power States", BlueprintReadWrite)
 	// bool bCamerasOn;
 	//HEY STINKY MORON, make sure you come back here and create/include the camera hub
 	UPROPERTY(Category="Power States", BlueprintReadWrite)
@@ -38,17 +38,17 @@ public:
 	void MulticastLightsOn();
 	UFUNCTION(NetMulticast, Reliable)
 	void MulticastLightsOff();
-	// UFUNCTION()
+	// UFUNCTION(BlueprintCallable)
 	// void TurnCamerasOff();
-	// UFUNCTION()
+	// UFUNCTION(BlueprintCallable)
 	// void TurnCamerasOn();
-	// UFUNCTION()
-	// void TurnLandlinesOn();
-	// UFUNCTION()
-	// void TurnLandlinesOff();
-	// UFUNCTION()
+	UFUNCTION(BlueprintCallable)
+	void TurnLandlinesOn();
+	UFUNCTION(BlueprintCallable)
+	void TurnLandlinesOff();
+	// UFUNCTION(BlueprintCallable)
 	// void TurnRadiosOn();
-	// UFUNCTION()
+	// UFUNCTION(BlueprintCallable)
 	// void TurnRadiosOff();
 	UFUNCTION(BlueprintCallable)
 	void CutPower();

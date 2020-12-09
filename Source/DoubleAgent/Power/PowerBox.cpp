@@ -6,6 +6,7 @@
 #include "LightSwitch.h"
 #include "Blueprint/UserWidget.h"
 #include "DoubleAgent/Player_Character.h"
+#include "DoubleAgent/Security/Landline.h"
 #include "Engine/Light.h"
 #include "Net/UnrealNetwork.h"
 
@@ -48,15 +49,27 @@ void APowerBox::TurnLightsOff_Implementation(){
 // void APowerBox::TurnCamerasOff(){
 // 	
 // }
-//
-// void APowerBox::TurnLandlinesOn(){
-// 	
-// }
-//
-// void APowerBox::TurnLandlinesOff(){
-// 	
-// }
-//
+
+void APowerBox::TurnLandlinesOn(){
+	TArray<AActor*> temporaryArray;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ALandline::StaticClass(), temporaryArray);
+
+	for(auto L: temporaryArray){
+		dynamic_cast<ALandline*>(L)->EnableLandline();
+	}
+	bLandlinesOn = true;
+}
+
+void APowerBox::TurnLandlinesOff(){
+	TArray<AActor*> temporaryArray;
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ALandline::StaticClass(), temporaryArray);
+
+	for(auto L: temporaryArray){
+		dynamic_cast<ALandline*>(L)->DisableLandline();
+	}
+	bLandlinesOn = false;
+}
+
 // void APowerBox::TurnRadiosOn(){
 // 	
 // }
