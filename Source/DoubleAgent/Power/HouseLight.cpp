@@ -11,7 +11,7 @@ AHouseLight::AHouseLight(){
 	PrimaryActorTick.bCanEverTick = true;
 	//This is constructing and setting the default varaibles for the light component of the object
 	Light = CreateDefaultSubobject<UPointLightComponent>(TEXT("PointLight"));
-	Light->Intensity = 3000;
+	Light->Intensity = 10000;
 	Light->Mobility = EComponentMobility::Stationary;
 	Light->SetVisibility(true);
 	RootComponent = Light;

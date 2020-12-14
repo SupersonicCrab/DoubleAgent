@@ -18,7 +18,7 @@ public:
 	// Sets default values for this actor's properties
 	AHouseLight();
 
-	UPROPERTY() //If this stops working for some random reason, just set this to visible anywhere
+	UPROPERTY(EditAnywhere) //If this stops working for some random reason, just set this to visible anywhere
 	UPointLightComponent* Light; //The reference to the actual point light component
 	UPROPERTY()
 	USphereComponent* Sphere;
