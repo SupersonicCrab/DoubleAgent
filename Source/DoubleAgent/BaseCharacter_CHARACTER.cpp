@@ -40,10 +40,14 @@ bool ABaseCharacter_CHARACTER::CanBeSeenFrom(const FVector& ObserverLocation, FV
             if (OutSeenLocation.IsZero())
                 OutSeenLocation = GetMesh()->GetSocketLocation(Sockets[i]);
             
-            //Increment strength
+            //Set strength to 1 if character is not lit and within 4 metres
             if (Visibility == EVisbilityLevel::Visibility_None && FVector().Dist(ObserverLocation, GetMesh()->GetSocketLocation(Sockets[i])) <= 400.0f)
+            {
                 OutSightStrength = 1;
+                return true;
+            }
             else
+                //Increment strength based on current visibility
                 OutSightStrength = OutSightStrength + 1 * static_cast<uint8>(Visibility);
             
             //Return true if strength is at 2
@@ -63,39 +67,50 @@ void ABaseCharacter_CHARACTER::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
 
+    //Run on server only
     if (UKismetSystemLibrary::IsServer(GetWorld()))
     {
+        //Get all overlapping lights
         TArray<AActor*> Lights;
-        //TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
-        //ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_WorldDynamic));
-        //TArray<AActor*> ActorsToIgnore;
-        
-        //UKismetSystemLibrary::SphereOverlapActors(GetWorld(), GetActorLocation(), 3000.0f, ObjectTypes, AHouseLight::StaticClass(), ActorsToIgnore, Lights);
         GetOverlappingActors(Lights, AHouseLight::StaticClass());
 
         EVisbilityLevel Temp = EVisbilityLevel::Visibility_None;
+
+        //Iterate through lights
         for (int i = 0; i < Lights.Num(); i++)
         {
+            //Iterate through all sockets
             for (int a = 0; a < Sockets.Num(); a++)
             {
+                //Special socket scoring
                 int VisibilityIncrease = 1;
                 if (a == 0)
                     VisibilityIncrease = 2;
                 if (a == 1)
                     VisibilityIncrease = 3;
-                
+
+                //Raycast from light to sockets
                 FHitResult SocketHitResult;
                 GetWorld()->LineTraceSingleByChannel(SocketHitResult, Lights[i]->GetActorLocation(), GetMesh()->GetSocketLocation(Sockets[a]), ECollisionChannel::ECC_Visibility, FCollisionQueryParams(FName(TEXT("SocketLineOfSight")), true, Lights[i]));
+
+                //Save light cast
                 AHouseLight* Light = Cast<AHouseLight>(Lights[i]);
-                if (SocketHitResult.Actor == this && Light->Light->GetVisibleFlag())
+
+                //If light was on and socket was hit
+                if (Light->Light->GetVisibleFlag() && SocketHitResult.Actor == this)
                 {
+                    //If socket is within attenuation radius
                     if (Lights[i]->GetDistanceTo(this) <= Light->Light->AttenuationRadius)
                         Temp = static_cast<EVisbilityLevel>(static_cast<uint8>(Temp) + VisibilityIncrease);
+                    //If socket is just within sphere overlap
                     else if (Temp == EVisbilityLevel::Visibility_None)
                         Temp = EVisbilityLevel::Visibility_1;
                 }
+                //Clamp if needed
                 if (Temp > EVisbilityLevel::Visibility_6)
                     Temp = EVisbilityLevel::Visibility_6;
+                
+                //Break loop if visibility is already zero
                 if (Temp == EVisbilityLevel::Visibility_6)
                 {
                     i = Lights.Num();
@@ -104,6 +119,7 @@ void ABaseCharacter_CHARACTER::Tick(float DeltaSeconds)
             }
         }
 
+        //Update visibility
         Visibility = Temp;
     }
 }

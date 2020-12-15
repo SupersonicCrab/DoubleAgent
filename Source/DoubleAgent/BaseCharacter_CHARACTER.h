@@ -42,7 +42,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Debug")
 	bool BCanBeSeen = true;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Debug")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Debug", Replicated)
 	EVisbilityLevel Visibility;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Default")

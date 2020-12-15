@@ -133,7 +133,7 @@ void AStaffAIController::PlayerVisionTick(AActor* CurrentPlayer, FAIStimulus& Cu
 
 void AStaffAIController::PlayerVisionUpdate(AActor* CurrentPlayer, FAIStimulus& CurrentStimulus)
 {   
-    //If player was just seen and player is lit
+    //If player was just seen
     if (CurrentStimulus.IsActive())
     {        
         //If there is no tracked player
