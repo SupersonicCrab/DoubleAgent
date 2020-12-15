@@ -19,12 +19,13 @@ AHouseLight::AHouseLight(){
 	//This is constructing and attaching the collision component to the light component
 	Sphere = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
 	Sphere->SetupAttachment(RootComponent);
+	Sphere->SetVisibility(false);
 }
 
 // Called when the game starts or when spawned
 void AHouseLight::BeginPlay(){
 	Super::BeginPlay();
-	Sphere->SetSphereRadius(Light->AttenuationRadius);
+	Sphere->SetSphereRadius(Light->AttenuationRadius*1.4);
 }
 
 // Called every frame

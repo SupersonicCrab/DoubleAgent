@@ -100,6 +100,9 @@ void ARoomVolume::UpdateNPC(AActor* NPC)
 	else
 	{
 		//Setting light switch if room is no longer lit
-		NPCBlackboard->SetValueAsObject("LightSwitch",	LightSwitch);
+		if (NPCBlackboard->GetValueAsObject("LightSwitch") == nullptr && LightSwitch)
+		{
+			NPCBlackboard->SetValueAsObject("LightSwitch",	LightSwitch);
+		}
 	}
 }

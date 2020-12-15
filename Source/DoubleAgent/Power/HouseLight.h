@@ -20,7 +20,7 @@ public:
 
 	UPROPERTY(EditAnywhere) //If this stops working for some random reason, just set this to visible anywhere
 	UPointLightComponent* Light; //The reference to the actual point light component
-	UPROPERTY()
+	UPROPERTY(EditAnywhere)
 	USphereComponent* Sphere;
 	UPROPERTY(EditAnywhere)
 	int LightGroup;

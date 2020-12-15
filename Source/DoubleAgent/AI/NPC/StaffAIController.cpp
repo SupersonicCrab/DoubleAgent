@@ -44,7 +44,7 @@ FTrackedActor::FTrackedActor(AActor* Actor_, FVector Location_, float Detection_
 }
 
 void AStaffAIController::PlayerVisionTick(AActor* CurrentPlayer, FAIStimulus& CurrentStimulus, float DeltaTime)
-{
+{       
     //Setup
     float DetectionStep = 0;
 
@@ -132,17 +132,17 @@ void AStaffAIController::PlayerVisionTick(AActor* CurrentPlayer, FAIStimulus& Cu
 }
 
 void AStaffAIController::PlayerVisionUpdate(AActor* CurrentPlayer, FAIStimulus& CurrentStimulus)
-{
-    //If player was just seen
+{   
+    //If player was just seen and player is lit
     if (CurrentStimulus.IsActive())
-    {
+    {        
         //If there is no tracked player
         if (!IsValid(Blackboard->GetValueAsObject("LastPlayer")))
         {
             Blackboard->SetValueAsObject("LastPlayer", CurrentPlayer);
         }
     }
-        //If player was just lost
+    //If player was just lost
     else
     {
         //If player was being tracked
