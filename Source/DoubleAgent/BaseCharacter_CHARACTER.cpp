@@ -124,6 +124,11 @@ void ABaseCharacter_CHARACTER::Tick(float DeltaSeconds)
     }
 }
 
+void ABaseCharacter_CHARACTER::GetLifetimeReplicatedProps(::TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+}
+
 void ABaseCharacter_CHARACTER::NetStopAnimationClient_Implementation()
 {
     //If not server
