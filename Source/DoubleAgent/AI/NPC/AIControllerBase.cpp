@@ -21,8 +21,6 @@ AAIControllerBase::AAIControllerBase()
 
     //Setup hearing
     HearingConfig->HearingRange = HearingRange;
-    HearingConfig->bUseLoSHearing = true;
-    HearingConfig->LoSHearingRange = HearingRange * 2;
     HearingConfig->SetMaxAge(MaxStimulusAge);
     HearingConfig->DetectionByAffiliation.bDetectEnemies = true;
     HearingConfig->DetectionByAffiliation.bDetectNeutrals = true;

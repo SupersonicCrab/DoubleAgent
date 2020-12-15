@@ -16,6 +16,6 @@ public:
 	APlayer_Character();
 
 	//Variables
-	UPROPERTY(BlueprintReadWrite, Category = "Default", EditAnywhere = "True")
+	UPROPERTY(BlueprintReadWrite, Category = "Default", EditAnywhere)
 	bool bRoomSafe;
 };
