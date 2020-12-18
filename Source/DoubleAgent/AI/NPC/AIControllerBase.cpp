@@ -167,15 +167,11 @@ bool AAIControllerBase::HandleHearing(AActor* CurrentActor, FAIStimulus& Current
     {
         //Speaker
         if (CurrentStimulus.Tag == "Speaker")
-        {
             Blackboard->SetValueAsObject("Speaker", CurrentActor);
-        }
 
-            //LoudNoise
+        //LoudNoise
         else if (CurrentStimulus.Tag == "LoudNoise")
-        {
             Blackboard->SetValueAsVector("LoudNoiseLocation", CurrentStimulus.StimulusLocation);
-        }
 
         //Something was perceived
         return true;
