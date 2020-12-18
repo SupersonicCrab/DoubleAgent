@@ -49,6 +49,9 @@ public:
 	UFUNCTION(NetMulticast, Reliable, BlueprintCallable)
     void MulticastDisableLights(AHouseLight* Light);
 
+	UFUNCTION(NetMulticast, Unreliable)
+	void PlaySound(float Pitch);
+	
 	UFUNCTION(Server, Reliable)
 	void RestoreLights(); //This is the function that gets called when the power to the lights was shut off and then turned back on - Instead of just turning all lights back on, it'll check if that light group was on when the power went out
 	

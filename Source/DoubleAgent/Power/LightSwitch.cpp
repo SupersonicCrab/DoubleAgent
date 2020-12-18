@@ -7,6 +7,8 @@
 #include "DoubleAgent/AI/AICharacterBase_CHARACTER.h"
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
+#include "Sound/SoundCue.h"
+
 
 // Sets default values
 ALightSwitch::ALightSwitch(){
@@ -45,6 +47,8 @@ void ALightSwitch::EnableLightGroup_Implementation(){
             }
         }
     }
+
+   PlaySound(0.9f);
 }
 
 void ALightSwitch::DisableLightGroup_Implementation(bool bFromPowerBox){ //Check comments for EnableLightGroup(), it's just that but reversed
@@ -64,6 +68,8 @@ void ALightSwitch::DisableLightGroup_Implementation(bool bFromPowerBox){ //Check
             }
         }
     }
+
+    PlaySound(1.0f);
 }
 
 void ALightSwitch::BeginPlay(){
@@ -82,6 +88,14 @@ void ALightSwitch::BeginPlay(){
             Lights.Add(dynamic_cast<AHouseLight*>(tempArray[i]));
         }
     }
+}
+
+void ALightSwitch::PlaySound_Implementation(float Pitch)
+{
+    //Play sound
+    USoundBase* Sound = LoadObject<USoundBase>(NULL, TEXT("SoundCue'/Game/Audio/Lightswitch_Cue.Lightswitch_Cue'"));
+    UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, GetActorLocation(), FRotator(), 1, Pitch, 0, nullptr, nullptr, this);
+
 }
 
 void ALightSwitch::Tick(float DeltaTime){
