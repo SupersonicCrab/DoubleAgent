@@ -13,10 +13,6 @@ enum class ERadioEvent : uint8
 {
 	//Normal conversations
 	Radio_Chatter UMETA(DisplayName = "Chatter"),
-	//Radio operator calling for radio checkin
-    Radio_CheckInCall UMETA(DisplayName = "CheckInCall"),
-	//Guards with radio checking in
-    Radio_CheckInResponse UMETA(DisplayName = "CheckInResponse"),
 	//Broadcasting alert state and possible location
     Radio_Alert UMETA(DisplayName = "Alert"),
 	//Broadcasting engage state and possible location
@@ -29,8 +25,14 @@ struct FRadioEvent
 {
 	GENERATED_BODY()
 	
-	FRadioEvent();
-	FRadioEvent(ERadioEvent RadioEvent_, FVector Location_, float Delay_, AAICharacterBase_CHARACTER* NPC_);
+	FRadioEvent(){};
+	FRadioEvent(ERadioEvent RadioEvent_, FVector Location_, float Delay_, AAICharacterBase_CHARACTER* NPC_)
+	{
+		RadioEvent = RadioEvent_;
+		Location = Location_;
+		Delay = Delay_;
+		NPC = NPC_;
+	};
 	
 	//Type of event
 	ERadioEvent RadioEvent;

@@ -3,18 +3,6 @@
 
 #include "Radio.h"
 
-FRadioEvent::FRadioEvent()
-{
-}
-
-FRadioEvent::FRadioEvent(ERadioEvent RadioEvent_, FVector Location_, float Delay_, AAICharacterBase_CHARACTER* NPC_)
-{
-	RadioEvent = RadioEvent_;
-	Location = Location_;
-	Delay = Delay_;
-	NPC = NPC_;
-}
-
 // Sets default values
 ARadio::ARadio()
 {
