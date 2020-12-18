@@ -58,9 +58,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UArrowComponent* OpenDirection;
 
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	UFUNCTION(BlueprintCallable, NetMulticast, Reliable)
 	void OpenDoor(AActor* Interactor);
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
+	UFUNCTION(BlueprintCallable, NetMulticast, Reliable)
 	void CloseDoor(AActor* Interactor);
 	
 	//Whether or not the door is open
