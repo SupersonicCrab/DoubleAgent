@@ -4,24 +4,23 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/BTTaskNode.h"
-#include "DoubleAgent/AI/NPC/StaffAIController.h"
+#include "DoubleAgent/Radio.h"
 #include "UObject/ObjectMacros.h"
-#include "BTTask_Speak.generated.h"
+
+
+#include "BTTask_UseRadio.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class DOUBLEAGENT_API UBTTask_Speak : public UBTTaskNode
+class DOUBLEAGENT_API UBTTask_UseRadio : public UBTTaskNode
 {
 	GENERATED_BODY()
 
     UPROPERTY(EditAnywhere)
-    EVocalStatus NewVocalStatus;
-
-    UPROPERTY(EditAnywhere)
-    EActionStatus NewActionStatus;
-
+    ERadioEvent NewRadioEvent;
+    
 public:
     virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 };
