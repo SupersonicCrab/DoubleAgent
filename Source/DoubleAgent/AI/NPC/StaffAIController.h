@@ -31,6 +31,12 @@ enum class EActionStatus : uint8
     Action_Searching		UMETA(DisplayName = "Searching"),
 	//Searching the closest unreached search location
     Action_SearchInvestigation		UMETA(DisplayName = "SearchInvestigation"),
+	//Generic cleaning task
+	Action_Cleaning UMETA(DisplayName = "Cleaning"),
+	//Getting ammo from armory
+	Action_Restock UMETA(DisplayName = "Restocking"),
+	//Reloading
+	Action_Reloading UMETA(DisplayName = "Reloading"),
 };
 
 //A tracked player is any player that has been considered a threat

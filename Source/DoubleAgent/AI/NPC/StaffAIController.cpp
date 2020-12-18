@@ -52,6 +52,12 @@ void AStaffAIController::PlayerVisionTick(AActor* CurrentPlayer, FAIStimulus& Cu
     if (Blackboard->GetValueAsFloat("Detection") >= 40)
         Blackboard->SetValueAsBool("Suspicious", true);
 
+    //Set last player if there is no tracked player
+    if (!IsValid(Blackboard->GetValueAsObject("LastPlayer")))
+    {
+        Blackboard->SetValueAsObject("LastPlayer", CurrentPlayer);
+    }
+
     //If no players have been seen before
     if (Memory.Players.Num() == 0)
     {
@@ -157,11 +163,6 @@ void AStaffAIController::HandleRadioEvent(FRadioEvent RadioEvent)
 {
     switch (RadioEvent.RadioEvent)
     {
-        //Check in
-    case ERadioEvent::Radio_CheckInCall:
-        Blackboard->SetValueAsBool("CheckIn", true);
-        break;
-
         //Alert
     case ERadioEvent::Radio_Alert:
         Blackboard->SetValueAsVector("PlayerLastSeen", RadioEvent.Location);
@@ -410,16 +411,12 @@ bool AStaffAIController::HandleHearing(AActor* CurrentActor, FAIStimulus& Curren
     {
         //Noise
         if (CurrentStimulus.Tag == "Noise")
-        {
             Blackboard->SetValueAsVector("NoiseLocation", CurrentStimulus.StimulusLocation);
-        }
 
         //Movement
         else if (CurrentStimulus.Tag == "Movement" && Blackboard->GetValueAsFloat("Detection") < 90)
-        {
             Blackboard->SetValueAsVector("NoiseLocation", CurrentStimulus.StimulusLocation);
-        }
-
+            
         //Something was perceived
         return true;
     }
