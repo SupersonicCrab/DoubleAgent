@@ -18,6 +18,7 @@ AHouseLight::AHouseLight(){
 	Sphere = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
 	Sphere->SetupAttachment(RootComponent);
 	Sphere->SetVisibility(false);
+	Sphere->OnComponentBeginOverlap.AddDynamic(this, &AHouseLight::OnOverlapBegin);
 }
 
 // Called when the game starts or when spawned

@@ -42,35 +42,31 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Debug")
 	bool BCanBeSeen = true;
 
+	//How many sockets are visible from any given light
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Debug", Replicated)
 	EVisbilityLevel Visibility;
 
+	//Voice actor assigned to this character
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Default")
 	UDialogueVoice* Voice;
 	
-	//Override base function to add socket locations to raycast
-	UFUNCTION(BlueprintCallable)
-	virtual bool CanBeSeenFrom(const FVector& ObserverLocation, FVector& OutSeenLocation, int32& NumberOfLoSChecksPerformed, float& OutSightStrength, const AActor* IgnoreActor = nullptr) const override;
-
 	//Animation rpc
 	UFUNCTION(BlueprintCallable, NetMulticast, Reliable)
 	void NetPlayAnimation(UAnimSequence* AnimationSequence);
-
 	UFUNCTION(BlueprintCallable, NetMulticast, Reliable)
 	void NetResumeAnimation();
-
 	UFUNCTION(BlueprintCallable, NetMulticast, Reliable)
 	void NetPauseAnimation();
 
-	//Client only rpc
+	//Client only animation rpc
 	UFUNCTION(BlueprintCallable, NetMulticast, Reliable)
 	void NetPlayAnimationClient(UAnimSequence* AnimationSequence);
-
 	UFUNCTION(BlueprintCallable, NetMulticast, Reliable)
 	void NetStopAnimationClient();
 
 	//Base overrides
 	virtual void Tick(float DeltaSeconds) override;
-
 	virtual void GetLifetimeReplicatedProps(::TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+	UFUNCTION(BlueprintCallable)
+	virtual bool CanBeSeenFrom(const FVector& ObserverLocation, FVector& OutSeenLocation, int32& NumberOfLoSChecksPerformed, float& OutSightStrength, const AActor* IgnoreActor = nullptr) const override;
 };

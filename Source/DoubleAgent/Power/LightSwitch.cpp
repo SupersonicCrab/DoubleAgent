@@ -93,9 +93,8 @@ void ALightSwitch::BeginPlay(){
 void ALightSwitch::PlaySound_Implementation(float Pitch)
 {
     //Play sound
-    USoundBase* Sound = LoadObject<USoundBase>(NULL, TEXT("SoundCue'/Game/Audio/Lightswitch_Cue.Lightswitch_Cue'"));
+    USoundBase* Sound = LoadObject<USoundBase>(NULL, TEXT("SoundCue'/Game/Audio/SoundEffects/Lightswitch_Cue.uasset.Lightswitch_Cue'"));
     UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, GetActorLocation(), FRotator(), 1, Pitch, 0, nullptr, nullptr, this);
-
 }
 
 void ALightSwitch::Tick(float DeltaTime){
@@ -104,14 +103,6 @@ void ALightSwitch::Tick(float DeltaTime){
 
 void ALightSwitch::Interact_Implementation(AActor* Interactor){
     GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Magenta, FString::Printf(TEXT("Interacted, pog")));
-}
-
-
-template<typename T>
-void FindAllActors(UWorld* World, TArray<T>& Out){
-    for(TActorIterator<T> It(World); It; ++It){
-        Out.Add(*It);
-    }
 }
 
 void ALightSwitch::HandleAssociatedRoom_Implementation(){
