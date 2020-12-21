@@ -118,6 +118,34 @@ void AAIControllerBase::Tick(float DeltaTime)
     }
 }
 
+void AAIControllerBase::RaiseDetection(float NewDetection)
+{
+    //If new detection is greater than current
+    if (Blackboard->GetValueAsFloat("Detection") < NewDetection)
+    {
+        Blackboard->SetValueAsFloat("Detection", NewDetection);
+    }
+}
+
+void AAIControllerBase::RaiseVocalStatus(EVocalStatus NewVocalStatus)
+{
+    //If new vocal status is greater than current
+    if (static_cast<EVocalStatus>(Blackboard->GetValueAsEnum("VocalStatus")) < NewVocalStatus)
+    {
+        Blackboard->SetValueAsEnum("VocalStatus", static_cast<uint8>(NewVocalStatus));
+        //If cautious
+        if (NewVocalStatus == EVocalStatus::Vocal_Cautious)
+        {
+            RaiseDetection(40.0f);
+        }
+        //If greater than cautious
+        else if (NewVocalStatus > EVocalStatus::Vocal_Cautious)
+        {
+            RaiseDetection(90.0f);
+        }
+    }
+}
+
 void AAIControllerBase::HandleSightTick(AActor* CurrentActor, FAIStimulus& CurrentStimulus, float DeltaTime)
 {
     //NPC
@@ -143,16 +171,16 @@ void AAIControllerBase::NPCVisionTick(AActor* CurrentActor, FAIStimulus& Current
         Blackboard->SetValueAsObject("UnconsciousNPC", CurrentActor);
     }
 
-        //Speaker
+    //Speaker
     else if (IsValid(Blackboard->GetValueAsObject("Speaker")))
     {
         Blackboard->SetValueAsBool("CanSeeSpeaker", Blackboard->GetValueAsObject("Speaker") == CurrentActor);
     }
 
-        //Copy detection
+    //Copy detection
     else if (Blackboard->GetValueAsFloat("Detection") < 90 && OtherNPCBlackboard->GetValueAsFloat("Detection") >= 90)
     {
-        Blackboard->SetValueAsFloat("Detection", 90);
+        RaiseDetection(90.0f);
     }
 }
 

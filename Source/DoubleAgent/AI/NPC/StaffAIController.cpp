@@ -207,34 +207,6 @@ void AStaffAIController::MarkSearchLocationSearched(ASearchLocation* SearchLocat
     }
 }
 
-void AStaffAIController::RaiseDetection(float NewDetection)
-{
-    //If new detection is greater than current
-    if (Blackboard->GetValueAsFloat("Detection") < NewDetection)
-    {
-        Blackboard->SetValueAsFloat("Detection", NewDetection);
-    }
-}
-
-void AStaffAIController::RaiseVocalStatus(EVocalStatus NewVocalStatus)
-{
-    //If new vocal status is greater than current
-    if (static_cast<EVocalStatus>(Blackboard->GetValueAsEnum("VocalStatus")) < NewVocalStatus)
-    {
-        Blackboard->SetValueAsEnum("VocalStatus", static_cast<uint8>(NewVocalStatus));
-        //If cautious
-        if (NewVocalStatus == EVocalStatus::Vocal_Cautious)
-        {
-            RaiseDetection(40);
-        }
-            //If greater than cautious
-        else if (NewVocalStatus > EVocalStatus::Vocal_Cautious)
-        {
-            RaiseDetection(90);
-        }
-    }
-}
-
 void AStaffAIController::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
@@ -327,14 +299,19 @@ void AStaffAIController::NPCVisionTick(AActor* CurrentActor, FAIStimulus& Curren
     Super::NPCVisionTick(CurrentActor, CurrentStimulus);
 
     UBlackboardComponent* OtherNPCBlackboard = Cast<AAIController>(Cast<APawn>(CurrentActor)->GetController())->GetBlackboardComponent();
+    AAIController* OtherNPCController = Cast<AAIController>(Cast<APawn>(CurrentActor)->GetController());
 
+    //If NPC is unconscious there is no more information to gather
+    if (!OtherNPCController->BrainComponent->IsRunning())
+        return;
+    
     //Get player last seen if set
     if (!Blackboard->IsVectorValueSet("PlayerLastSeen") && OtherNPCBlackboard->IsVectorValueSet("PlayerLastSeen"))
     {
         Blackboard->SetValueAsVector("PlayerLastSeen", OtherNPCBlackboard->GetValueAsVector("PlayerLastSeen"));
     }
 
-    //Disable backup if not sets
+    //Disable backup if not set
     else if (Blackboard->GetValueAsBool("BackupAvailable") && !OtherNPCBlackboard->GetValueAsBool("BackupAvailable"))
     {
         Blackboard->SetValueAsBool("BackupAvailable", false);
@@ -343,9 +320,10 @@ void AStaffAIController::NPCVisionTick(AActor* CurrentActor, FAIStimulus& Curren
     //Inherit vocal status if higher
     else if (Blackboard->GetValueAsEnum("VocalStatus") < OtherNPCBlackboard->GetValueAsEnum("VocalStatus"))
     {
-        Blackboard->SetValueAsEnum("VocalStatus", OtherNPCBlackboard->GetValueAsEnum("VocalStatus"));
+        RaiseVocalStatus(static_cast<EVocalStatus>(OtherNPCBlackboard->GetValueAsEnum("VocalStatus")));
     }
 
+    //If NPC is staff
     if (Cast<AStaffAIController>(Cast<APawn>(CurrentActor)->GetController()) != nullptr)
         StaffVisionTick(CurrentActor, CurrentStimulus);
 }
@@ -356,8 +334,7 @@ void AStaffAIController::StaffVisionTick(AActor* CurrentActor, FAIStimulus& Curr
     EActionStatus ActionStatus = static_cast<EActionStatus>(Blackboard->GetValueAsEnum("ActionStatus"));
 
     //If action status is not idle and both staffAI are performing the same action
-    if (ActionStatus != EActionStatus::Action_Idle && static_cast<EActionStatus>(OtherNPCBlackboard->
-        GetValueAsEnum("ActionStatus")) == ActionStatus)
+    if (ActionStatus != EActionStatus::Action_Idle && static_cast<EActionStatus>(OtherNPCBlackboard->GetValueAsEnum("ActionStatus")) == ActionStatus)
     {
         //If both staff is going to turn back on the same light switch
         if (ActionStatus == EActionStatus::Action_LightSwitch && Blackboard->GetValueAsObject("LightSwitch") == OtherNPCBlackboard->GetValueAsObject("LightSwitch"))

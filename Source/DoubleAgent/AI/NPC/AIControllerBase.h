@@ -96,4 +96,10 @@ public:
 
     //Perception component
     UAIPerceptionComponent* PerceptionComponent;
+
+    //Helper Functions
+    UFUNCTION(BlueprintCallable)
+    void RaiseDetection(float NewDetection);
+    UFUNCTION(BlueprintCallable)
+    void RaiseVocalStatus(EVocalStatus NewVocalStatus);
 };

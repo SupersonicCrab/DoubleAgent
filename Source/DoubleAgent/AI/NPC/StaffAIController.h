@@ -124,8 +124,4 @@ public:
 	//Helper functions
 	UFUNCTION(BlueprintCallable)
 	void MarkSearchLocationSearched(ASearchLocation* SearchLocation);
-	UFUNCTION(BlueprintCallable)
-	void RaiseDetection(float NewDetection);
-	UFUNCTION(BlueprintCallable)
-	void RaiseVocalStatus(EVocalStatus NewVocalStatus);
 };

@@ -20,7 +20,7 @@ enum class ERadioEvent : uint8
 };
 
 
-USTRUCT()
+USTRUCT(BlueprintType, meta = (ToolTip = "Structure of radio event"))
 struct FRadioEvent
 {
 	GENERATED_BODY()
@@ -35,13 +35,14 @@ struct FRadioEvent
 	};
 	
 	//Type of event
+	UPROPERTY(EditAnywhere)
 	ERadioEvent RadioEvent;
 	//Important location if any
 	FVector Location;
 	//Delay used for speech
-	float Delay;
+	float Delay = 1.0f;
 	//Character that sent the event
-	AAICharacterBase_CHARACTER* NPC;
+	AAICharacterBase_CHARACTER* NPC = nullptr;
 };
 
 UCLASS()
@@ -51,14 +52,5 @@ class DOUBLEAGENT_API ARadio : public AActor
 	
 public:	
 	// Sets default values for this actor's properties
-	ARadio();
-
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
+	ARadio(){};
 };
