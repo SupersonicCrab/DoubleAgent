@@ -82,11 +82,12 @@ void ABaseCharacter_CHARACTER::Tick(float DeltaSeconds)
             //Iterate through all sockets
             for (int a = 0; a < Sockets.Num(); a++)
             {
-                //Special socket scoring
                 int VisibilityIncrease = 1;
-                if (a == 0)
+                
+                //Special socket scoring
+                if (Sockets[a] == "spineSocket")
                     VisibilityIncrease = 2;
-                if (a == 1)
+                if (Sockets[a] == "headSocket")
                     VisibilityIncrease = 3;
 
                 //Raycast from light to sockets
@@ -106,13 +107,11 @@ void ABaseCharacter_CHARACTER::Tick(float DeltaSeconds)
                     else if (Temp == EVisbilityLevel::Visibility_None)
                         Temp = EVisbilityLevel::Visibility_1;
                 }
-                //Clamp if needed
-                if (Temp > EVisbilityLevel::Visibility_6)
-                    Temp = EVisbilityLevel::Visibility_6;
-                
-                //Break loop if visibility is already zero
-                if (Temp == EVisbilityLevel::Visibility_6)
+
+                //Break loop if visibility is already 6
+                if (Temp >= EVisbilityLevel::Visibility_6)
                 {
+                    Temp = EVisbilityLevel::Visibility_6;
                     i = Lights.Num();
                     break;
                 }

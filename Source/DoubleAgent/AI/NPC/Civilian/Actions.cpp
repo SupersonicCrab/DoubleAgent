@@ -34,7 +34,7 @@ bool CowerAnimation::PerformAction(AFSMController* Controller)
     
     //Update blackboard
     UBlackboardComponent* Blackboard = Controller->GetBlackboardComponent();
-    Blackboard->SetValueAsFloat("Detection", 100);
+    Controller->RaiseDetection(100.0f);
     Blackboard->ClearValue("LoudNoiseLocation");
 
     //Load animation
