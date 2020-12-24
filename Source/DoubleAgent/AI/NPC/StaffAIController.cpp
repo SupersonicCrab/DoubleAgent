@@ -8,6 +8,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Perception/AIPerceptionComponent.h"
 #include "NavigationSystem.h"
+#include "Engine/EngineTypes.h"
 
 void AStaffAIController::HandleSightTick(AActor* CurrentActor, FAIStimulus& CurrentStimulus, float DeltaTime)
 {
@@ -386,6 +387,14 @@ bool AStaffAIController::HandleHearing(AActor* CurrentActor, FAIStimulus& Curren
 {
     if (Super::HandleHearing(CurrentActor, CurrentStimulus))
     {
+        //UObject* UnconsciousNPC = Cast<AAIController>(Cast<APawn>(CurrentActor)->GetController())->GetBlackboardComponent()->GetValueAsObject("UnconsciousNPC");
+        if (CurrentStimulus.Tag == "Speech")
+        {
+            UObject* UnconsciousNPC = Cast<AAIControllerBase>(Cast<AAICharacterBase_CHARACTER>(CurrentActor)->GetController())->GetBlackboardComponent()->GetValueAsObject("UnconsciousNPC");
+            if (UnconsciousNPC != nullptr)
+                Blackboard->SetValueAsObject("UnconsciousNPC", UnconsciousNPC);           
+        }
+        
         //Noise
         if (CurrentStimulus.Tag == "Noise")
             Blackboard->SetValueAsVector("NoiseLocation", CurrentStimulus.StimulusLocation);

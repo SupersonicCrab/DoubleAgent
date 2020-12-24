@@ -169,6 +169,7 @@ void AAIControllerBase::NPCVisionTick(AActor* CurrentActor, FAIStimulus& Current
     else if (UnconsciousNPC == NULL && !Cast<AAIControllerBase>(Cast<AAICharacterBase_CHARACTER>(CurrentActor)->GetController())->BrainComponent->IsRunning())
     {
         Blackboard->SetValueAsObject("UnconsciousNPC", CurrentActor);
+        RaiseDetection(90.0f);
     }
 
     //Speaker
@@ -194,8 +195,11 @@ bool AAIControllerBase::HandleHearing(AActor* CurrentActor, FAIStimulus& Current
     if (!Path->IsPartial())
     {
         //Speaker
-        if (CurrentStimulus.Tag == "Speaker")
+        if (CurrentStimulus.Tag == "Speech")
+        {
             Blackboard->SetValueAsObject("Speaker", CurrentActor);
+            RaiseVocalStatus(static_cast<EVocalStatus>(Cast<AAIController>(Cast<APawn>(CurrentActor)->GetController())->GetBlackboardComponent()->GetValueAsEnum("VocalStatus")));
+        }
 
         //LoudNoise
         else if (CurrentStimulus.Tag == "LoudNoise")
