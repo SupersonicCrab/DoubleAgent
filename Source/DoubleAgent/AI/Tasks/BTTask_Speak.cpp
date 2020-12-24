@@ -11,8 +11,8 @@ EBTNodeResult::Type UBTTask_Speak::ExecuteTask(UBehaviorTreeComponent& OwnerComp
     APawn* NPC = Cast<AAIController>(OwnerComp.GetOwner())->GetPawn();
     UBlackboardComponent* Blackboard = OwnerComp.GetBlackboardComponent();
 
-    //Register noise event
-    UAISense_Hearing::ReportNoiseEvent(GetWorld(), NPC->GetActorLocation(), 1, NPC, 0, FName("Local"));
+    //Register speech event
+    UAISense_Hearing::ReportNoiseEvent(GetWorld(), NPC->GetActorLocation(), 1, NPC, 0, FName("Speech"));
 
     //Raise vocal status
     Cast<AStaffAIController>(OwnerComp.GetOwner())->RaiseVocalStatus(NewVocalStatus);
