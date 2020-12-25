@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "BehaviorTree/BTTaskNode.h"
 #include "UObject/ObjectMacros.h"
-#include "UBTTask_ChangeSpeed.generated.h"
+#include "BTTask_ChangeSpeed.generated.h"
 
 UENUM()
 enum class EMoveSpeed : uint8

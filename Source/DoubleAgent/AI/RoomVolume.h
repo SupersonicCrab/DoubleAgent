@@ -45,19 +45,16 @@ public:
 	
 	//Variables
 	UPROPERTY(BlueprintReadWrite, Category = "Default", EditAnywhere = "True")
-	bool bPlayerSafe;
+	bool bPublic;
 	
 	UPROPERTY(BlueprintReadWrite, Category = "Default", EditAnywhere = "True")
-	bool bRoomLit = true;
+	bool bLit = true;
 	
-	UPROPERTY(BlueprintReadWrite, Category = "Default")
+	UPROPERTY(BlueprintReadWrite, Category = "Default", EditAnywhere)
 	ALightSwitch* LightSwitch = nullptr;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Default", EditAnywhere = "True")
 	ERoomType ERoomType;
-
-	UPROPERTY()
-	bool lit;
 
 	UPROPERTY(BlueprintReadWrite, Category = "Default")
 	TArray<ASearchLocation*> SearchLocations;

@@ -31,7 +31,7 @@ void ARoomVolume::OnOverlapBegin(AActor* OverlappedActor, AActor* OtherActor)
 	//Update player
 	if (OtherActor->IsA(APlayer_Character::StaticClass()))
 	{
-		Cast<APlayer_Character>(OtherActor)->bRoomSafe = bPlayerSafe;
+		Cast<APlayer_Character>(OtherActor)->bRoomSafe = bPublic;
 	}
 
 	//Update NPC
@@ -67,7 +67,7 @@ void ARoomVolume::UpdateOverlappingActors()
 		//Update player
 		if (Actors[a]->IsA(APlayer_Character::StaticClass()))
 		{
-			Cast<APlayer_Character>(Actors[a])->bRoomSafe = bPlayerSafe;
+			Cast<APlayer_Character>(Actors[a])->bRoomSafe = bPublic;
 		}
 
 		//Update NPC
@@ -79,7 +79,7 @@ void ARoomVolume::UpdateOverlappingActors()
 }
 
 void ARoomVolume::UpdateLight(bool bRoomLit_){
-	bRoomLit = bRoomLit_;
+	bLit = bRoomLit_;
 	UpdateOverlappingActors();
 }
 
@@ -88,7 +88,7 @@ void ARoomVolume::UpdateNPC(AActor* NPC)
 	//Get NPC blackboard
 	UBlackboardComponent* NPCBlackboard = UAIBlueprintHelperLibrary::GetBlackboard(NPC);
 
-	if (bRoomLit)
+	if (bLit)
 	{
 		//Removing light switch from NPC if room is now lit
 		ALightSwitch* NPCLightSwitch = Cast<ALightSwitch>(NPCBlackboard->GetValueAsObject("LightSwitch"));
