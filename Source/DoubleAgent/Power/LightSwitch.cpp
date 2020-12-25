@@ -1,27 +1,17 @@
 // Please don't steal
 
-
 #include "LightSwitch.h"
-#include "HouseLight.h"
 #include "../AI/RoomVolume.h"
 #include "DoubleAgent/AI/AICharacterBase_CHARACTER.h"
+#include "HouseLight/HouseLightBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 #include "Sound/SoundCue.h"
-
 
 // Sets default values
 ALightSwitch::ALightSwitch(){
     //Allow replication
     bReplicates = true;
-}
-
-void ALightSwitch::MulticastEnableLights_Implementation(AHouseLight* Light){
-    Light->TurnOn();
-}
-
-void ALightSwitch::MulticastDisableLights_Implementation(AHouseLight* Light){
-    Light->TurnOff();
 }
 
 void ALightSwitch::RestoreLights_Implementation(){
@@ -33,85 +23,88 @@ void ALightSwitch::RestoreLights_Implementation(){
 }
 
 void ALightSwitch::EnableLightGroup_Implementation(){
-    TArray<AActor*> overlapping; //Stores NPCs that are within the light collision
     for(auto Light: Lights){ //Loops through all the lights in the light group and turn them on
-        MulticastEnableLights(Light);
+        Light->TurnOn();
     }
     bLightGroupOn = true;
     AssociatedRoom->UpdateLight(true); //Update the rooms understanding of the light
-    for(auto Light: Lights){ //For every light
-        Light->Sphere->GetOverlappingActors(overlapping, AAICharacterBase_CHARACTER::StaticClass()); //Check for any overlapping actors of type ABaseCharacter_CHARACTER
-        for(auto NPC: overlapping){ //For every NPC we overlap
-            if(AssociatedRoom->IsOverlappingActor(NPC)){ //Check if the room is overlapping the actor
-                Light->CheckNPC(NPC); //Call the light NPC check
-            }
-        }
-    }
-
-   PlaySound(0.9f);
+    MulticastPlaySound(0.9f);
 }
 
 void ALightSwitch::DisableLightGroup_Implementation(bool bFromPowerBox){ //Check comments for EnableLightGroup(), it's just that but reversed
-    TArray<AActor*> overlapping;
     for(auto Light: Lights){
-        MulticastDisableLights(Light);
+        Light->TurnOff();
     }
     if(!bFromPowerBox){
         bLightGroupOn = false;
     }
     AssociatedRoom->UpdateLight(false);
-    for(auto Light: Lights){
-        Light->Sphere->GetOverlappingActors(overlapping, AAICharacterBase_CHARACTER::StaticClass());
-        for(auto NPC: overlapping){
-            if(AssociatedRoom->IsOverlappingActor(NPC)){
-                Light->CheckNPC(NPC);
-            }
-        }
-    }
-
-    PlaySound(1.0f);
+    MulticastPlaySound(1.0f);
 }
 
 void ALightSwitch::BeginPlay(){
     Super::BeginPlay();
-    FTimerHandle DelayHandle;
-    GetWorld()->GetTimerManager().SetTimer(DelayHandle, this, &ALightSwitch::HandleAssociatedRoom, 2.0f, false);
-    TArray<AActor*> tempArray;
-    UWorld* world = GetWorld();
-    
-    PowerBox = dynamic_cast<APowerBox*>(UGameplayStatics::GetActorOfClass(world, APowerBox::StaticClass()));
-    bPowerOn = PowerBox->bLightsOn;
-    UGameplayStatics::GetAllActorsOfClass(world, AHouseLight::StaticClass(), tempArray);
-    
-    for(int i = 0; i < tempArray.Num(); i++){
-        if(dynamic_cast<AHouseLight*>(tempArray[i])->LightGroup == LightGroup){
-            Lights.Add(dynamic_cast<AHouseLight*>(tempArray[i]));
-        }
-    }
+
+    //Update room volume of lightswitch
+    AssociatedRoom->LightSwitch = this;
+
+    //Update power box of light status
+    dynamic_cast<APowerBox*>(UGameplayStatics::GetActorOfClass(GetWorld(), APowerBox::StaticClass()))->bLightsOn;
 }
 
-void ALightSwitch::PlaySound_Implementation(float Pitch)
+void ALightSwitch::MulticastPlaySound_Implementation(float Pitch)
 {
     //Play sound
     USoundBase* Sound = LoadObject<USoundBase>(NULL, TEXT("SoundCue'/Game/Audio/SoundEffects/Lightswitch_Cue.uasset.Lightswitch_Cue'"));
     UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, GetActorLocation(), FRotator(), 1, Pitch, 0, nullptr, nullptr, this);
 }
 
-void ALightSwitch::Tick(float DeltaTime){
-    
-}
+void ALightSwitch::FindRoomAndLights()
+{
+    TArray<FOverlapResult> Results;
 
-void ALightSwitch::Interact_Implementation(AActor* Interactor){
-    GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Magenta, FString::Printf(TEXT("Interacted, pog")));
-}
+    //Find room if needed
+    if (AssociatedRoom == nullptr)
+    {
+        //Get camera collisions around light switch
+        GetWorld()->OverlapMultiByChannel(Results, GetActorLocation(),   FQuat(GetActorRotation()), ECollisionChannel::ECC_Camera, FCollisionShape::MakeSphere(10.0f), FCollisionQueryParams());
 
-void ALightSwitch::HandleAssociatedRoom_Implementation(){
-    AssociatedRoom->LightSwitch = this;
-    for(auto Light : Lights){
-        Light->Room = AssociatedRoom;
+        //Iterate through results
+        for (int i = 0; i < Results.Num(); i++)
+        {
+            ARoomVolume* temp = Cast<ARoomVolume>(Results[i].Actor);
+            if (temp != nullptr)
+            {
+                AssociatedRoom = temp;
+                break;
+            }
+        }
+
+        //If no room was found
+        if (AssociatedRoom == nullptr)
+            return;
     }
-}
-//Needed to replicate the light array
-void ALightSwitch::GetLifetimeReplicatedProps( TArray< FLifetimeProperty > & OutLifetimeProps ) const{ 
-    DOREPLIFETIME( ALightSwitch, Lights); 
+    
+    //Find any lights in that room
+    TArray<AActor*> AllLights;
+    UGameplayStatics::GetAllActorsOfClass(GetWorld(), AHouseLightBase::StaticClass(), AllLights);
+
+    //Iterate through all lights
+    for (int i = 0; i < AllLights.Num(); i++)
+    {
+        Results.Empty();
+        //Get camera collisions near lights
+        GetWorld()->OverlapMultiByChannel(Results, AllLights[i]->GetActorLocation(),   FQuat(AllLights[i]->GetActorRotation()), ECollisionChannel::ECC_Camera, FCollisionShape::MakeSphere(10.0f), FCollisionQueryParams());
+
+        //Iterate through results
+        for (int a = 0; a < Results.Num(); a++)
+        {
+            AHouseLightBase* temp = Cast<AHouseLightBase>(AllLights[i]);
+            if (Results[a].Actor == AssociatedRoom && Lights.Find(temp) == -1)
+            {
+                Lights.Add(temp);
+                break;
+            }
+        }
+    }
 }

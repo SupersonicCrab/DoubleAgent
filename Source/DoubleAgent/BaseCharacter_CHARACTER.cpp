@@ -5,7 +5,7 @@
 #include "Animation/AnimInstance.h"
 #include "Engine/SkeletalMeshSocket.h"
 #include "Kismet/KismetSystemLibrary.h"
-#include "Power/HouseLight.h"
+#include "Power/HouseLight/HouseLightBase.h"
 
 // Sets default values
 ABaseCharacter_CHARACTER::ABaseCharacter_CHARACTER()
@@ -73,7 +73,7 @@ void ABaseCharacter_CHARACTER::Tick(float DeltaSeconds)
     {
         //Get all overlapping lights
         TArray<AActor*> Lights;
-        GetOverlappingActors(Lights, AHouseLight::StaticClass());
+        GetOverlappingActors(Lights, AHouseLightBase::StaticClass());
 
         EVisbilityLevel Temp = EVisbilityLevel::Visibility_None;
 
@@ -96,13 +96,13 @@ void ABaseCharacter_CHARACTER::Tick(float DeltaSeconds)
                 GetWorld()->LineTraceSingleByChannel(SocketHitResult, Lights[i]->GetActorLocation(), GetMesh()->GetSocketLocation(Sockets[a]), ECollisionChannel::ECC_Visibility, FCollisionQueryParams(FName(TEXT("SocketLineOfSight")), true, Lights[i]));
 
                 //Save light cast
-                AHouseLight* Light = Cast<AHouseLight>(Lights[i]);
+                AHouseLightBase* Light = Cast<AHouseLightBase>(Lights[i]);
 
                 //If light was on and socket was hit
                 if (Light->Light->GetVisibleFlag() && SocketHitResult.Actor == this)
                 {
                     //If socket is within attenuation radius
-                    if (Lights[i]->GetDistanceTo(this) <= Light->Light->AttenuationRadius)
+                    if (Lights[i]->GetDistanceTo(this) <= Light->Light->GetBoundingSphere().W)
                         Temp = static_cast<EVisbilityLevel>(static_cast<uint8>(Temp) + VisibilityIncrease);
                     //If socket is just within sphere overlap
                     else if (Temp == EVisbilityLevel::Visibility_None)
