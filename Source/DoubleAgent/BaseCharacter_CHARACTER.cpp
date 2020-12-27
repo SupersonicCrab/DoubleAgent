@@ -3,9 +3,10 @@
 
 #include "BaseCharacter_CHARACTER.h"
 #include "Animation/AnimInstance.h"
+#include "Components/LightComponent.h"
 #include "Engine/SkeletalMeshSocket.h"
 #include "Kismet/KismetSystemLibrary.h"
-#include "Power/HouseLight/HouseLightBase.h"
+#include "Power/HouseLight.h"
 
 // Sets default values
 ABaseCharacter_CHARACTER::ABaseCharacter_CHARACTER()
@@ -73,7 +74,7 @@ void ABaseCharacter_CHARACTER::Tick(float DeltaSeconds)
     {
         //Get all overlapping lights
         TArray<AActor*> Lights;
-        GetOverlappingActors(Lights, AHouseLightBase::StaticClass());
+        GetOverlappingActors(Lights, AHouseLight::StaticClass());
 
         EVisbilityLevel Temp = EVisbilityLevel::Visibility_None;
 
@@ -91,12 +92,12 @@ void ABaseCharacter_CHARACTER::Tick(float DeltaSeconds)
                 if (Sockets[a] == "headSocket")
                     VisibilityIncrease = 3;
 
+                //Save light cast
+                AHouseLight* Light = Cast<AHouseLight>(Lights[i]);
+                
                 //Raycast from light to sockets
                 FHitResult SocketHitResult;
-                GetWorld()->LineTraceSingleByChannel(SocketHitResult, Lights[i]->GetActorLocation(), GetMesh()->GetSocketLocation(Sockets[a]), ECollisionChannel::ECC_Visibility, FCollisionQueryParams(FName(TEXT("SocketLineOfSight")), true, Lights[i]));
-
-                //Save light cast
-                AHouseLightBase* Light = Cast<AHouseLightBase>(Lights[i]);
+                GetWorld()->LineTraceSingleByChannel(SocketHitResult, Light->Light->GetComponentLocation(), GetMesh()->GetSocketLocation(Sockets[a]), ECollisionChannel::ECC_Visibility, FCollisionQueryParams(FName(TEXT("SocketLineOfSight")), true, Light));
 
                 //If light was on and socket was hit
                 if (Light->Light->GetVisibleFlag() && SocketHitResult.Actor == this)
