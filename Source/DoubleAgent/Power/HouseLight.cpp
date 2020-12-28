@@ -4,11 +4,13 @@
 #include "Components/PointLightComponent.h"
 #include "Components/RectLightComponent.h"
 #include "Components/SpotLightComponent.h"
+#include "Engine/EngineTypes.h"
 
 // Sets default values
 AHouseLight::AHouseLight()
 {
 	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));;
+	RootComponent->SetMobility(EComponentMobility::Stationary);
 	
 	//Setup sphere
 	Sphere = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
@@ -86,12 +88,15 @@ void AHouseLight::UpdateLight()
 				Light = NewObject<UPointLightComponent>(this, UPointLightComponent::StaticClass());
 				Light->RegisterComponent();
 				Light->AttachToComponent(RootComponent, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
-				Light->SetMobility(EComponentMobility::Stationary);
 				UPointLightComponent* PointLight = Cast<UPointLightComponent>(Light);
 				PointLight->Intensity = 2.0f;
 				PointLight->AttenuationRadius = 700.0f;
 				PointLight->bUseInverseSquaredFalloff = false;
 				PointLight->LightFalloffExponent = 1.0;
+				PointLight->LightmassSettings.ShadowExponent = 1.0f;
+				PointLight->IndirectLightingIntensity = 6.0f;
+				PointLight->VolumetricScatteringIntensity = 4.0f;
+				Light->SetMobility(EComponentMobility::Stationary);
 			}
 		break;
 		case ELightType::Light_Rect:
@@ -99,7 +104,6 @@ void AHouseLight::UpdateLight()
 				Light = NewObject<URectLightComponent>(this, URectLightComponent::StaticClass());
 				Light->RegisterComponent();
 				Light->AttachToComponent(RootComponent, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
-				Light->SetMobility(EComponentMobility::Stationary);
 				if (MeshType != ELightMesh::Mesh_Wall)
 				{
 					Light->SetRelativeRotation(FRotator(-90, 0, 0), false);
@@ -110,6 +114,10 @@ void AHouseLight::UpdateLight()
 				RectLight->AttenuationRadius = 750.0f;
 				RectLight->SourceWidth = RectLight->SourceHeight = 100.0f;
 				RectLight->BarnDoorAngle = RectLight->BarnDoorLength = 0.0f;
+				RectLight->LightmassSettings.ShadowExponent = 1.0f;
+				RectLight->IndirectLightingIntensity = 6.0f;
+				RectLight->VolumetricScatteringIntensity = 4.0f;
+				Light->SetMobility(EComponentMobility::Stationary);
 			}
 		break;
 		case ELightType::Light_Spot:
@@ -117,16 +125,19 @@ void AHouseLight::UpdateLight()
 				Light = NewObject<USpotLightComponent>(this, USpotLightComponent::StaticClass());
 				Light->RegisterComponent();
 				Light->AttachToComponent(RootComponent, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
-				Light->SetMobility(EComponentMobility::Stationary);
 				if (MeshType != ELightMesh::Mesh_Wall)
 					Light->SetRelativeRotation(FRotator(-90, 0, 0), false);
 				USpotLightComponent* SpotLight = Cast<USpotLightComponent>(Light);
 				SpotLight->Intensity = 3.0;
 				SpotLight->AttenuationRadius = 700.0f;
-				SpotLight->InnerConeAngle = 80.0f;
+				SpotLight->InnerConeAngle = 60.0f;
 				SpotLight->OuterConeAngle = 90.0f;
 				SpotLight->bUseInverseSquaredFalloff = false;
 				SpotLight->LightFalloffExponent = 1.0;
+				SpotLight->LightmassSettings.ShadowExponent = 1.0f;
+				SpotLight->IndirectLightingIntensity = 6.0f;
+				SpotLight->VolumetricScatteringIntensity = 4.0f;
+				Light->SetMobility(EComponentMobility::Stationary);
 			}
 		break;
 	}
