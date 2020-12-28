@@ -8,16 +8,25 @@
 #include "HouseLight.generated.h"
 
 UENUM()
-enum class ELightType : uint8
+enum class ELightMesh : uint8
 {
 	//Should be used in large rooms on the ceiling
-	Light_Ceiling_Large UMETA(DisplayName="LightCeilingLarge"),
-	//Spotlight variant of large light
-	Light_Ceiling_Large_Spotlight UMETA(DisplayName="LightCeilingLargeSpot"),
+	Mesh_Ceiling_Large UMETA(DisplayName="Large ceiling"),
     //Should be used on the ceiling
-    Light_Ceiling UMETA(DisplayName="LightCeiling"),
+    Mesh_Ceiling UMETA(DisplayName="Ceiling"),
     //Should be used on wall
-    Light_Wall UMETA(DisplayName="LightWall"),
+    Mesh_Wall UMETA(DisplayName="Wall"),
+};
+
+UENUM()
+enum class ELightType : uint8
+{
+	//Good overall coverage
+	Light_Point UMETA(DisplayName="Point"),
+	//Space efficient
+	Light_Spot UMETA(DisplayName="Spot"),
+	//One direction
+	Light_Rect UMETA(DisplayName="Rectangle"),
 };
 
 UCLASS()
@@ -31,11 +40,12 @@ public:
 	//Light component
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	ULightComponent* Light;
-	
+
+	//Static mesh
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UStaticMeshComponent* StaticMesh;
-	//Sphere overlap component
 	
+	//Sphere overlap component
 	UPROPERTY(EditAnywhere)
 	USphereComponent* Sphere;
 	
@@ -43,10 +53,10 @@ public:
 	float BoundaryMultiplier = 1.1f;
 
 	UFUNCTION(CallInEditor)
-	void SetupSphere();
+	void UpdateSphere();
 
 	UFUNCTION(CallInEditor)
-	void ChangeLight();
+	void UpdateLight();
 	
 	UFUNCTION(NetMulticast, Reliable)
     void TurnOff();
@@ -56,6 +66,9 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	ELightType LightType;
+
+	UPROPERTY(EditAnywhere)
+	ELightMesh MeshType;
 	
 protected:
 	// Called when the game starts or when spawned

@@ -94,6 +94,10 @@ void ABaseCharacter_CHARACTER::Tick(float DeltaSeconds)
 
                 //Save light cast
                 AHouseLight* Light = Cast<AHouseLight>(Lights[i]);
+
+                //Error checking
+                if (Light->Light == nullptr)
+                    continue;
                 
                 //Raycast from light to sockets
                 FHitResult SocketHitResult;
@@ -161,4 +165,3 @@ void ABaseCharacter_CHARACTER::NetPlayAnimation_Implementation(UAnimSequence* An
     //Play montage with default parameters
     GetMesh()->GetAnimInstance()->PlaySlotAnimationAsDynamicMontage(AnimationSequence, "DefaultSlot");
 }
-
