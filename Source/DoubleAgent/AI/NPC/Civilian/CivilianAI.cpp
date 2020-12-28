@@ -1,7 +1,7 @@
 // Please don't steal
 
 #include "CivilianAI.h"
-#include "States.h"
+#include "DoubleAgent/AI/NPC/FSM/GeneralStates.h"
 
 ACivilianAI::ACivilianAI()
 {

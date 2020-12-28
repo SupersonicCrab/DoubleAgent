@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "DoubleAgent/AI/NPC/FSM.h"
+#include "DoubleAgent/AI/NPC/FSM/FSM.h"
 #include "CivilianAI.generated.h"
 
 

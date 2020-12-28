@@ -2,8 +2,7 @@
 
 #pragma once
 
-#include "Actions.h"
-#include "DoubleAgent/AI/NPC/FSM.h"
+#include "GeneralActions.h"
 
 class Despawn : public FSMState
 {

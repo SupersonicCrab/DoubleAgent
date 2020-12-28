@@ -1,7 +1,7 @@
 ﻿// Please don't steal
 
-#include "States.h"
-#include "Actions.h"
+#include "GeneralStates.h"
+#include "GeneralActions.h"
 #include "Animation/AnimInstance.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "GameFramework/Character.h"

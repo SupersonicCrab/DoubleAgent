@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "AIControllerBase.h"
+#include "DoubleAgent/AI/NPC/AIControllerBase.h"
 #include "EnvironmentQuery/EnvQuery.h"
 #include "FSM.generated.h"
 

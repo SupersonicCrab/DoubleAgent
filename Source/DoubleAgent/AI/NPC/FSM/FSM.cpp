@@ -1,5 +1,6 @@
-﻿#include "FSM.h"
+﻿// Please don't steal
 
+#include "FSM.h"
 #include "EnvironmentQuery/EnvQueryManager.h"
 
 FSMState::~FSMState()
