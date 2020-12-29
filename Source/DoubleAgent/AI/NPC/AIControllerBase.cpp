@@ -8,6 +8,7 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "DoubleAgent/AI/AICharacterBase_CHARACTER.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 AAIControllerBase::AAIControllerBase()
 {
@@ -56,7 +57,7 @@ void AAIControllerBase::OnPossess(APawn* InPawn)
 }
 
 void AAIControllerBase::OnPerceptionUpdated(const TArray<AActor*>& DetectedActors)
-{
+{   
     if (!BPerceptionEnabled)
         return;
     
@@ -110,7 +111,7 @@ void AAIControllerBase::Tick(float DeltaTime)
         //Iterate through all senses
         for (int i = 0; i < Stimuli.Num(); i++)
         {
-            if (Stimuli[i].GetAge() == 0 && Stimuli[i].Type.Name == "Default__AISense_Sight")
+            if (Stimuli[i].GetAge() == 0 && Stimuli[i].IsActive() && Stimuli[i].Type.Name == "Default__AISense_Sight")
             {
                 HandleSightTick(DetectedActors[a], Stimuli[i], DeltaTime);
             }
@@ -170,12 +171,6 @@ void AAIControllerBase::NPCVisionTick(AActor* CurrentActor, FAIStimulus& Current
     {
         Blackboard->SetValueAsObject("UnconsciousNPC", CurrentActor);
         RaiseDetection(90.0f);
-    }
-
-    //Speaker
-    else if (IsValid(Blackboard->GetValueAsObject("Speaker")))
-    {
-        Blackboard->SetValueAsBool("CanSeeSpeaker", Blackboard->GetValueAsObject("Speaker") == CurrentActor);
     }
 
     //Copy detection

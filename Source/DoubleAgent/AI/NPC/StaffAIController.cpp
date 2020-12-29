@@ -50,7 +50,7 @@ void AStaffAIController::PlayerVisionTick(AActor* CurrentPlayer, FAIStimulus& Cu
     float DetectionStep = 0;
 
     //Set suspicious
-    if (Blackboard->GetValueAsFloat("Detection") >= 40)
+    if (Blackboard->GetValueAsFloat("Detection") >= 40 && !Blackboard->GetValueAsBool("Suspicious"))
         Blackboard->SetValueAsBool("Suspicious", true);
 
     //Set last player if there is no tracked player
@@ -71,9 +71,8 @@ void AStaffAIController::PlayerVisionTick(AActor* CurrentPlayer, FAIStimulus& Cu
         //Add player to memory
         Memory.Players.Add(FTrackedActor(CurrentPlayer, CurrentStimulus.StimulusLocation, DetectionStep));
 
-        //Update blackboard detection if needed
-        if (Blackboard->GetValueAsFloat("Detection") < Memory.Players[0].Detection)
-            Blackboard->SetValueAsFloat("Detection", Memory.Players[0].Detection);
+        //Update blackboard detection
+        RaiseDetection(Memory.Players[0].Detection);
     }
     else
     {
@@ -96,13 +95,15 @@ void AStaffAIController::PlayerVisionTick(AActor* CurrentPlayer, FAIStimulus& Cu
                 //Detection calculations
                 DetectionStep = Memory.Players[i].Detection + DetectionRate * CurrentStimulus.Strength * (AngleModifier
                     + DistanceModifier) / 2 * DeltaTime;
+                
                 //Clamp if needed
                 if (DetectionStep < 0)
                     DetectionStep = 0;
 
                 //Update memory
                 Memory.Players[i].Detection = DetectionStep;
-                Memory.Players[i].Location = CurrentStimulus.ReceiverLocation;
+                Memory.Players[i].Location = CurrentStimulus.StimulusLocation;
+                
                 //Clamp if needed
                 if (Memory.Players[i].Detection > 100)
                 {
@@ -112,10 +113,8 @@ void AStaffAIController::PlayerVisionTick(AActor* CurrentPlayer, FAIStimulus& Cu
                     Memory.Players[i].Detection = 100;
                 }
 
-                //Update blackboard detection if needed
-                if (Blackboard->GetValueAsFloat("Detection") < Memory.Players[i].Detection)
-                    Blackboard->SetValueAsFloat("Detection", Memory.Players[i].Detection);
-                break;
+                //Update blackboard detection
+                RaiseDetection(Memory.Players[i].Detection);
             }
         }
 
@@ -131,32 +130,18 @@ void AStaffAIController::PlayerVisionTick(AActor* CurrentPlayer, FAIStimulus& Cu
             //Add player to memory
             Memory.Players.Add(FTrackedActor(CurrentPlayer, CurrentStimulus.StimulusLocation, DetectionStep));
 
-            //Update blackboard detection if needed
-            if (Blackboard->GetValueAsFloat("Detection") < Memory.Players[0].Detection)
-                Blackboard->SetValueAsFloat("Detection", Memory.Players[0].Detection);
+            //Update blackboard detection
+            RaiseDetection(Memory.Players[0].Detection);
         }
     }
 }
 
 void AStaffAIController::PlayerVisionUpdate(AActor* CurrentPlayer, FAIStimulus& CurrentStimulus)
-{   
-    //If player was just seen
-    if (CurrentStimulus.IsActive())
-    {        
-        //If there is no tracked player
-        if (!IsValid(Blackboard->GetValueAsObject("LastPlayer")))
-        {
-            Blackboard->SetValueAsObject("LastPlayer", CurrentPlayer);
-        }
-    }
-    //If player was just lost
-    else
+{
+    //If player was lost and was being tracked
+    if (!CurrentStimulus.IsActive() && Blackboard->GetValueAsObject("LastPlayer") == CurrentPlayer)
     {
-        //If player was being tracked
-        if (Blackboard->GetValueAsObject("LastPlayer") == CurrentPlayer)
-        {
-            Blackboard->ClearValue("LastPlayer");
-        }
+        Blackboard->ClearValue("LastPlayer");
     }
 }
 
@@ -277,9 +262,9 @@ void AStaffAIController::DetectionDecay(float DeltaTime)
             BlackboardDetection = Blackboard->GetValueAsFloat("Detection");
             if (BlackboardDetection < 0)
                 Blackboard->SetValueAsFloat("Detection", 0);
-            if (BlackboardDetection < 91)
+            if (BlackboardDetection < 91 && BlackboardDetection > 90)
                 Blackboard->SetValueAsFloat("Detection", 90);
-            if (BlackboardDetection < 41)
+            if (BlackboardDetection < 41 && BlackboardDetection > 40)
                 Blackboard->SetValueAsFloat("Detection", 40);
         }
     }
