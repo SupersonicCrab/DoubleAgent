@@ -89,6 +89,7 @@ void AHouseLight::UpdateLight()
 				Light->RegisterComponent();
 				Light->AttachToComponent(RootComponent, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
 				Light->SetMobility(EComponentMobility::Stationary);
+				Light->SetRelativeLocation(StaticMesh->GetSocketLocation(FName("Light")) - StaticMesh->GetComponentLocation() + StaticMesh->GetRelativeLocation());
 				UPointLightComponent* PointLight = Cast<UPointLightComponent>(Light);
 				PointLight->Intensity = 2.0f;
 				PointLight->AttenuationRadius = 700.0f;
@@ -105,14 +106,14 @@ void AHouseLight::UpdateLight()
 				Light->RegisterComponent();
 				Light->AttachToComponent(RootComponent, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
 				Light->SetMobility(EComponentMobility::Stationary);
+				Light->SetRelativeLocation(StaticMesh->GetSocketLocation(FName("Light")) - StaticMesh->GetComponentLocation() + StaticMesh->GetRelativeLocation());
 				if (MeshType == ELightMesh::Mesh_Wall)
 				{
 					Light->SetRelativeLocation(FVector(1, 0, 0), false);
 				}
 				else
 				{
-					Light->SetRelativeRotation(FRotator(-90, 0, 0), false);
-					Light->SetRelativeLocation(FVector(0, 0, -1), false);					
+					Light->SetRelativeRotation(FRotator(-90, 0, 0), false);				
 				}
 				URectLightComponent* RectLight = Cast<URectLightComponent>(Light);
 				RectLight->Intensity = 22500.0f;
@@ -130,6 +131,7 @@ void AHouseLight::UpdateLight()
 				Light->RegisterComponent();
 				Light->AttachToComponent(RootComponent, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
 				Light->SetMobility(EComponentMobility::Stationary);
+				Light->SetRelativeLocation(StaticMesh->GetSocketLocation(FName("Light")) - StaticMesh->GetComponentLocation() + StaticMesh->GetRelativeLocation());
 				if (MeshType != ELightMesh::Mesh_Wall)
 					Light->SetRelativeRotation(FRotator(-90, 0, 0), false);
 				USpotLightComponent* SpotLight = Cast<USpotLightComponent>(Light);
