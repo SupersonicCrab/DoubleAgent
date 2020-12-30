@@ -125,6 +125,10 @@ void AAIControllerBase::RaiseDetection(float NewDetection)
     if (Blackboard->GetValueAsFloat("Detection") < NewDetection)
     {
         Blackboard->SetValueAsFloat("Detection", NewDetection);
+
+        //Update suspicion if above 40
+        if (NewDetection > 40 && !Blackboard->GetValueAsBool("Suspicious"))
+            Blackboard->SetValueAsBool("Suspicious", true);
     }
 }
 
@@ -196,6 +200,10 @@ bool AAIControllerBase::HandleHearing(AActor* CurrentActor, FAIStimulus& Current
             RaiseVocalStatus(static_cast<EVocalStatus>(Cast<AAIController>(Cast<APawn>(CurrentActor)->GetController())->GetBlackboardComponent()->GetValueAsEnum("VocalStatus")));
         }
 
+        //Noise
+        if (CurrentStimulus.Tag == "Noise")
+            Blackboard->SetValueAsVector("NoiseLocation", CurrentStimulus.StimulusLocation);
+        
         //LoudNoise
         else if (CurrentStimulus.Tag == "LoudNoise")
             Blackboard->SetValueAsVector("LoudNoiseLocation", CurrentStimulus.StimulusLocation);

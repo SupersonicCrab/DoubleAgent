@@ -45,13 +45,14 @@ FTrackedActor::FTrackedActor(AActor* Actor_, FVector Location_, float Detection_
 }
 
 void AStaffAIController::PlayerVisionTick(AActor* CurrentPlayer, FAIStimulus& CurrentStimulus, float DeltaTime)
-{       
+{
+    //Skip detection calculations if player is doing nothing wrong
+    APlayer_Character* Player = Cast<APlayer_Character>(CurrentPlayer);
+    if (!Player->bTresspassing && !Player->bIllegalAction)
+        return;
+    
     //Setup
     float DetectionStep = 0;
-
-    //Set suspicious
-    if (Blackboard->GetValueAsFloat("Detection") >= 40 && !Blackboard->GetValueAsBool("Suspicious"))
-        Blackboard->SetValueAsBool("Suspicious", true);
 
     //Set last player if there is no tracked player
     if (!IsValid(Blackboard->GetValueAsObject("LastPlayer")))
@@ -254,18 +255,18 @@ void AStaffAIController::DetectionDecay(float DeltaTime)
     if (DecayStep != 0)
     {
         //Decay blackboard detection if greater than 0 and not 40 or 90
-        int BlackboardDetection = round(Blackboard->GetValueAsFloat("Detection"));
+        float BlackboardDetection = round(Blackboard->GetValueAsFloat("Detection"));
         if (BlackboardDetection > 0 && BlackboardDetection != 90 && BlackboardDetection != 40)
         {
             Blackboard->SetValueAsFloat("Detection",Blackboard->GetValueAsFloat("Detection") - DetectionRate * DeltaTime);
             //Clamp if needed
             BlackboardDetection = Blackboard->GetValueAsFloat("Detection");
             if (BlackboardDetection < 0)
-                Blackboard->SetValueAsFloat("Detection", 0);
+                Blackboard->SetValueAsFloat("Detection", 0.0f);
             if (BlackboardDetection < 91 && BlackboardDetection > 90)
-                Blackboard->SetValueAsFloat("Detection", 90);
+                Blackboard->SetValueAsFloat("Detection", 90.0f);
             if (BlackboardDetection < 41 && BlackboardDetection > 40)
-                Blackboard->SetValueAsFloat("Detection", 40);
+                Blackboard->SetValueAsFloat("Detection", 40.0f);
         }
     }
 }
@@ -372,17 +373,13 @@ bool AStaffAIController::HandleHearing(AActor* CurrentActor, FAIStimulus& Curren
 {
     if (Super::HandleHearing(CurrentActor, CurrentStimulus))
     {
-        //UObject* UnconsciousNPC = Cast<AAIController>(Cast<APawn>(CurrentActor)->GetController())->GetBlackboardComponent()->GetValueAsObject("UnconsciousNPC");
         if (CurrentStimulus.Tag == "Speech")
         {
+            //UnconsciousNPC
             UObject* UnconsciousNPC = Cast<AAIControllerBase>(Cast<AAICharacterBase_CHARACTER>(CurrentActor)->GetController())->GetBlackboardComponent()->GetValueAsObject("UnconsciousNPC");
             if (UnconsciousNPC != nullptr)
                 Blackboard->SetValueAsObject("UnconsciousNPC", UnconsciousNPC);           
         }
-        
-        //Noise
-        if (CurrentStimulus.Tag == "Noise")
-            Blackboard->SetValueAsVector("NoiseLocation", CurrentStimulus.StimulusLocation);
 
         //Movement
         else if (CurrentStimulus.Tag == "Movement" && Blackboard->GetValueAsFloat("Detection") < 90)
