@@ -2,12 +2,17 @@
 
 
 #include "Landline.h"
-
 #include "BackupSpawnpoint.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
-ALandline::ALandline(){}
+ALandline::ALandline()
+{
+    //Setup mesh
+    UStaticMesh* Mesh = LoadObject<UStaticMesh>(NULL, TEXT("StaticMesh'/Game/Art/Meshes/Security/Landline/SM_Landline.SM_Landline'"));
+    StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
+    StaticMesh->SetStaticMesh(Mesh);
+}
 
 bool ALandline::CallBackup(){
     if(!bPowerOn){ //If the power isn't on, then no backup can be called
