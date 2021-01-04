@@ -4,6 +4,14 @@
 #include "DoubleAgent/AI/NPC/StaffAIController.h"
 #include "Kismet/GameplayStatics.h"
 
+ARadioHub::ARadioHub()
+{
+    //Setup mesh
+    UStaticMesh* Mesh = LoadObject<UStaticMesh>(NULL, TEXT("StaticMesh'/Game/Art/Meshes/Security/RadioHub/SM_RadioHub.SM_RadioHub'"));
+    StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
+    StaticMesh->SetStaticMesh(Mesh);
+}
+
 bool ARadioHub::StartRadioEvent(FRadioEvent RadioEvent_)
 {
     //If power is off

@@ -15,10 +15,14 @@ class DOUBLEAGENT_API ARadioHub : public APowerComponent
 {
 	GENERATED_BODY()
 
+	ARadioHub();
+	
     FRadioEvent RadioEvent;
 public:
     FTimerHandle SpeechTimer;
-    
+
+	UStaticMeshComponent* StaticMesh;
+	
     bool StartRadioEvent(FRadioEvent RadioEvent_);
 	
     UFUNCTION()
