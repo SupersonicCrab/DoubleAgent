@@ -37,6 +37,8 @@ enum class EActionStatus : uint8
 	Action_Restock UMETA(DisplayName = "Restocking"),
 	//Reloading
 	Action_Reloading UMETA(DisplayName = "Reloading"),
+	//Using the washroom
+	Action_Washroom UMETA(DisplayName = "Washroom")
 };
 
 //A tracked player is any player that has been considered a threat
