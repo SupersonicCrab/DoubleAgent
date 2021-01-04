@@ -8,8 +8,10 @@
 #include "Components/StaticMeshComponent.h"
 #include "Components/TimelineComponent.h"
 #include "Engine/SkeletalMeshSocket.h"
+#include "Kismet/GameplayStatics.h"
 #include "Tasks/AITask_MoveTo.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Sound/SoundBase.h"
 
 ADoor::ADoor()
 {
@@ -122,6 +124,10 @@ void ADoor::OpenDoor_Implementation(AActor* Interactor)
         //Play timeline
         DoorTimeline->PlayFromStart();
         bDoorOpen = true;
+
+        //Play sound
+        USoundBase* SoundCue = LoadObject<USoundBase>(NULL, TEXT("SoundCue'/Game/Audio/SoundEffects/Door/Wooden/WoodenDoorOpen_Cue.WoodenDoorOpen_Cue'"));
+        UGameplayStatics::PlaySoundAtLocation(GetWorld(), SoundCue, GetActorLocation(), GetActorRotation(), 1.0f, 1.0f, 0.0f, nullptr, nullptr, this);
     }
 }
 
@@ -147,6 +153,10 @@ void ADoor::CloseDoor_Implementation(AActor* Interactor)
         //Play timeline
         DoorTimeline->PlayFromStart();
         bDoorOpen = false;
+
+        //Play sound
+        USoundBase* SoundCue = LoadObject<USoundBase>(NULL, TEXT("SoundCue'/Game/Audio/SoundEffects/Door/Wooden/WoodenDoorClose_Cue.WoodenDoorClose_Cue'"));
+        UGameplayStatics::PlaySoundAtLocation(GetWorld(), SoundCue, GetActorLocation(), GetActorRotation(), 1.0f, 1.0f, 0.0f, nullptr, nullptr, this);
     }
 }
 
