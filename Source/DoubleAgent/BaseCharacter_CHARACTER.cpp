@@ -96,7 +96,7 @@ void ABaseCharacter_CHARACTER::Tick(float DeltaSeconds)
                 AHouseLight* Light = Cast<AHouseLight>(Lights[i]);
 
                 //Error checking
-                if (Light->Light == nullptr)
+                if (!IsValid(Light->Light))
                     continue;
                 
                 //Raycast from light to sockets
@@ -107,7 +107,7 @@ void ABaseCharacter_CHARACTER::Tick(float DeltaSeconds)
                 if (Light->Light->GetVisibleFlag() && SocketHitResult.Actor == this)
                 {
                     //If socket is within attenuation radius
-                    if (Lights[i]->GetDistanceTo(this) <= Light->Light->GetBoundingSphere().W)
+                    if (FVector::Dist(GetActorLocation(), Light->Light->GetComponentLocation()) <= Light->Light->GetBoundingSphere().W)
                         Temp = static_cast<EVisbilityLevel>(static_cast<uint8>(Temp) + VisibilityIncrease);
                     //If socket is just within sphere overlap
                     else if (Temp == EVisbilityLevel::Visibility_None)

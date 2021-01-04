@@ -96,8 +96,8 @@ void AHouseLight::UpdateLight()
 				PointLight->bUseInverseSquaredFalloff = false;
 				PointLight->LightFalloffExponent = 1.0;
 				PointLight->LightmassSettings.ShadowExponent = 1.0f;
-				PointLight->IndirectLightingIntensity = 10.0f;
-				PointLight->VolumetricScatteringIntensity = 10.0f;
+				PointLight->IndirectLightingIntensity = 3.0f;
+				PointLight->VolumetricScatteringIntensity = 3.0f;
 			}
 		break;
 		case ELightType::Light_Rect:
@@ -121,8 +121,8 @@ void AHouseLight::UpdateLight()
 				RectLight->SourceWidth = RectLight->SourceHeight = 50.0f;
 				RectLight->BarnDoorAngle = RectLight->BarnDoorLength = 0.0f;
 				RectLight->LightmassSettings.ShadowExponent = 1.0f;
-				RectLight->IndirectLightingIntensity = 10.0f;
-				RectLight->VolumetricScatteringIntensity = 10.0f;
+				RectLight->IndirectLightingIntensity = 3.0f;
+				RectLight->VolumetricScatteringIntensity = 3.0f;
 			}
 		break;
 		case ELightType::Light_Spot:
@@ -142,8 +142,8 @@ void AHouseLight::UpdateLight()
 				SpotLight->bUseInverseSquaredFalloff = false;
 				SpotLight->LightFalloffExponent = 1.0;
 				SpotLight->LightmassSettings.ShadowExponent = 1.0f;
-				SpotLight->IndirectLightingIntensity = 10.0f;
-				SpotLight->VolumetricScatteringIntensity = 10.0f;
+				SpotLight->IndirectLightingIntensity = 3.0f;
+				SpotLight->VolumetricScatteringIntensity = 3.0f;
 			}
 		break;
 	}
