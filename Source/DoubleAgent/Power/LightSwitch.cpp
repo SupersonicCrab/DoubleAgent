@@ -11,6 +11,19 @@
 ALightSwitch::ALightSwitch(){
     //Allow replication
     bReplicates = true;
+
+    //Setup base mesh
+    UStaticMesh* Mesh = LoadObject<UStaticMesh>(NULL, TEXT("StaticMesh'/Game/Art/Meshes/Building/LightSwitch/SM_LightSwitchBase.SM_LightSwitchBase'"));
+    MeshBase = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Base"));
+    MeshBase->SetStaticMesh(Mesh);
+    RootComponent = MeshBase;
+
+    //Setup switch mesh
+    Mesh = LoadObject<UStaticMesh>(NULL, TEXT("StaticMesh'/Game/Art/Meshes/Building/LightSwitch/SM_LightSwitch.SM_LightSwitch'"));
+    MeshSwitch = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Switch"));
+    MeshSwitch->SetStaticMesh(Mesh);
+    MeshSwitch->SetIsReplicated(true);
+    MeshSwitch->SetupAttachment(RootComponent);
 }
 
 void ALightSwitch::RestoreLights_Implementation(){
@@ -28,6 +41,8 @@ void ALightSwitch::EnableLightGroup_Implementation(){
     bLightGroupOn = true;
     AssociatedRoom->UpdateLight(true); //Update the rooms understanding of the light
     MulticastPlaySound(0.9f);
+
+    MeshSwitch->SetRelativeRotation(FRotator(0, 0, 0), false);
 }
 
 void ALightSwitch::DisableLightGroup_Implementation(bool bFromPowerBox){ //Check comments for EnableLightGroup(), it's just that but reversed
@@ -39,6 +54,8 @@ void ALightSwitch::DisableLightGroup_Implementation(bool bFromPowerBox){ //Check
     }
     AssociatedRoom->UpdateLight(false);
     MulticastPlaySound(1.0f);
+
+    MeshSwitch->SetRelativeRotation(FRotator(0, 0, 180), false);
 }
 
 void ALightSwitch::BeginPlay(){
@@ -54,7 +71,7 @@ void ALightSwitch::BeginPlay(){
 void ALightSwitch::MulticastPlaySound_Implementation(float Pitch)
 {
     //Play sound
-    USoundBase* Sound = LoadObject<USoundBase>(NULL, TEXT("SoundCue'/Game/Audio/SoundEffects/Lightswitch_Cue.uasset.Lightswitch_Cue'"));
+    USoundBase* Sound = LoadObject<USoundBase>(NULL, TEXT("SoundCue'/Game/Audio/SoundEffects/LightSwitch/Lightswitch_Cue.uasset.Lightswitch_Cue'"));
     UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, GetActorLocation(), FRotator(), 1, Pitch, 0, nullptr, nullptr, this);
 }
 

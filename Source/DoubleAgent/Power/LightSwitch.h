@@ -29,6 +29,10 @@ public:
 	//All lights this lightswitch has control over
 	UPROPERTY(EditAnywhere)
 	TArray<AHouseLight*> Lights;
+
+	//Static meshs
+	UStaticMeshComponent* MeshBase;
+	UStaticMeshComponent* MeshSwitch;
 	
 	//Constructor
 	ALightSwitch();
