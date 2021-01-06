@@ -32,8 +32,7 @@ void AHouseLightBase::BeginPlay(){
 	Sphere->SetSphereRadius(BoundingSphere.W*BoundaryMultiplier);
 }
 
-void AHouseLightBase::TurnOn_Implementation()
-{
+void AHouseLightBase::TurnOn_Implementation(){
 	Light->SetVisibility(true);
 }
 

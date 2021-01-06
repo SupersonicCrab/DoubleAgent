@@ -21,6 +21,8 @@ APowerBox::APowerBox(){
 // Called when the game starts or when spawned
 void APowerBox::BeginPlay(){
 	Super::BeginPlay();
+	AActor* temphub = UGameplayStatics::GetActorOfClass(GetWorld(), ARadioHub::StaticClass()); // Get the radio hub actor
+	RadioHub = dynamic_cast<ARadioHub*>(temphub); //Cast the radio hub into a radio hub class to store it properly
 }
 
 // Called every frame
@@ -42,13 +44,15 @@ void APowerBox::TurnLightsOff_Implementation(){
 	MulticastLightsOff();
 }
 
-// void APowerBox::TurnCamerasOn(){
-// 	
-// }
-//
-// void APowerBox::TurnCamerasOff(){
-// 	
-// }
+void APowerBox::TurnCamerasOn(){
+	bCamerasOn = true;
+	CameraHub->PowerEnabled();
+}
+
+void APowerBox::TurnCamerasOff(){
+	bCamerasOn = false;
+	CameraHub->PowerDisabled();
+}
 
 void APowerBox::TurnLandlinesOn(){
 	TArray<AActor*> temporaryArray;
@@ -70,13 +74,15 @@ void APowerBox::TurnLandlinesOff(){
 	bLandlinesOn = false;
 }
 
-// void APowerBox::TurnRadiosOn(){
-// 	
-// }
-//
-// void APowerBox::TurnRadiosOff(){
-// 	
-// }
+void APowerBox::TurnRadiosOn(){
+	RadioHub->PowerOn();
+	bRadiosOn = true;
+}
+
+void APowerBox::TurnRadiosOff(){
+	RadioHub->PowerOff();
+	bRadiosOn = false;
+}
 
 void APowerBox::MulticastLightsOn_Implementation(){
 	bLightsOn = true;

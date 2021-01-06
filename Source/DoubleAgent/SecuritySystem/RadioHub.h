@@ -11,8 +11,7 @@
  * 
  */
 UCLASS()
-class DOUBLEAGENT_API ARadioHub : public APowerComponent
-{
+class DOUBLEAGENT_API ARadioHub : public APowerComponent{
 	GENERATED_BODY()
 
     FRadioEvent RadioEvent;
@@ -22,4 +21,9 @@ public:
     bool StartRadioEvent(FRadioEvent RadioEvent_);
     UFUNCTION()
     void BroadcastRadioEvent();
+
+    UFUNCTION()
+    void PowerOn();
+    UFUNCTION()
+    void PowerOff();
 };

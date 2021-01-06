@@ -37,3 +37,11 @@ void ARadioHub::BroadcastRadioEvent()
             StaffNPC->HandleRadioEvent(RadioEvent);
     }
 }
+
+void ARadioHub::PowerOn(){
+    bPowerOn = true;
+}
+
+void ARadioHub::PowerOff(){
+    bPowerOn = false;
+}
