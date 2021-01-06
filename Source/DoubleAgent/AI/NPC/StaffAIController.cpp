@@ -45,13 +45,14 @@ FTrackedActor::FTrackedActor(AActor* Actor_, FVector Location_, float Detection_
 }
 
 void AStaffAIController::PlayerVisionTick(AActor* CurrentPlayer, FAIStimulus& CurrentStimulus, float DeltaTime)
-{       
+{
+    //Skip detection calculations if player is doing nothing wrong
+    APlayer_Character* Player = Cast<APlayer_Character>(CurrentPlayer);
+    if (!Player->bTresspassing && !Player->bIllegalAction)
+        return;
+    
     //Setup
     float DetectionStep = 0;
-
-    //Set suspicious
-    if (Blackboard->GetValueAsFloat("Detection") >= 40)
-        Blackboard->SetValueAsBool("Suspicious", true);
 
     //Set last player if there is no tracked player
     if (!IsValid(Blackboard->GetValueAsObject("LastPlayer")))
@@ -71,9 +72,8 @@ void AStaffAIController::PlayerVisionTick(AActor* CurrentPlayer, FAIStimulus& Cu
         //Add player to memory
         Memory.Players.Add(FTrackedActor(CurrentPlayer, CurrentStimulus.StimulusLocation, DetectionStep));
 
-        //Update blackboard detection if needed
-        if (Blackboard->GetValueAsFloat("Detection") < Memory.Players[0].Detection)
-            Blackboard->SetValueAsFloat("Detection", Memory.Players[0].Detection);
+        //Update blackboard detection
+        RaiseDetection(Memory.Players[0].Detection);
     }
     else
     {
@@ -96,13 +96,15 @@ void AStaffAIController::PlayerVisionTick(AActor* CurrentPlayer, FAIStimulus& Cu
                 //Detection calculations
                 DetectionStep = Memory.Players[i].Detection + DetectionRate * CurrentStimulus.Strength * (AngleModifier
                     + DistanceModifier) / 2 * DeltaTime;
+                
                 //Clamp if needed
                 if (DetectionStep < 0)
                     DetectionStep = 0;
 
                 //Update memory
                 Memory.Players[i].Detection = DetectionStep;
-                Memory.Players[i].Location = CurrentStimulus.ReceiverLocation;
+                Memory.Players[i].Location = CurrentStimulus.StimulusLocation;
+                
                 //Clamp if needed
                 if (Memory.Players[i].Detection > 100)
                 {
@@ -112,10 +114,8 @@ void AStaffAIController::PlayerVisionTick(AActor* CurrentPlayer, FAIStimulus& Cu
                     Memory.Players[i].Detection = 100;
                 }
 
-                //Update blackboard detection if needed
-                if (Blackboard->GetValueAsFloat("Detection") < Memory.Players[i].Detection)
-                    Blackboard->SetValueAsFloat("Detection", Memory.Players[i].Detection);
-                break;
+                //Update blackboard detection
+                RaiseDetection(Memory.Players[i].Detection);
             }
         }
 
@@ -131,32 +131,18 @@ void AStaffAIController::PlayerVisionTick(AActor* CurrentPlayer, FAIStimulus& Cu
             //Add player to memory
             Memory.Players.Add(FTrackedActor(CurrentPlayer, CurrentStimulus.StimulusLocation, DetectionStep));
 
-            //Update blackboard detection if needed
-            if (Blackboard->GetValueAsFloat("Detection") < Memory.Players[0].Detection)
-                Blackboard->SetValueAsFloat("Detection", Memory.Players[0].Detection);
+            //Update blackboard detection
+            RaiseDetection(Memory.Players[0].Detection);
         }
     }
 }
 
 void AStaffAIController::PlayerVisionUpdate(AActor* CurrentPlayer, FAIStimulus& CurrentStimulus)
-{   
-    //If player was just seen
-    if (CurrentStimulus.IsActive())
-    {        
-        //If there is no tracked player
-        if (!IsValid(Blackboard->GetValueAsObject("LastPlayer")))
-        {
-            Blackboard->SetValueAsObject("LastPlayer", CurrentPlayer);
-        }
-    }
-    //If player was just lost
-    else
+{
+    //If player was lost and was being tracked
+    if (!CurrentStimulus.IsActive() && Blackboard->GetValueAsObject("LastPlayer") == CurrentPlayer)
     {
-        //If player was being tracked
-        if (Blackboard->GetValueAsObject("LastPlayer") == CurrentPlayer)
-        {
-            Blackboard->ClearValue("LastPlayer");
-        }
+        Blackboard->ClearValue("LastPlayer");
     }
 }
 
@@ -269,18 +255,18 @@ void AStaffAIController::DetectionDecay(float DeltaTime)
     if (DecayStep != 0)
     {
         //Decay blackboard detection if greater than 0 and not 40 or 90
-        int BlackboardDetection = round(Blackboard->GetValueAsFloat("Detection"));
+        float BlackboardDetection = round(Blackboard->GetValueAsFloat("Detection"));
         if (BlackboardDetection > 0 && BlackboardDetection != 90 && BlackboardDetection != 40)
         {
             Blackboard->SetValueAsFloat("Detection",Blackboard->GetValueAsFloat("Detection") - DetectionRate * DeltaTime);
             //Clamp if needed
             BlackboardDetection = Blackboard->GetValueAsFloat("Detection");
             if (BlackboardDetection < 0)
-                Blackboard->SetValueAsFloat("Detection", 0);
-            if (BlackboardDetection < 91)
-                Blackboard->SetValueAsFloat("Detection", 90);
-            if (BlackboardDetection < 41)
-                Blackboard->SetValueAsFloat("Detection", 40);
+                Blackboard->SetValueAsFloat("Detection", 0.0f);
+            if (BlackboardDetection < 91 && BlackboardDetection > 90)
+                Blackboard->SetValueAsFloat("Detection", 90.0f);
+            if (BlackboardDetection < 41 && BlackboardDetection > 40)
+                Blackboard->SetValueAsFloat("Detection", 40.0f);
         }
     }
 }
@@ -387,17 +373,13 @@ bool AStaffAIController::HandleHearing(AActor* CurrentActor, FAIStimulus& Curren
 {
     if (Super::HandleHearing(CurrentActor, CurrentStimulus))
     {
-        //UObject* UnconsciousNPC = Cast<AAIController>(Cast<APawn>(CurrentActor)->GetController())->GetBlackboardComponent()->GetValueAsObject("UnconsciousNPC");
         if (CurrentStimulus.Tag == "Speech")
         {
+            //UnconsciousNPC
             UObject* UnconsciousNPC = Cast<AAIControllerBase>(Cast<AAICharacterBase_CHARACTER>(CurrentActor)->GetController())->GetBlackboardComponent()->GetValueAsObject("UnconsciousNPC");
             if (UnconsciousNPC != nullptr)
                 Blackboard->SetValueAsObject("UnconsciousNPC", UnconsciousNPC);           
         }
-        
-        //Noise
-        if (CurrentStimulus.Tag == "Noise")
-            Blackboard->SetValueAsVector("NoiseLocation", CurrentStimulus.StimulusLocation);
 
         //Movement
         else if (CurrentStimulus.Tag == "Movement" && Blackboard->GetValueAsFloat("Detection") < 90)

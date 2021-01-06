@@ -8,6 +8,7 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "DoubleAgent/AI/AICharacterBase_CHARACTER.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 AAIControllerBase::AAIControllerBase()
 {
@@ -56,7 +57,7 @@ void AAIControllerBase::OnPossess(APawn* InPawn)
 }
 
 void AAIControllerBase::OnPerceptionUpdated(const TArray<AActor*>& DetectedActors)
-{
+{   
     if (!BPerceptionEnabled)
         return;
     
@@ -110,7 +111,7 @@ void AAIControllerBase::Tick(float DeltaTime)
         //Iterate through all senses
         for (int i = 0; i < Stimuli.Num(); i++)
         {
-            if (Stimuli[i].GetAge() == 0 && Stimuli[i].Type.Name == "Default__AISense_Sight")
+            if (Stimuli[i].GetAge() == 0 && Stimuli[i].IsActive() && Stimuli[i].Type.Name == "Default__AISense_Sight")
             {
                 HandleSightTick(DetectedActors[a], Stimuli[i], DeltaTime);
             }
@@ -124,6 +125,10 @@ void AAIControllerBase::RaiseDetection(float NewDetection)
     if (Blackboard->GetValueAsFloat("Detection") < NewDetection)
     {
         Blackboard->SetValueAsFloat("Detection", NewDetection);
+
+        //Update suspicion if above 40
+        if (NewDetection > 40 && !Blackboard->GetValueAsBool("Suspicious"))
+            Blackboard->SetValueAsBool("Suspicious", true);
     }
 }
 
@@ -172,12 +177,6 @@ void AAIControllerBase::NPCVisionTick(AActor* CurrentActor, FAIStimulus& Current
         RaiseDetection(90.0f);
     }
 
-    //Speaker
-    else if (IsValid(Blackboard->GetValueAsObject("Speaker")))
-    {
-        Blackboard->SetValueAsBool("CanSeeSpeaker", Blackboard->GetValueAsObject("Speaker") == CurrentActor);
-    }
-
     //Copy detection
     else if (Blackboard->GetValueAsFloat("Detection") < 90 && OtherNPCBlackboard->GetValueAsFloat("Detection") >= 90)
     {
@@ -201,6 +200,10 @@ bool AAIControllerBase::HandleHearing(AActor* CurrentActor, FAIStimulus& Current
             RaiseVocalStatus(static_cast<EVocalStatus>(Cast<AAIController>(Cast<APawn>(CurrentActor)->GetController())->GetBlackboardComponent()->GetValueAsEnum("VocalStatus")));
         }
 
+        //Noise
+        if (CurrentStimulus.Tag == "Noise")
+            Blackboard->SetValueAsVector("NoiseLocation", CurrentStimulus.StimulusLocation);
+        
         //LoudNoise
         else if (CurrentStimulus.Tag == "LoudNoise")
             Blackboard->SetValueAsVector("LoudNoiseLocation", CurrentStimulus.StimulusLocation);

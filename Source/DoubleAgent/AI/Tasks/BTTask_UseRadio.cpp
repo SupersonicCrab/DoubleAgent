@@ -3,7 +3,7 @@
 
 #include "BTTask_UseRadio.h"
 #include "DoubleAgent/AI/NPC/AIControllerBase.h"
-#include "DoubleAgent/SecuritySystem/RadioHub.h"
+#include "DoubleAgent/Security/RadioHub.h"
 #include "Kismet/GameplayStatics.h"
 
 EBTNodeResult::Type UBTTask_UseRadio::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)

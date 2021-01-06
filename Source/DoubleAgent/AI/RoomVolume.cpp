@@ -28,14 +28,8 @@ void ARoomVolume::BeginPlay()
 
 void ARoomVolume::OnOverlapBegin(AActor* OverlappedActor, AActor* OtherActor)
 {
-	//Update player
-	if (OtherActor->IsA(APlayer_Character::StaticClass()))
-	{
-		Cast<APlayer_Character>(OtherActor)->bRoomSafe = bPublic;
-	}
-
 	//Update NPC
-	else if (OtherActor->GetClass()->IsChildOf(AAICharacterBase_CHARACTER::StaticClass()))
+	if (OtherActor->GetClass()->IsChildOf(AAICharacterBase_CHARACTER::StaticClass()))
 	{
 		UpdateNPC(OtherActor);
 	}
@@ -43,14 +37,8 @@ void ARoomVolume::OnOverlapBegin(AActor* OverlappedActor, AActor* OtherActor)
 
 void ARoomVolume::OnOverlapEnd(AActor* OverlappedActor, AActor* OtherActor)
 {
-	//Update player
-	if (OtherActor->IsA(APlayer_Character::StaticClass()))
-	{
-		Cast<APlayer_Character>(OtherActor)->bRoomSafe = false;
-	}
-
 	//Update NPC
-	else if (OtherActor->GetClass()->IsChildOf(AAICharacterBase_CHARACTER::StaticClass()))
+	if (OtherActor->GetClass()->IsChildOf(AAICharacterBase_CHARACTER::StaticClass()))
 	{
 		UpdateNPC(OtherActor);
 	}
@@ -64,14 +52,8 @@ void ARoomVolume::UpdateOverlappingActors()
 
 	for (int a = 0; a < Actors.Num(); a++)
 	{
-		//Update player
-		if (Actors[a]->IsA(APlayer_Character::StaticClass()))
-		{
-			Cast<APlayer_Character>(Actors[a])->bRoomSafe = bPublic;
-		}
-
 		//Update NPC
-		else if (Actors[a]->GetClass()->IsChildOf(AAICharacterBase_CHARACTER::StaticClass()))
+		if (Actors[a]->GetClass()->IsChildOf(AAICharacterBase_CHARACTER::StaticClass()))
 		{
 			UpdateNPC(Actors[a]);
 		}

@@ -1,11 +1,10 @@
 // Please don't steal
 
 #include "LightSwitch.h"
+#include "HouseLight.h"
 #include "../AI/RoomVolume.h"
 #include "DoubleAgent/AI/AICharacterBase_CHARACTER.h"
-#include "HouseLight/HouseLightBase.h"
 #include "Kismet/GameplayStatics.h"
-#include "Net/UnrealNetwork.h"
 #include "Sound/SoundCue.h"
 
 // Sets default values
@@ -87,7 +86,7 @@ void ALightSwitch::FindRoomAndLights()
     
     //Find any lights in that room
     TArray<AActor*> AllLights;
-    UGameplayStatics::GetAllActorsOfClass(GetWorld(), AHouseLightBase::StaticClass(), AllLights);
+    UGameplayStatics::GetAllActorsOfClass(GetWorld(), AHouseLight::StaticClass(), AllLights);
 
     //Iterate through all lights
     for (int i = 0; i < AllLights.Num(); i++)
@@ -99,7 +98,7 @@ void ALightSwitch::FindRoomAndLights()
         //Iterate through results
         for (int a = 0; a < Results.Num(); a++)
         {
-            AHouseLightBase* temp = Cast<AHouseLightBase>(AllLights[i]);
+            AHouseLight* temp = Cast<AHouseLight>(AllLights[i]);
             if (Results[a].Actor == AssociatedRoom && Lights.Find(temp) == -1)
             {
                 Lights.Add(temp);

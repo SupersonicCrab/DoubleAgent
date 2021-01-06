@@ -45,7 +45,7 @@ public:
 	
 	//Variables
 	UPROPERTY(BlueprintReadWrite, Category = "Default", EditAnywhere = "True")
-	bool bPublic;
+	bool bPublic = false;
 	
 	UPROPERTY(BlueprintReadWrite, Category = "Default", EditAnywhere = "True")
 	bool bLit = true;

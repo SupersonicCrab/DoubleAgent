@@ -11,7 +11,7 @@
 
 //Forward declaration for RoomVolume.h and HouseLight.cpp
 class ARoomVolume;
-class AHouseLightBase;
+class AHouseLight;
 
 UCLASS()
 class DOUBLEAGENT_API ALightSwitch : public APowerComponent, public IInteractInterface {
@@ -28,7 +28,7 @@ public:
 
 	//All lights this lightswitch has control over
 	UPROPERTY(EditAnywhere)
-	TArray<AHouseLightBase*> Lights;
+	TArray<AHouseLight*> Lights;
 	
 	//Constructor
 	ALightSwitch();

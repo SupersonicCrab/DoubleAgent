@@ -17,5 +17,14 @@ public:
 
 	//Variables
 	UPROPERTY(BlueprintReadWrite, Category = "Default", EditAnywhere)
-	bool bRoomSafe;
+	bool bTresspassing;
+	
+	UPROPERTY(BlueprintReadWrite, Category = "Default", EditAnywhere)
+	bool bIllegalAction;
+
+	UFUNCTION()
+	void CheckRooms(class AActor* OverlappedActor = nullptr, class AActor* OtherActor = nullptr);
+
+	//Overrides
+	virtual void BeginPlay() override;
 };
