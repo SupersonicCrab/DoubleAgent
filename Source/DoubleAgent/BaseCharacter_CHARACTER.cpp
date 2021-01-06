@@ -45,12 +45,16 @@ bool ABaseCharacter_CHARACTER::CanBeSeenFrom(const FVector& ObserverLocation, FV
             //Set strength to 1 if character is not lit and within 4 metres
             if (Visibility == EVisbilityLevel::Visibility_None && FVector().Dist(ObserverLocation, GetMesh()->GetSocketLocation(Sockets[i])) <= 400.0f)
             {
-                OutSightStrength = 1;
+                OutSightStrength = 0.16666666666f;
                 return true;
             }
             else
+            {
+                if (i > 2)
+                    return true;
                 //Increment strength based on current visibility
-                OutSightStrength = OutSightStrength + 1 * static_cast<uint8>(Visibility);
+                OutSightStrength = OutSightStrength + (static_cast<float>(Visibility)/6);
+            }
             
             //Return true if strength is at 2
             if (OutSightStrength >= 2)

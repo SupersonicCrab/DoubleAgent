@@ -14,7 +14,7 @@
  * 
  */
 UCLASS()
-class DOUBLEAGENT_API ADoor : public ANavLinkProxy
+class DOUBLEAGENT_API ADoor : public ANavLinkProxy, public IAISightTargetInterface
 {
 	GENERATED_BODY()
 
@@ -32,16 +32,21 @@ class DOUBLEAGENT_API ADoor : public ANavLinkProxy
 	//Timeline for animation
 	UTimelineComponent* DoorTimeline;
 	
-	//NPC opening interaction
+	//NPC interaction
 	UFUNCTION()
 	void NPCInteraction(AActor* NPC, const FVector& Destination);
 
+	AActor* InteractingNPC = nullptr;
+	
 	//Unlock navmesh access
 	UFUNCTION()
     void Unlock();
 
 	//Used to prevent NPCs from breaking 
 	void ForceOpenDoor(AActor* Interactor);
+
+	UFUNCTION()
+	void OnOverlapEnd(class AActor* OverlappedActor, class AActor* OtherActor);
 	
 public:
 	//Animation data
@@ -67,6 +72,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool bDoorOpen = false;
 
-	//Override base function to add timeline functionality
+	//Override base functions
 	virtual void Tick(float DeltaTime) override;
+	virtual bool CanBeSeenFrom(const FVector& ObserverLocation, FVector& OutSeenLocation, int32& NumberOfLoSChecksPerformed, float& OutSightStrength, const AActor* IgnoreActor = nullptr) const override;
 };

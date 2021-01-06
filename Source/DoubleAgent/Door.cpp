@@ -3,6 +3,7 @@
 #include "Door.h"
 #include "AIController.h"
 #include "Editor.h"
+#include "Player_Character.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "Builders/CubeBuilder.h"
 #include "Components/StaticMeshComponent.h"
@@ -28,6 +29,8 @@ ADoor::ADoor()
     
     //Enable tick
     PrimaryActorTick.bCanEverTick = true;
+
+    OnActorEndOverlap.AddDynamic(this, &ADoor::OnOverlapEnd);
 }
 
 void ADoor::OpenAnimation()
@@ -44,6 +47,8 @@ void ADoor::CloseAnimation()
 
 void ADoor::NPCInteraction(AActor* NPC, const FVector& Destination)
 {
+    InteractingNPC = NPC;
+    
     //If a player tries to interact with the door the same frame the NPC is
     if (DoorTimeline != NULL)
     {
@@ -92,6 +97,31 @@ void ADoor::ForceOpenDoor(AActor* Interactor)
     bDoorOpen = true;
 }
 
+void ADoor::OnOverlapEnd(AActor* OverlappedActor, AActor* OtherActor)
+{
+    //If this NPC wasn't the interacting NPC
+    if (OtherActor != InteractingNPC)
+        return;
+    
+    //Get NPC blackboard
+    UBlackboardComponent* Blackboard = UAIBlueprintHelperLibrary::GetBlackboard(OtherActor);
+    
+    //If blackboard is invalid or detection is above or at 90
+    if (Blackboard == nullptr || Blackboard->GetValueAsFloat("Detection") >= 90)
+        return;
+
+    //Get overlapping players
+    TArray<AActor*> Players;
+    GetOverlappingActors(Players, APlayer_Character::StaticClass());
+
+    //If there is players near the door
+    if (Players.Num() > 0)
+        return;
+    
+    CloseDoor(OtherActor);
+    InteractingNPC = nullptr;
+}
+
 void ADoor::OpenDoor_Implementation(AActor* Interactor)
 {
     //Get all overlapping characters
@@ -134,7 +164,7 @@ void ADoor::OpenDoor_Implementation(AActor* Interactor)
 void ADoor::CloseDoor_Implementation(AActor* Interactor)
 {
     //If door is actually open and there isn't an animation playing
-    if (bDoorOpen && DoorTimeline == NULL && (!HasMovingAgents() || Interactor->IsA(AAICharacterBase_CHARACTER::StaticClass())))
+    if (bDoorOpen && DoorTimeline == NULL && (!HasMovingAgents() || (Interactor != nullptr && Interactor->IsA(AAICharacterBase_CHARACTER::StaticClass()))))
     {
         //Setup timeline
         FOnTimelineFloat TimelineCallback;
@@ -175,4 +205,10 @@ void ADoor::Tick(float DeltaTime)
             DoorTimeline = NULL;
         }
     }
+}
+
+bool ADoor::CanBeSeenFrom(const FVector& ObserverLocation, FVector& OutSeenLocation, int32& NumberOfLoSChecksPerformed,
+    float& OutSightStrength, const AActor* IgnoreActor) const
+{
+    return false;
 }
