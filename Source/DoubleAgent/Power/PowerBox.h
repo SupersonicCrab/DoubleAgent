@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "DoubleAgent/InteractInterface.h"
-#include "../SecuritySystem/RadioHub.h"
+#include "../Security/RadioHub.h"
 #include "DoubleAgent/Security/CameraHub.h"
 #include "GameFramework/Actor.h"
 #include "PowerBox.generated.h"

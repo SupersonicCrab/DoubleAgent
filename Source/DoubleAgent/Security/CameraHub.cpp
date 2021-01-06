@@ -10,10 +10,16 @@
 ACameraHub::ACameraHub(){
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
-	
+	//Create the root
+	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
+	this->SetRootComponent(Root);
+	//Create the box collision and attach it to the root
 	BoxCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("Box"));
-	BoxCollision->SetRelativeLocation(FVector(0,150,80));
-	BoxCollision->SetRelativeScale3D(FVector(7.0, 5.75, 4.25));
+	BoxCollision->SetupAttachment(Root);
+	//Resize the collision box
+	BoxCollision->SetRelativeLocation(FVector(0,250,80));
+	BoxCollision->SetRelativeScale3D(FVector(4, 5.75, 3));
+	//Enable the functions needed for the collision box
 	BoxCollision->OnComponentBeginOverlap.AddDynamic(this, &ACameraHub::OnBoxBeginOverlap);
 	BoxCollision->OnComponentEndOverlap.AddDynamic(this, &ACameraHub::OnComponentOverlapEnd);
 }

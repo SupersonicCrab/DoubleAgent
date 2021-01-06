@@ -14,17 +14,21 @@
 ACamera::ACamera(){
     RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
     
-    UStaticMesh* Mesh = LoadObject<UStaticMesh>(NULL, TEXT("StaticMesh'/Game/Art/Meshes/SecurityCamera/S_CameraArm.S_CameraArm'"));
+    UStaticMesh* Mesh = LoadObject<UStaticMesh>(NULL, TEXT("StaticMesh'/Game/Art/Meshes/Security/Camera/S_CameraArm.S_CameraArm'"));
     CameraArmStaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("CameraArmStaticMesh"));
     CameraArmStaticMesh->SetStaticMesh(Mesh);
     CameraArmStaticMesh->SetupAttachment(RootComponent);
 
-    Mesh = LoadObject<UStaticMesh>(NULL, TEXT("StaticMesh'/Game/Art/Meshes/SecurityCamera/S_Camera.S_Camera'"));
+    Mesh = LoadObject<UStaticMesh>(NULL, TEXT("StaticMesh'/Game/Art/Meshes/Security/Camera/S_Camera.S_Camera'"));
     CameraStaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("CameraStaticMesh"));
     CameraStaticMesh->SetStaticMesh(Mesh);
     CameraStaticMesh->SetupAttachment(CameraArmStaticMesh);
     CameraStaticMesh->SetRelativeLocation(FVector(-20,0,6));
 
+    CaptureComponent = CreateDefaultSubobject<USceneCaptureComponent2D>(TEXT("CaptureComponent"));
+    CaptureComponent->SetupAttachment(RootComponent);
+
+    bReplicates = true;
 }
 
 //Base implementation if not overridden
@@ -140,6 +144,14 @@ void ACamera::SetTargetRotation(){ //Helper Function
     if(RightYawLimit == 0 && LeftYawLimit == 0){ // If both the right limit and the left limit are 0
         RightYawLimit = LeftYawLimit = TargetYaw; //Set them both to the target rotation (which is the current rotation)
     }
+}
+
+void ACamera::NetRotate_Implementation(int Direction){
+    Rotate(Direction);
+}
+
+void ACamera::NetRequestRotate_Implementation(int Direction){
+    NetRotate(Direction);
 }
 
 FVector ACamera::GetCenterLocation_Implementation() const{

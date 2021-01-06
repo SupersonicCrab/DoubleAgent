@@ -63,7 +63,7 @@ public:
 	UFUNCTION(BlueprintCallable)
     virtual bool CanBeSeenFrom(const FVector& ObserverLocation, FVector& OutSeenLocation, int32& NumberOfLoSChecksPerformed, float& OutSightStrength, const AActor* IgnoreActor = NULL) const override;
 
-	UFUNCTION(Category="Scene Capture")
+	UFUNCTION(Category="Scene Capture", BlueprintCallable)
 	void SetCaptureEnabled(bool CaptureOn);
 	UFUNCTION(Category="Scene Capture")
 	void CaptureTick();
@@ -77,6 +77,11 @@ public:
 	void DisableAutoRotate();
 	UFUNCTION(Category="Rotate")
 	void SetTargetRotation();
+
+	UFUNCTION(Server, BlueprintCallable, Reliable)
+	void NetRequestRotate(int Direction);
+	UFUNCTION(NetMulticast, BlueprintCallable, Reliable)
+	void NetRotate(int Direction);
 
 	UPROPERTY(Category="Rotate", BlueprintReadWrite, EditAnywhere)
 	int Directionn;

@@ -30,6 +30,8 @@ public:
 	bool bDisplayOn;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TArray<UTextureRenderTarget2D*> TextureTargets;
+	UPROPERTY()
+	USceneComponent* Root;
 
 	UFUNCTION()
     void OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
