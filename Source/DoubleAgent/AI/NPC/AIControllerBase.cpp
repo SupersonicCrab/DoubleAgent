@@ -119,7 +119,7 @@ void AAIControllerBase::Tick(float DeltaTime)
     }
 }
 
-void AAIControllerBase::RaiseDetection(float NewDetection)
+bool AAIControllerBase::RaiseDetection(float NewDetection)
 {
     //If new detection is greater than current
     if (Blackboard->GetValueAsFloat("Detection") < NewDetection)
@@ -129,10 +129,13 @@ void AAIControllerBase::RaiseDetection(float NewDetection)
         //Update suspicion if above 40
         if (NewDetection > 40 && !Blackboard->GetValueAsBool("Suspicious"))
             Blackboard->SetValueAsBool("Suspicious", true);
+
+        return true;
     }
+    return false;
 }
 
-void AAIControllerBase::RaiseVocalStatus(EVocalStatus NewVocalStatus)
+bool AAIControllerBase::RaiseVocalStatus(EVocalStatus NewVocalStatus)
 {
     //If new vocal status is greater than current
     if (static_cast<EVocalStatus>(Blackboard->GetValueAsEnum("VocalStatus")) < NewVocalStatus)
@@ -148,7 +151,9 @@ void AAIControllerBase::RaiseVocalStatus(EVocalStatus NewVocalStatus)
         {
             RaiseDetection(90.0f);
         }
+        return true;
     }
+    return false;
 }
 
 void AAIControllerBase::HandleSightTick(AActor* CurrentActor, FAIStimulus& CurrentStimulus, float DeltaTime)

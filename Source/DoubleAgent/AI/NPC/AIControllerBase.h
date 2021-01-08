@@ -17,7 +17,7 @@ enum class EVocalStatus :uint8
     Vocal_Patrol UMETA(DisplayName = "Patrol"),
     //Cautious due to suspicion
     Vocal_Cautious UMETA(DisplayName = "Cautious"),
-    //Heightened alert state, may attack player depending on NPC type
+    //Heightened alert state
     Vocal_Alert UMETA(DisplayName = "Alert"),
     //Searching building for player
     Vocal_Searching UMETA(DisplayName = "Searching"),
@@ -99,7 +99,7 @@ public:
 
     //Helper Functions
     UFUNCTION(BlueprintCallable)
-    void RaiseDetection(float NewDetection);
+    bool RaiseDetection(float NewDetection);
     UFUNCTION(BlueprintCallable)
-    void RaiseVocalStatus(EVocalStatus NewVocalStatus);
+    bool RaiseVocalStatus(EVocalStatus NewVocalStatus);
 };

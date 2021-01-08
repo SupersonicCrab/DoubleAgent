@@ -7,27 +7,45 @@
 
 EBTNodeResult::Type UBTTask_Speak::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
-    //Save NPC and blackboard
-    APawn* NPC = Cast<AAIController>(OwnerComp.GetOwner())->GetPawn();
-    UBlackboardComponent* Blackboard = OwnerComp.GetBlackboardComponent();
+	//Save NPC and blackboard
+	APawn* NPC = Cast<AAIController>(OwnerComp.GetOwner())->GetPawn();
+	UBlackboardComponent* Blackboard = OwnerComp.GetBlackboardComponent();
 
-    //Register speech event
-    UAISense_Hearing::ReportNoiseEvent(GetWorld(), NPC->GetActorLocation(), 1, NPC, 0, FName("Speech"));
+	//If new action status is not idle
+	if (NewActionStatus != EActionStatus::Action_Idle)
+	{
+		//Raise vocal status
+		Cast<AStaffAIController>(OwnerComp.GetOwner())->RaiseVocalStatus(NewVocalStatus);
+		
+		//Set action status
+		Blackboard->SetValueAsEnum("ActionStatus", static_cast<uint8>(NewActionStatus));
 
-    //Raise vocal status
-    Cast<AStaffAIController>(OwnerComp.GetOwner())->RaiseVocalStatus(NewVocalStatus);
+		//If someone has already spoken nearby recently
+		if (IsValid(Blackboard->GetValueAsObject("Speaker")))
+			return EBTNodeResult::Succeeded;
+		
+		//Register speech event
+		UAISense_Hearing::ReportNoiseEvent(GetWorld(), NPC->GetActorLocation(), 1, NPC, 0, FName("Speech"));
+		
+		//Print to log and screen new action status
+		UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("%s spoke with status: %s"), *NPC->GetDebugName(NPC), *UEnum::GetDisplayValueAsText(NewActionStatus).ToString()), true, true, FLinearColor::Red, 10.0f);
+		
+		return EBTNodeResult::Succeeded;
+	}
+	
+	//If vocal status was raised
+	if (Cast<AStaffAIController>(OwnerComp.GetOwner())->RaiseVocalStatus(NewVocalStatus))
+	{
+		//If someone has already spoken nearby recently
+		if (IsValid(Blackboard->GetValueAsObject("Speaker")))
+			return EBTNodeResult::Succeeded;
+		
+		//Register speech event
+		UAISense_Hearing::ReportNoiseEvent(GetWorld(), NPC->GetActorLocation(), 1, NPC, 0, FName("Speech"));
 
-    //If new action status is not idle
-    if (NewActionStatus != EActionStatus::Action_Idle)
-    {
-        Blackboard->SetValueAsEnum("ActionStatus", static_cast<uint8>(NewActionStatus));
-        //Print to log and screen new action status
-        UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("%s spoke with status: %s"), *NPC->GetDebugName(NPC), *UEnum::GetDisplayValueAsText(NewActionStatus).ToString()), true, true, FLinearColor::Red, 10.0f);
-    }
+		//Print to log and screen new vocal status
+		UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("%s spoke with status: %s"), *NPC->GetDebugName(NPC), *UEnum::GetDisplayValueAsText(NewVocalStatus).ToString()), true, true, FLinearColor::Red, 10.0f);
+	}
 
-    //If no action status was set
-    else
-        UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("%s spoke with status: %s"), *NPC->GetDebugName(NPC), *UEnum::GetDisplayValueAsText(NewVocalStatus).ToString()), true, true, FLinearColor::Red, 10.0f);
-    
-    return EBTNodeResult::Succeeded;
+	return EBTNodeResult::Succeeded;
 }

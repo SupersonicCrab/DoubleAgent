@@ -24,8 +24,9 @@ class DOUBLEAGENT_API UBTTask_RaiseDetection : public UBTTaskNode
 public:
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override
 	{
-		//Call helper function
-		Cast<AAIControllerBase>(OwnerComp.GetOwner())->RaiseDetection(NewDetection);
+		//If raising detection failed
+		if (!Cast<AAIControllerBase>(OwnerComp.GetOwner())->RaiseDetection(NewDetection))
+			return EBTNodeResult::Failed;
 		
 		return EBTNodeResult::Succeeded;
 	};

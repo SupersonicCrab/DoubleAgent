@@ -25,7 +25,7 @@ enum class EActionStatus : uint8
     Action_Backup		UMETA(DisplayName = "Backup"),
 	//Patting down player due to suspicious clothing
     Action_BodySearch		UMETA(DisplayName = "BodySearch"),
-	//Investigating source of noise that was heard 80
+	//Investigating source of noise that was heard (at or above 40)
     Action_NoiseInvestigation		UMETA(DisplayName = "NoiseInvestigation"),
 	//Searching building for player (above or at 90)
     Action_Searching		UMETA(DisplayName = "Searching"),
