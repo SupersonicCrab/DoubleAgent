@@ -26,7 +26,11 @@ ACamera::ACamera(){
     CameraStaticMesh->SetRelativeLocation(FVector(-20,0,6));
 
     CaptureComponent = CreateDefaultSubobject<USceneCaptureComponent2D>(TEXT("CaptureComponent"));
-    CaptureComponent->SetupAttachment(RootComponent);
+    CaptureComponent->SetupAttachment(CameraStaticMesh);
+    CaptureComponent->SetRelativeScale3D(FVector(0.25, 0.25, 0.25));
+    CaptureComponent->SetRelativeRotation(FRotator(0,180,0));
+    CaptureComponent->SetRelativeLocation(FVector(-10, 0, 7));
+    CaptureComponent->FOVAngle = 100.0f;
 
     bReplicates = true;
 }
