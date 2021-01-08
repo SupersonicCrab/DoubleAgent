@@ -30,7 +30,8 @@ ACamera::ACamera(){
     CaptureComponent->SetRelativeScale3D(FVector(0.25, 0.25, 0.25));
     CaptureComponent->SetRelativeRotation(FRotator(0,180,0));
     CaptureComponent->SetRelativeLocation(FVector(-10, 0, 7));
-    CaptureComponent->FOVAngle = 100.0f;
+    CaptureComponent->FOVAngle = 90.0f;
+    CaptureComponent->bCaptureEveryFrame = false;
 
     bReplicates = true;
 }
@@ -76,6 +77,9 @@ bool ACamera::CanBeSeenFrom(const FVector& ObserverLocation, FVector& OutSeenLoc
 
 void ACamera::SetCaptureEnabled(bool CaptureOn){
     UpdatingCapture = CaptureOn;
+    if(CaptureOn == true){
+        CaptureTick();
+    }
 }
 
 void ACamera::CaptureTick(){

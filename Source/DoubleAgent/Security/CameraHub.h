@@ -25,7 +25,7 @@ public:
 	UPROPERTY()
 	TArray<bool> CameraAutoDefault;
 	UPROPERTY(BlueprintReadWrite)
-	bool bPowerOn;
+	bool bPowerOn = true;
 	UPROPERTY(BlueprintReadWrite)
 	bool bDisplayOn;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
