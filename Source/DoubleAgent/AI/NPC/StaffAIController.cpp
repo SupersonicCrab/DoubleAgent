@@ -152,13 +152,13 @@ void AStaffAIController::HandleRadioEvent(FRadioEvent RadioEvent)
     {
         //Alert
     case ERadioEvent::Radio_Alert:
-        Blackboard->SetValueAsVector("PlayerLastSeen", RadioEvent.Location);
+        Blackboard->SetValueAsVector("LoudNoiseLocation", RadioEvent.Location);
         RaiseVocalStatus(EVocalStatus::Vocal_Alert);
         break;
 
         //Engage
     case ERadioEvent::Radio_Engage:
-        Blackboard->SetValueAsVector("PlayerLastSeen", RadioEvent.Location);
+        Blackboard->SetValueAsVector("LoudNoiseLocation", RadioEvent.Location);
         Blackboard->ClearValue("InitialLastSeen");
         RaiseVocalStatus(EVocalStatus::Vocal_Engaging);
         break;
@@ -292,8 +292,8 @@ void AStaffAIController::NPCVisionTick(AActor* CurrentActor, FAIStimulus& Curren
     if (!OtherNPCController->BrainComponent->IsRunning())
         return;
     
-    //Get player last seen if set
-    if (!Blackboard->IsVectorValueSet("PlayerLastSeen") && OtherNPCBlackboard->IsVectorValueSet("PlayerLastSeen"))
+    //Get player last seen if other NPC can see player
+    if (!Blackboard->IsVectorValueSet("PlayerLastSeen") && IsValid(OtherNPCBlackboard->GetValueAsObject("LastPlayer")) && OtherNPCBlackboard->IsVectorValueSet("PlayerLastSeen"))
     {
         Blackboard->SetValueAsVector("PlayerLastSeen", OtherNPCBlackboard->GetValueAsVector("PlayerLastSeen"));
     }

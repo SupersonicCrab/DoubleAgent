@@ -99,8 +99,8 @@ void ADoor::ForceOpenDoor(AActor* Interactor)
 
 void ADoor::OnOverlapEnd(AActor* OverlappedActor, AActor* OtherActor)
 {
-    //If this NPC wasn't the interacting NPC
-    if (OtherActor != InteractingNPC)
+    //If this wasn't the interacting NPC
+    if (InteractingNPC == nullptr || OtherActor != InteractingNPC)
         return;
     
     //Get NPC blackboard
@@ -131,6 +131,10 @@ void ADoor::OpenDoor_Implementation(AActor* Interactor)
     //If the door is actually closed and there isn't an animation playing
     if (!bDoorOpen && DoorTimeline == NULL && (!HasMovingAgents() || Interactor->IsA(AAICharacterBase_CHARACTER::StaticClass())))
     {
+        //Lock smart link
+        bSmartLinkIsRelevant = false;
+        SetSmartLinkEnabled(false);
+        
         //Determine direction
         if (FVector().DotProduct(UKismetMathLibrary::FindLookAtRotation(Interactor->GetActorLocation(), GetActorLocation()).Vector(), OpenDirection->GetForwardVector()) > 0)
             Direction = 1;
@@ -146,10 +150,6 @@ void ADoor::OpenDoor_Implementation(AActor* Interactor)
         TimelineFinishedCallback.BindUFunction(this, FName("Unlock"));
         DoorTimeline->SetTimelineFinishedFunc(TimelineFinishedCallback);
         DoorTimeline->RegisterComponent();
-
-        //Lock smart link
-        bSmartLinkIsRelevant = false;
-        SetSmartLinkEnabled(false);
         
         //Play timeline
         DoorTimeline->PlayFromStart();
@@ -157,7 +157,7 @@ void ADoor::OpenDoor_Implementation(AActor* Interactor)
 
         //Play sound
         USoundBase* SoundCue = LoadObject<USoundBase>(NULL, TEXT("SoundCue'/Game/Audio/SoundEffects/Door/Wooden/WoodenDoorOpen_Cue.WoodenDoorOpen_Cue'"));
-        UGameplayStatics::PlaySoundAtLocation(GetWorld(), SoundCue, GetActorLocation(), GetActorRotation(), 1.0f, 1.0f, 0.0f, nullptr, nullptr, this);
+        UGameplayStatics::PlaySoundAtLocation(GetWorld(), SoundCue, GetActorLocation(), GetActorRotation(), FMath::RandRange(0.9f, 1.0f), 1.0f, 0.0f, nullptr, nullptr, this);
     }
 }
 
@@ -186,7 +186,7 @@ void ADoor::CloseDoor_Implementation(AActor* Interactor)
 
         //Play sound
         USoundBase* SoundCue = LoadObject<USoundBase>(NULL, TEXT("SoundCue'/Game/Audio/SoundEffects/Door/Wooden/WoodenDoorClose_Cue.WoodenDoorClose_Cue'"));
-        UGameplayStatics::PlaySoundAtLocation(GetWorld(), SoundCue, GetActorLocation(), GetActorRotation(), 1.0f, 1.0f, 0.0f, nullptr, nullptr, this);
+        UGameplayStatics::PlaySoundAtLocation(GetWorld(), SoundCue, GetActorLocation(), GetActorRotation(), FMath::RandRange(0.9f, 1.0f), 1.0f, 0.0f, nullptr, nullptr, this);
     }
 }
 
