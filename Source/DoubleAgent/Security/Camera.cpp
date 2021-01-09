@@ -85,7 +85,7 @@ void ACamera::SetCaptureEnabled(bool CaptureOn){
 void ACamera::CaptureTick(){
     if(bPowerOn && UpdatingCapture){ //If the power is on and the cameras are set to update
         CaptureComponent->CaptureScene(); //Then update the scene capture
-        UKismetSystemLibrary::K2_SetTimer(nullptr, "CaptureTick", (CaptureFPS/1.0f), false); //Then call this function again according to the CaptureFPS
+        UKismetSystemLibrary::K2_SetTimer(this, "CaptureTick", (1.0f/CaptureFPS), false); //Then call this function again according to the CaptureFPS
     }
 }
 

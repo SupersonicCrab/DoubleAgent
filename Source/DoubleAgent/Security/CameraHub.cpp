@@ -50,7 +50,6 @@ void ACameraHub::Tick(float DeltaTime){
 void ACameraHub::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult){
 	if(OtherActor->IsA(APlayer_Character::StaticClass())){
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Magenta, FString::Printf(TEXT("AHHH TESTING AHHH")));
 		if(bPowerOn){
 			EnableCapture();
 		}
