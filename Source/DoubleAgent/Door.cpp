@@ -2,10 +2,8 @@
 
 #include "Door.h"
 #include "AIController.h"
-#include "Editor.h"
 #include "Player_Character.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
-#include "Builders/CubeBuilder.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/TimelineComponent.h"
 #include "Engine/SkeletalMeshSocket.h"
