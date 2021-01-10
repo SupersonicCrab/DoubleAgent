@@ -10,8 +10,6 @@
 #include "../Public/ElectronicNodesSettings.h"
 
 #include "BlueprintConnectionDrawingPolicy.h"
-#include "MaterialGraph/MaterialGraphSchema.h"
-#include "EdGraphSchema_K2.h"
 
 struct ENRibbonConnection
 {
@@ -35,11 +33,8 @@ struct ENRibbonConnection
 
 struct FENConnectionDrawingPolicyFactory : public FGraphPanelPinConnectionFactory
 {
-public:
 	virtual ~FENConnectionDrawingPolicyFactory() {}
-
 	virtual class FConnectionDrawingPolicy* CreateConnectionPolicy(const class UEdGraphSchema* Schema, int32 InBackLayerID, int32 InFrontLayerID, float ZoomFactor, const class FSlateRect& InClippingRect, class FSlateWindowElementList& InDrawElements, class UEdGraph* InGraphObj) const override;
-
 };
 
 class FENConnectionDrawingPolicy : public FKismetConnectionDrawingPolicy
@@ -51,7 +46,6 @@ public:
 	}
 
 	virtual void DrawConnection(int32 LayerId, const FVector2D& Start, const FVector2D& End, const FConnectionParams& Params) override;
-
 
 	void ENComputeClosestPoint(const FVector2D& Start, const FVector2D& End);
 	void ENComputeClosestPointDefault(const FVector2D& Start, const FVector2D& StartTangent, const FVector2D& End, const FVector2D& EndTangent);

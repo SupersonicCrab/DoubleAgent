@@ -10,24 +10,21 @@ public class ElectronicNodes : ModuleRules
 	public ElectronicNodes(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
-		string fullEnginePath = Path.GetFullPath(Target.RelativeEnginePath);
 
 		PublicIncludePaths.AddRange(
 			new string[] { }
-			);
+		);
 
 		PrivateIncludePaths.AddRange(
-			new string[] {
-				fullEnginePath + "Source/Editor/AnimationBlueprintEditor/Private"
-			}
-			);
+			new string[] { }
+		);
 
 		PublicDependencyModuleNames.AddRange(
 			new string[]
 			{
 				"Core"
 			}
-			);
+		);
 
 		PrivateDependencyModuleNames.AddRange(
 			new string[]
@@ -36,19 +33,17 @@ public class ElectronicNodes : ModuleRules
 				"Engine",
 				"Slate",
 				"SlateCore",
+				"InputCore",
 				"UnrealEd",
 				"GraphEditor",
-				"MaterialEditor",
-				"BlueprintGraph",
 				"AnimGraph",
-				"AnimationBlueprintEditor",
-				"AudioEditor"
+				"DeveloperSettings"
 			}
-			);
+		);
 
 		DynamicallyLoadedModuleNames.AddRange(
 			new string[]
-			{}
-			);
+				{ }
+		);
 	}
 }
