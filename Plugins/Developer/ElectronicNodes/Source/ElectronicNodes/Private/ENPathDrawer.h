@@ -5,14 +5,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "EdGraphUtilities.h"
 #include "ConnectionDrawingPolicy.h"
 #include "ENConnectionDrawingPolicy.h"
 #include "../Public/ElectronicNodesSettings.h"
-
-#include "BlueprintConnectionDrawingPolicy.h"
-#include "MaterialGraph/MaterialGraphSchema.h"
-#include "EdGraphSchema_K2.h"
 
 class FENPathDrawer
 {
@@ -30,7 +25,7 @@ public:
 	void DrawUTurn(const FVector2D& Start, const FVector2D& StartDirection, float Direction, FVector2D& out_End, FVector2D& out_EndDirection, bool Backward = false);
 	void DrawCorrectionOrtho(const FVector2D& Start, const FVector2D& StartDirection, const float& Displacement, FVector2D& out_End, FVector2D& out_EndDirection, bool Backward = false);
 
-	float GetRadiusOffset(const int32& AngleDeg = 0, bool Perpandicular = false);
+	float GetRadiusOffset(const int32& AngleDeg = 0, bool Perpendicular = false);
 	float GetRadiusTangent(const int32& AngleDeg = 0);
 	float GetIntersectionOffset(const int32& AngleDeg = 0, bool Diagonal = false);
 
@@ -53,5 +48,5 @@ private:
 	FSlateWindowElementList* DrawElementsList;
 	FENConnectionDrawingPolicy* ConnectionDrawingPolicy;
 
-	int32 maxDepthWire = 5;
+	int32 MaxDepthWire = 5;
 };
