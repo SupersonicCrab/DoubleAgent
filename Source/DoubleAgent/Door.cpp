@@ -2,8 +2,10 @@
 
 #include "Door.h"
 #include "AIController.h"
+#include "Editor.h"
 #include "Player_Character.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
+#include "Builders/CubeBuilder.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/TimelineComponent.h"
 #include "Engine/SkeletalMeshSocket.h"
@@ -64,7 +66,6 @@ void ADoor::NPCInteraction(AActor* NPC, const FVector& Destination)
 void ADoor::Unlock()
 {
     //Unlock smart link
-    bSmartLinkIsRelevant = true;
     SetSmartLinkEnabled(true);
 }
 
@@ -130,7 +131,6 @@ void ADoor::OpenDoor_Implementation(AActor* Interactor)
     if (!bDoorOpen && DoorTimeline == NULL && (!HasMovingAgents() || Interactor->IsA(AAICharacterBase_CHARACTER::StaticClass())))
     {
         //Lock smart link
-        bSmartLinkIsRelevant = false;
         SetSmartLinkEnabled(false);
         
         //Determine direction
@@ -175,7 +175,6 @@ void ADoor::CloseDoor_Implementation(AActor* Interactor)
         DoorTimeline->RegisterComponent();
 
         //Lock smart link
-        bSmartLinkIsRelevant = false;
         SetSmartLinkEnabled(false);
         
         //Play timeline
