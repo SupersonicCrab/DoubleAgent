@@ -17,13 +17,57 @@ ACameraHub::ACameraHub(){
 	BoxCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxCollision"));
 	BoxCollision->SetupAttachment(Root);
 	//Resize the collision box
-	BoxCollision->SetRelativeLocation(FVector(0,250,80));
-	BoxCollision->SetRelativeScale3D(FVector(4, 5.75, 3));
+	BoxCollision->SetRelativeLocation(FVector(0,150,100));
+	BoxCollision->SetRelativeScale3D(FVector(5, 8, 3.5));
 	//Enable the collision on the object
 	BoxCollision->SetGenerateOverlapEvents(true);
 	SetActorEnableCollision(true);
 	BoxCollision->OnComponentBeginOverlap.AddDynamic(this, &ACameraHub::OnBoxBeginOverlap);
 	BoxCollision->OnComponentEndOverlap.AddDynamic(this, &ACameraHub::OnComponentOverlapEnd);
+
+	//Set up table and stand static mesh and attach to the root component
+	TableMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("TableAndStand"));
+	TableMesh->SetupAttachment(Root);
+
+	UStaticMesh* Mesh;
+	Mesh = LoadObject<UStaticMesh>(NULL, TEXT("StaticMesh'/Game/Art/Meshes/Security/CameraHub/SM_CameraHub.SM_CameraHub'"));
+	TableMesh->SetStaticMesh(Mesh);
+	
+	//Set up all the screen static meshes and attach to the table component
+	//Screen 001
+	ScreenMeshes.Add(CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Screen1")));
+	ScreenMeshes[0]->SetupAttachment(TableMesh);
+	Mesh = LoadObject<UStaticMesh>(NULL, TEXT("StaticMesh'/Game/Art/Meshes/Security/CameraHub/SM_CameraHub_001.SM_CameraHub_001'"));
+	ScreenMeshes[0]->SetStaticMesh(Mesh);
+	//Screen 002
+	ScreenMeshes.Add(CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Screen2")));
+	ScreenMeshes[1]->SetupAttachment(TableMesh);
+	Mesh = LoadObject<UStaticMesh>(NULL, TEXT("StaticMesh'/Game/Art/Meshes/Security/CameraHub/SM_CameraHub_002.SM_CameraHub_002'"));
+	ScreenMeshes[1]->SetStaticMesh(Mesh);
+	//Screen 003
+	ScreenMeshes.Add(CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Screen3")));
+	ScreenMeshes[2]->SetupAttachment(TableMesh);
+	Mesh = LoadObject<UStaticMesh>(NULL, TEXT("StaticMesh'/Game/Art/Meshes/Security/CameraHub/SM_CameraHub_003.SM_CameraHub_003'"));
+	ScreenMeshes[2]->SetStaticMesh(Mesh);
+	//Screen 004
+	ScreenMeshes.Add(CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Screen4")));
+	ScreenMeshes[3]->SetupAttachment(TableMesh);
+	Mesh = LoadObject<UStaticMesh>(NULL, TEXT("StaticMesh'/Game/Art/Meshes/Security/CameraHub/SM_CameraHub_004.SM_CameraHub_004'"));
+	ScreenMeshes[3]->SetStaticMesh(Mesh);
+	//Screen 005
+	ScreenMeshes.Add(CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Screen5")));
+	ScreenMeshes[4]->SetupAttachment(TableMesh);
+	Mesh = LoadObject<UStaticMesh>(NULL, TEXT("StaticMesh'/Game/Art/Meshes/Security/CameraHub/SM_CameraHub_005.SM_CameraHub_005'"));
+	ScreenMeshes[4]->SetStaticMesh(Mesh);
+	//Screen 006
+	ScreenMeshes.Add(CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Screen6")));
+	ScreenMeshes[5]->SetupAttachment(TableMesh);
+	Mesh = LoadObject<UStaticMesh>(NULL, TEXT("StaticMesh'/Game/Art/Meshes/Security/CameraHub/SM_CameraHub_006.SM_CameraHub_006'"));
+	ScreenMeshes[5]->SetStaticMesh(Mesh);
+	//Increase scale so that the table is a more appropriate size
+	//Rotate the CameraHub mesh so that it'll match with the collision box
+	TableMesh->SetRelativeScale3D(FVector(1.3f,1.3f,1.3f));
+	TableMesh->SetRelativeRotation(FRotator(0.0f, 90.0f,0.0f));
 }
 
 // Called when the game starts or when spawned
