@@ -32,6 +32,10 @@ public:
 	TArray<UTextureRenderTarget2D*> TextureTargets;
 	UPROPERTY()
 	USceneComponent* Root;
+	UPROPERTY()
+	TArray<UStaticMeshComponent*> ScreenMeshes;
+	UPROPERTY()
+	UStaticMeshComponent* TableMesh;
 
 	UFUNCTION()
     void OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);

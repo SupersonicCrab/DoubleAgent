@@ -25,9 +25,9 @@ public:
 	bool bRadiosOn;
 	UPROPERTY(Category="Power States", BlueprintReadWrite)
 	bool bCamerasOn;
-	UPROPERTY()
+	UPROPERTY(Category="Hub References", BlueprintReadWrite)
 	ARadioHub* RadioHub;
-	UPROPERTY()
+	UPROPERTY(Category="Hub References", BlueprintReadWrite)
 	ACameraHub* CameraHub;
 	UPROPERTY(Category="Power States", BlueprintReadWrite)
 	bool bPowerCut = false;
@@ -57,6 +57,8 @@ public:
 	void TurnRadiosOff();
 	UFUNCTION(BlueprintCallable)
 	void CutPower();
+	UFUNCTION()
+	bool TurnAllPowerOn();
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

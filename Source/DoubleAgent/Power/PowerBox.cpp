@@ -23,6 +23,8 @@ void APowerBox::BeginPlay(){
 	Super::BeginPlay();
 	AActor* temphub = UGameplayStatics::GetActorOfClass(GetWorld(), ARadioHub::StaticClass()); // Get the radio hub actor
 	RadioHub = dynamic_cast<ARadioHub*>(temphub); //Cast the radio hub into a radio hub class to store it properly
+	temphub = UGameplayStatics::GetActorOfClass(GetWorld(), ACameraHub::StaticClass()); //Get the camera hub actor
+	CameraHub = dynamic_cast<ACameraHub*>(temphub); //Cast the camera hub into a camera hub class to store it properly
 }
 
 // Called every frame
@@ -106,6 +108,21 @@ void APowerBox::MulticastLightsOff_Implementation(){
 
 void APowerBox::CutPower(){
 	bPowerCut = true;
+}
+
+bool APowerBox::TurnAllPowerOn(){
+	if(bPowerCut){
+		return false;
+	}
+	TurnLightsOn();
+	TurnCamerasOn();
+	TurnLandlinesOn();
+	TurnRadiosOn();
+	bLightsOn = true;
+	bCamerasOn = true;
+	bLandlinesOn = true;
+	bRadiosOn = true;
+	return true;
 }
 
 void APowerBox::GetLifetimeReplicatedProps( TArray< FLifetimeProperty > & OutLifetimeProps ) const{ 
