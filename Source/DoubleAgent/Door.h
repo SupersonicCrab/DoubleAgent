@@ -58,7 +58,7 @@ public:
 	//Door mesh reference
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UStaticMeshComponent* DoorMesh;
-
+	
 	//Used to determine direction
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UArrowComponent* OpenDirection;
@@ -67,6 +67,16 @@ public:
 	void OpenDoor(AActor* Interactor);
 	UFUNCTION(BlueprintCallable, NetMulticast, Reliable)
 	void CloseDoor(AActor* Interactor);
+
+	//Create a bsp brush cutout the size of the doors bounding box
+	UFUNCTION(CallInEditor)
+	void UpdateCutout();
+
+	UPROPERTY(EditAnywhere)
+	ABrush* DoorCutout = nullptr;
+
+	UFUNCTION(BlueprintImplementableEvent)
+	FBoxSphereBounds GetMeshBounds();
 	
 	//Whether or not the door is open
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

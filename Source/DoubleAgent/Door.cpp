@@ -6,8 +6,10 @@
 #include "Player_Character.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "Builders/CubeBuilder.h"
+#include "Components/BrushComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/TimelineComponent.h"
+#include "Engine/Polys.h"
 #include "Engine/SkeletalMeshSocket.h"
 #include "Kismet/GameplayStatics.h"
 #include "Tasks/AITask_MoveTo.h"
@@ -185,6 +187,43 @@ void ADoor::CloseDoor_Implementation(AActor* Interactor)
         USoundBase* SoundCue = LoadObject<USoundBase>(NULL, TEXT("SoundCue'/Game/Audio/SoundEffects/Door/Wooden/WoodenDoorClose_Cue.WoodenDoorClose_Cue'"));
         UGameplayStatics::PlaySoundAtLocation(GetWorld(), SoundCue, GetActorLocation(), GetActorRotation(), FMath::RandRange(0.9f, 1.0f), 1.0f, 0.0f, nullptr, nullptr, this);
     }
+}
+
+void ADoor::UpdateCutout()
+{
+    //If cutout for this door has not been created
+    if (DoorCutout == nullptr)
+    {
+        //Spawn default brush
+        DoorCutout = GEditor->GetEditorWorldContext().World()->SpawnBrush();
+
+        //Set builder to be of type cube builder
+        DoorCutout->BrushBuilder = NewObject<UBrushBuilder>(DoorCutout, UCubeBuilder::StaticClass(), NAME_None, RF_Transactional);
+
+        //Setup brush mesh
+        DoorCutout->Brush = NewObject<UModel>(DoorCutout, NAME_None, RF_Transactional);
+        DoorCutout->Brush->Initialize(DoorCutout, true);
+        DoorCutout->GetBrushComponent()->Brush = DoorCutout->Brush;
+        DoorCutout->BrushType = EBrushType::Brush_Subtract;
+
+        //Rename brush
+        DoorCutout->SetActorLabel("DoorCutout");
+    }
+
+    //Get door bounding box
+    FBoxSphereBounds Bounds = GetMeshBounds();
+
+    //Set cube to bounding box
+    DoorCutout->SetActorLocation(Bounds.Origin);
+    UCubeBuilder* CubeBuilder = Cast<UCubeBuilder>(DoorCutout->BrushBuilder);
+    CubeBuilder->X = Bounds.BoxExtent.X*2;
+    CubeBuilder->Y = Bounds.BoxExtent.Y*2;
+    CubeBuilder->Z = Bounds.BoxExtent.Z*2;
+
+    //Build brush
+    CubeBuilder->Build(DoorCutout->GetWorld(), DoorCutout);
+    DoorCutout->SetNeedRebuild(DoorCutout->GetLevel());
+    GEditor->RebuildAlteredBSP();
 }
 
 void ADoor::Tick(float DeltaTime)

@@ -8,7 +8,7 @@ public class DoubleAgent : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "AIModule", "OnlineSubsystem", "NavigationSystem", "UMG", "Slate", "SlateCore", "GameplayTasks" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "AIModule", "OnlineSubsystem", "NavigationSystem", "UMG", "Slate", "SlateCore", "GameplayTasks", "UnrealEd" });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 
