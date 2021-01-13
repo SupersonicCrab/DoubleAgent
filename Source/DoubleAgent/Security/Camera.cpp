@@ -168,10 +168,10 @@ FVector ACamera::GetCenterLocation_Implementation() const{
 
 void ACamera::TestRotate(){
     int Temp = static_cast<int>(CameraStaticMesh->GetRelativeRotation().Yaw / RotateAmount); //Gets the current rotation of the camera and divide it by the direction times the rotation amount
-    Temp = Temp+Directionn;
+    Temp = Temp+Direction;
     Temp = Temp*RotateAmount;
     GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Magenta, FString::Printf(TEXT("Temp: %i"), Temp));
-    if(Directionn > 0){ //Checks if the direction is to the right
+    if(Direction > 0){ //Checks if the direction is to the right
         if(Temp <= RightYawLimit){ 
             TargetYaw = static_cast<float>(Temp); //If the new target rotation is less than the right limit, then set the target rotation to the new one
         } else{

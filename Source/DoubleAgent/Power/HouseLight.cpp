@@ -9,7 +9,7 @@
 // Sets default values
 AHouseLight::AHouseLight()
 {
-	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));;
+	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
 	RootComponent->SetMobility(EComponentMobility::Stationary);
 	
 	//Setup sphere

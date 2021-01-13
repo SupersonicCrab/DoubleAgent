@@ -84,7 +84,7 @@ public:
 	void NetRotate(int Direction);
 
 	UPROPERTY(Category="Rotate", BlueprintReadWrite, EditAnywhere)
-	int Directionn;
+	int Direction;
 	UFUNCTION(Category="Rotate", CallInEditor)
     void TestRotate();
 
