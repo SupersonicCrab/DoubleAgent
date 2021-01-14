@@ -6,7 +6,12 @@
 #include "Perception/AISightTargetInterface.h"
 #include "Components/SceneCaptureComponent2D.h"
 #include "../Power/PowerComponent.h"
+#include "Perception/AIPerceptionComponent.h"
+#include "Perception/AISenseConfig_Sight.h"
 #include "Camera.generated.h"
+
+//Forward declaration 
+class AStaffAIController;
 
 UCLASS()
 class DOUBLEAGENT_API ACamera : public APowerComponent, public IAISightTargetInterface{
@@ -26,40 +31,30 @@ public:
 	UPROPERTY(Category="Scene Capture", EditAnywhere, BlueprintReadWrite)
 	bool UpdatingCapture;
 	UPROPERTY(Category="Scene Capture", EditAnywhere, BlueprintReadWrite)
-    float CaptureFPS;
+    float CaptureFPS = 7.5;
 	UPROPERTY(Category="Rotate", EditAnywhere, BlueprintReadWrite)
-	float RightYawLimit;
+	float RightYawLimit = 30;
 	UPROPERTY(Category="Rotate", EditAnywhere, BlueprintReadWrite)
-	float LeftYawLimit;
+	float LeftYawLimit = 30;
 	UPROPERTY(Category="Rotate", EditAnywhere, BlueprintReadWrite)
-	float CurrentYaw;
+	float CurrentYaw = 0;
 	UPROPERTY(Category="Rotate", EditAnywhere, BlueprintReadWrite)
 	float TargetYaw;
 	UPROPERTY(Category="Rotate", EditAnywhere, BlueprintReadWrite)
 	float CurrentRotationSpeed;
 	UPROPERTY(Category="Rotate", EditAnywhere)
-	float RotationSpeed;
+	float RotationSpeed = 10;
 	UPROPERTY(Category="Rotate", EditAnywhere, BlueprintReadWrite)
-	float RotateAmount;
-	UPROPERTY(Category="Rotate", EditAnywhere, BlueprintReadWrite)
-	bool bAutoRotateDefault;
+	float RotateAmount = 1;
 	UPROPERTY(Category="Rotate", EditAnywhere, BlueprintReadWrite)
 	bool bAutoRotate;
 	UPROPERTY(Category="Rotate", EditAnywhere, BlueprintReadWrite)
-	float AutoRotateDelay;
-	
-	//Setter for blueprints
-	UFUNCTION(BlueprintNativeEvent)
-	void GetPerceptionLocationRotation(FVector& OutLocation, FRotator& OutRotation) const;
+	float AutoRotateDelay = 1;
 
 	//Overriding base function for perception
 	virtual void GetActorEyesViewPoint(FVector& OutLocation, FRotator& OutRotation) const override;
-
-	//Blueprint function to set center location
-	UFUNCTION(BlueprintNativeEvent)
-    FVector GetCenterLocation() const;
 	
-	// Overide base function to add socket locations to raycast
+	//Override base function to add socket locations to raycast
 	UFUNCTION(BlueprintCallable)
     virtual bool CanBeSeenFrom(const FVector& ObserverLocation, FVector& OutSeenLocation, int32& NumberOfLoSChecksPerformed, float& OutSightStrength, const AActor* IgnoreActor = NULL) const override;
 
@@ -68,29 +63,39 @@ public:
 	UFUNCTION(Category="Scene Capture")
 	void CaptureTick();
 	UFUNCTION(Category="Rotate")
-	void Rotate(int Direction);
+	void Rotate(int Direction_);
 	UFUNCTION(Category="Rotate")
 	void RotationTick(float DeltaTime_);
 	UFUNCTION(Category="Rotate")
 	void HandleAutoRotate();
 	UFUNCTION(Category="Rotate")
 	void DisableAutoRotate();
-	UFUNCTION(Category="Rotate")
+	UFUNCTION(Category="Rotate", CallInEditor)
 	void SetTargetRotation();
 
-	UFUNCTION(Server, BlueprintCallable, Reliable)
-	void NetRequestRotate(int Direction);
-	UFUNCTION(NetMulticast, BlueprintCallable, Reliable)
-	void NetRotate(int Direction);
-
-	UPROPERTY(Category="Rotate", BlueprintReadWrite, EditAnywhere)
-	int Direction;
-	UFUNCTION(Category="Rotate", CallInEditor)
-    void TestRotate();
-
-	virtual void Tick(float DeltaTime) override;
+	FTimerHandle AutoRotate;
 	
-	protected:
-    // Called when the game starts or when spawned
+	UFUNCTION(Server, BlueprintCallable, Reliable)
+	void NetRequestRotate(int Direction_);
+	UFUNCTION(NetMulticast, BlueprintCallable, Reliable)
+	void NetRotate(int Direction_);
+
+	//Called when perceived actors is updated
+	UFUNCTION()
+    void OnPerceptionUpdated(const TArray<AActor*>& DetectedActors);
+
+	//Perception configurations
+	UAISenseConfig_Sight* SightConfig;
+	
+	//Perception component
+	UAIPerceptionComponent* PerceptionComponent;
+
+	//OperatorNPC
+	AStaffAIController* OperatorNPC;
+
+	void PerceptionTick(float DeltaTime);
+	
+	//Base overrides
+	virtual void Tick(float DeltaTime) override;
     virtual void BeginPlay() override;
 };

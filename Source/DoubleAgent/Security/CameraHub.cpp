@@ -3,7 +3,7 @@
 
 #include "CameraHub.h"
 #include "DoubleAgent/Player_Character.h"
-
+#include "Engine/TextureRenderTarget2D.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
@@ -68,6 +68,20 @@ ACameraHub::ACameraHub(){
 	//Rotate the CameraHub mesh so that it'll match with the collision box
 	TableMesh->SetRelativeScale3D(FVector(1.3f,1.3f,1.3f));
 	TableMesh->SetRelativeRotation(FRotator(0.0f, 90.0f,0.0f));
+
+	//Load texture targets
+	UTextureRenderTarget2D* TextureRenderTarget2D = LoadObject<UTextureRenderTarget2D>(NULL, TEXT("TextureRenderTarget2D'/Game/SecuritySystem/Cam_Input/RT_CameraFeed.RT_CameraFeed'"));
+	TextureTargets.Add(TextureRenderTarget2D);
+	TextureRenderTarget2D = LoadObject<UTextureRenderTarget2D>(NULL, TEXT("TextureRenderTarget2D'/Game/SecuritySystem/Cam_Input/RT_CameraFeed2.RT_CameraFeed2'"));
+	TextureTargets.Add(TextureRenderTarget2D);
+	TextureRenderTarget2D = LoadObject<UTextureRenderTarget2D>(NULL, TEXT("TextureRenderTarget2D'/Game/SecuritySystem/Cam_Input/RT_CameraFeed3.RT_CameraFeed3'"));
+	TextureTargets.Add(TextureRenderTarget2D);
+	TextureRenderTarget2D = LoadObject<UTextureRenderTarget2D>(NULL, TEXT("TextureRenderTarget2D'/Game/SecuritySystem/Cam_Input/RT_CameraFeed4.RT_CameraFeed4'"));
+	TextureTargets.Add(TextureRenderTarget2D);
+	TextureRenderTarget2D = LoadObject<UTextureRenderTarget2D>(NULL, TEXT("TextureRenderTarget2D'/Game/SecuritySystem/Cam_Input/RT_CameraFeed5.RT_CameraFeed5'"));
+	TextureTargets.Add(TextureRenderTarget2D);
+	TextureRenderTarget2D = LoadObject<UTextureRenderTarget2D>(NULL, TEXT("TextureRenderTarget2D'/Game/SecuritySystem/Cam_Input/RT_CameraFeed6.RT_CameraFeed6'"));
+	TextureTargets.Add(TextureRenderTarget2D);
 }
 
 // Called when the game starts or when spawned
@@ -79,7 +93,7 @@ void ACameraHub::BeginPlay(){
 	for(auto c : tempCameras){
 		Cameras.Add(dynamic_cast<ACamera*>(c)); //Cast all camera actors into camera pointers and store them in an array
 	}
-	for(int i = 0; i < 6; i++){
+	for(int i = 0; i < Cameras.Num(); i++){
 		CameraAutoDefault.Add(Cameras[i]->bAutoRotate);
 		Cameras[i]->CaptureComponent->TextureTarget = TextureTargets[i]; //Setting each camera to send their texture target to the associated target texture
 		Cameras[i]->CaptureComponent->CaptureScene();

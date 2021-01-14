@@ -1,19 +1,18 @@
 // Please don't steal
 
-
 #include "Camera.h"
-
-#include <string>
-
 #include "CameraHub.h"
-
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
+#include "DoubleAgent/AI/NPC/StaffAIController.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 // Sets default values
 ACamera::ACamera(){
+    //Setup root
     RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
-    
+
+    //Attach mesh's
     UStaticMesh* Mesh = LoadObject<UStaticMesh>(NULL, TEXT("StaticMesh'/Game/Art/Meshes/Security/Camera/S_CameraArm.S_CameraArm'"));
     CameraArmStaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("CameraArmStaticMesh"));
     CameraArmStaticMesh->SetStaticMesh(Mesh);
@@ -25,6 +24,7 @@ ACamera::ACamera(){
     CameraStaticMesh->SetupAttachment(CameraArmStaticMesh);
     CameraStaticMesh->SetRelativeLocation(FVector(-20,0,6));
 
+    //Setup capture component
     CaptureComponent = CreateDefaultSubobject<USceneCaptureComponent2D>(TEXT("CaptureComponent"));
     CaptureComponent->SetupAttachment(CameraStaticMesh);
     CaptureComponent->SetRelativeScale3D(FVector(0.25, 0.25, 0.25));
@@ -32,41 +32,45 @@ ACamera::ACamera(){
     CaptureComponent->SetRelativeLocation(FVector(-10, 0, 7));
     CaptureComponent->FOVAngle = 90.0f;
     CaptureComponent->bCaptureEveryFrame = false;
+    CaptureComponent->bCaptureOnMovement = false;
 
+    //Network replication
     bReplicates = true;
-}
 
-//Base implementation if not overridden
-void ACamera::GetPerceptionLocationRotation_Implementation(FVector& OutLocation, FRotator& OutRotation) const{
-    OutLocation = GetActorLocation();
-    OutRotation = GetActorRotation();
+    //Create default sense config
+    SightConfig = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("Sight Config"));
+    
+    //Create perception component
+    PerceptionComponent = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("Perception Component"));
+    
+    //Setup sight
+    SightConfig->SightRadius = 1500.0f;
+    SightConfig->LoseSightRadius = 2000.0f;
+    SightConfig->PeripheralVisionAngleDegrees = CaptureComponent->FOVAngle;
+    SightConfig->SetMaxAge(1.0f);
+    SightConfig->DetectionByAffiliation.bDetectEnemies = true;
+    SightConfig->DetectionByAffiliation.bDetectNeutrals = true;
+    SightConfig->DetectionByAffiliation.bDetectFriendlies = true;
+    PerceptionComponent->ConfigureSense(*SightConfig);
+
+    //Assigning perception delegate
+    PerceptionComponent->OnPerceptionUpdated.AddDynamic(this, &ACamera::OnPerceptionUpdated);
 }
 
 //Use override function as new eyes view point
 void ACamera::GetActorEyesViewPoint(FVector& OutLocation, FRotator& OutRotation) const{
-    GetPerceptionLocationRotation(OutLocation, OutRotation);
+    OutLocation = CaptureComponent->GetComponentLocation();
+    OutRotation = CaptureComponent->GetComponentRotation();
 }
 
-bool ACamera::CanBeSeenFrom(const FVector& ObserverLocation, FVector& OutSeenLocation,
-    int32& NumberOfLoSChecksPerformed, float& OutSightStrength, const AActor* IgnoreActor) const{
-    //Raycast to actor location
+bool ACamera::CanBeSeenFrom(const FVector& ObserverLocation, FVector& OutSeenLocation, int32& NumberOfLoSChecksPerformed, float& OutSightStrength, const AActor* IgnoreActor) const{
+    //Raycast to center of camera
     FHitResult HitResult;
     NumberOfLoSChecksPerformed++;
-    //Return true if raycast hit actor
-    if (!GetWorld()->LineTraceSingleByChannel(HitResult, ObserverLocation, GetActorLocation() , ECollisionChannel(ECC_Visibility), FCollisionQueryParams( FName(TEXT("ActorLOS")), true, IgnoreActor)) || HitResult.Actor->IsOwnedBy(this)){
-        OutSeenLocation = GetActorLocation();
+    //Return true if raycast hit nothing or self
+    if (!GetWorld()->LineTraceSingleByChannel(HitResult, ObserverLocation, CameraStaticMesh->GetComponentLocation() , ECollisionChannel(ECC_Visibility), FCollisionQueryParams(FName(TEXT("CenterLOS")), true, IgnoreActor)) || HitResult.Actor->IsOwnedBy(this)){
+        OutSeenLocation = CameraStaticMesh->GetComponentLocation();
         OutSightStrength = 1;
-
-        return true;
-    }
-
-    //Raycast to center of camera
-    NumberOfLoSChecksPerformed++;
-    //Return true if raycast hit actor
-    if (!GetWorld()->LineTraceSingleByChannel(HitResult, ObserverLocation, GetCenterLocation() , ECollisionChannel(ECC_Visibility), FCollisionQueryParams(FName(TEXT("CenterLOS")), true, IgnoreActor)) || HitResult.Actor->IsOwnedBy(this)){
-        OutSeenLocation = GetActorLocation();
-        OutSightStrength = 1;
-
         return true;
     }
 
@@ -84,16 +88,16 @@ void ACamera::SetCaptureEnabled(bool CaptureOn){
 
 void ACamera::CaptureTick(){
     if(bPowerOn && UpdatingCapture){ //If the power is on and the cameras are set to update
-        CaptureComponent->CaptureScene(); //Then update the scene capture
+        CaptureComponent->CaptureSceneDeferred(); //Then update the scene capture
         UKismetSystemLibrary::K2_SetTimer(this, "CaptureTick", (1.0f/CaptureFPS), false); //Then call this function again according to the CaptureFPS
     }
 }
 
-void ACamera::Rotate(int Direction){ //Takes in a direction of either -1 (Left) or +1 (Right)
+void ACamera::Rotate(int Direction_){ //Takes in a direction of either -1 (Left) or +1 (Right)
     int Temp = static_cast<int>(CameraStaticMesh->GetRelativeRotation().Yaw / RotateAmount); //Gets the current rotation of the camera and divide it by the direction times the rotation amount
-    Temp += Direction;
+    Temp += Direction_;
     Temp *= RotateAmount;
-    if(Direction > 0){ //Checks if the direction is to the right
+    if(Direction_ > 0){ //Checks if the direction is to the right
         if(Temp <= RightYawLimit){ 
             TargetYaw = Temp; //If the new target rotation is less than the right limit, then set the target rotation to the new one
         } else{
@@ -123,8 +127,8 @@ void ACamera::RotationTick(float DeltaTime_){
             CameraStaticMesh->AddRelativeRotation(FRotator(0,(CurrentRotationSpeed*1),0) * DeltaTime_);
         }
     } else{ //Handle Auto Rotation
-        if(!UKismetSystemLibrary::K2_IsTimerActive(nullptr, "HandleAutoRotate") && bAutoRotate){
-            UKismetSystemLibrary::K2_SetTimer(nullptr, "HandleAutoRotate", AutoRotateDelay, false);
+        if(!UKismetSystemLibrary::K2_IsTimerActiveHandle(GetWorld(), AutoRotate) && bAutoRotate){
+           AutoRotate = UKismetSystemLibrary::K2_SetTimer(this, "HandleAutoRotate", AutoRotateDelay, false); 
         }
     }
 }
@@ -154,46 +158,71 @@ void ACamera::SetTargetRotation(){ //Helper Function
     }
 }
 
-void ACamera::NetRotate_Implementation(int Direction){
-    Rotate(Direction);
+void ACamera::NetRotate_Implementation(int Direction_){
+    Rotate(Direction_);
 }
 
-void ACamera::NetRequestRotate_Implementation(int Direction){
-    NetRotate(Direction);
+void ACamera::NetRequestRotate_Implementation(int Direction_){
+    NetRotate(Direction_);
 }
 
-FVector ACamera::GetCenterLocation_Implementation() const{
-    return GetActorLocation();
-}
-
-void ACamera::TestRotate(){
-    int Temp = static_cast<int>(CameraStaticMesh->GetRelativeRotation().Yaw / RotateAmount); //Gets the current rotation of the camera and divide it by the direction times the rotation amount
-    Temp = Temp+Direction;
-    Temp = Temp*RotateAmount;
-    GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Magenta, FString::Printf(TEXT("Temp: %i"), Temp));
-    if(Direction > 0){ //Checks if the direction is to the right
-        if(Temp <= RightYawLimit){ 
-            TargetYaw = static_cast<float>(Temp); //If the new target rotation is less than the right limit, then set the target rotation to the new one
-        } else{
-            TargetYaw = RightYawLimit; //If it isn't less than the right limit, set the target rotation to the right limit
-        }
-    } else{ //If the direction is not going right, then it's going left
-        if(Temp >= LeftYawLimit){ 
-            TargetYaw = Temp; //If the new target rotation is greater than the left limit, then set the target rotation to the new one
-        } else{
-            TargetYaw = LeftYawLimit; //If it isn't greater than the left limit, set the target rotation to the left limit
+void ACamera::OnPerceptionUpdated(const TArray<AActor*>& DetectedActors)
+{
+    //If OperatorNPC is valid
+    if (OperatorNPC != nullptr)
+    {
+        //Iterate through detected actors
+        for (int a = 0; a < DetectedActors.Num(); a++)
+        {
+            //Get last sensed stimuli for each sense
+            TArray<FAIStimulus> Stimuli = PerceptionComponent->GetActorInfo(*DetectedActors[a])->LastSensedStimuli;
+            //Iterate through sense
+            for (int i = 0; i < Stimuli.Num(); i++)
+            {
+                //If stimuli just happened
+                if (Stimuli[i].GetAge() == 0 && Stimuli[i].Type.Name == "Default__AISense_Sight")
+                {
+                    OperatorNPC->HandleSight(DetectedActors[a], Stimuli[i]);
+                }
+            }
         }
     }
-    DisableAutoRotate(); //This function is only called by the player, so it disables auto rotation
+}
+
+void ACamera::PerceptionTick(float DeltaTime)
+{
+    //Get visible actors
+    TArray<AActor*> DetectedActors;
+    TSubclassOf<UAISense> SightSense;
+    PerceptionComponent->GetCurrentlyPerceivedActors(SightSense, DetectedActors);
+
+    //Iterate through all visible actors
+    for (int a = 0; a < DetectedActors.Num(); a++)
+    {
+        //Get last sensed stimuli for each sense
+        TArray<FAIStimulus> Stimuli = PerceptionComponent->GetActorInfo(*DetectedActors[a])->LastSensedStimuli;
+        //Iterate through all senses
+        for (int i = 0; i < Stimuli.Num(); i++)
+        {
+            if (Stimuli[i].GetAge() == 0 && Stimuli[i].IsActive() && Stimuli[i].Type.Name == "Default__AISense_Sight")
+            {
+                OperatorNPC->HandleSightTick(DetectedActors[a], Stimuli[i], DeltaTime);
+            }
+        }      
+    }
 }
 
 void ACamera::Tick(float DeltaTime){
     Super::Tick(DeltaTime);
     RotationTick(DeltaTime);
+    
+    //If OperatorNPC is valid
+    if (OperatorNPC != nullptr)
+        PerceptionTick(DeltaTime);
 }
 
 void ACamera::BeginPlay(){
     Super::BeginPlay();
     AActor* CameraHub = UGameplayStatics::GetActorOfClass(GetWorld(), ACameraHub::StaticClass());
-    AutoRotateDelay = FMath::RandRange(0.5, 10) + AutoRotateDelay;
+    AutoRotateDelay = FMath::RandRange(0.5, 1) + AutoRotateDelay;
 }
