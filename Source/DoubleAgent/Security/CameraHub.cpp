@@ -82,6 +82,8 @@ ACameraHub::ACameraHub(){
 	TextureTargets.Add(TextureRenderTarget2D);
 	TextureRenderTarget2D = LoadObject<UTextureRenderTarget2D>(NULL, TEXT("TextureRenderTarget2D'/Game/SecuritySystem/Cam_Input/RT_CameraFeed6.RT_CameraFeed6'"));
 	TextureTargets.Add(TextureRenderTarget2D);
+
+	bPowerOn = true;
 }
 
 // Called when the game starts or when spawned

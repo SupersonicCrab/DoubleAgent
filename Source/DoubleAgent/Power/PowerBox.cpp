@@ -39,16 +39,40 @@ void APowerBox::Interact_Implementation(AActor* Interactor){
 }
 
 void APowerBox::TurnLightsOn_Implementation(){
-	MulticastLightsOn();
+	bLightsOn = true;
+	tempArray.Empty();
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ALightSwitch::StaticClass(), tempArray);
+	for(auto Switch: tempArray){
+		dynamic_cast<ALightSwitch*>(Switch)->bPowerOn = true;
+		dynamic_cast<ALightSwitch*>(Switch)->RestoreLights();
+	}
 }
 
 void APowerBox::TurnLightsOff_Implementation(){
-	MulticastLightsOff();
+	MultiCastLightOff();
+	tempArray.Empty();
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ALightSwitch::StaticClass(), tempArray);
+	for(auto Switch: tempArray){
+		dynamic_cast<ALightSwitch*>(Switch)->DisableLightGroup(true);
+		dynamic_cast<ALightSwitch*>(Switch)->bPowerOn = false;
+	}
 }
 
 void APowerBox::TurnCamerasOn(){
 	bCamerasOn = true;
 	CameraHub->PowerEnabled();
+}
+
+void APowerBox::RequestLightsOff(){
+	TurnLightsOff_Implementation();
+}
+
+void APowerBox::RequestLightsOn(){
+	TurnLightsOn_Implementation();
+}
+
+void APowerBox::MultiCastLightOff_Implementation(){
+	bLightsOn = false;
 }
 
 void APowerBox::TurnCamerasOff(){
@@ -84,26 +108,6 @@ void APowerBox::TurnRadiosOn(){
 void APowerBox::TurnRadiosOff(){
 	RadioHub->PowerOff();
 	bRadiosOn = false;
-}
-
-void APowerBox::MulticastLightsOn_Implementation(){
-	bLightsOn = true;
-	tempArray.Empty();
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ALightSwitch::StaticClass(), tempArray);
-	for(auto Switch: tempArray){
-		dynamic_cast<ALightSwitch*>(Switch)->bPowerOn = true;
-		dynamic_cast<ALightSwitch*>(Switch)->RestoreLights();
-	}
-}
-
-void APowerBox::MulticastLightsOff_Implementation(){
-	bLightsOn = false;
-	tempArray.Empty();
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ALightSwitch::StaticClass(), tempArray);
-	for(auto Switch: tempArray){
-		dynamic_cast<ALightSwitch*>(Switch)->DisableLightGroup(true);
-		dynamic_cast<ALightSwitch*>(Switch)->bPowerOn = false;
-	}
 }
 
 void APowerBox::CutPower(){

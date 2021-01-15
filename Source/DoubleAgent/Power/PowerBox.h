@@ -22,9 +22,9 @@ public:
 	UPROPERTY(Category="Power States", BlueprintReadWrite)
 	bool bLandlinesOn = true;
 	UPROPERTY(Category="Power States", BlueprintReadWrite)
-	bool bRadiosOn;
+	bool bRadiosOn = true;
 	UPROPERTY(Category="Power States", BlueprintReadWrite)
-	bool bCamerasOn;
+	bool bCamerasOn = true;
 	UPROPERTY(Category="Hub References", BlueprintReadWrite)
 	ARadioHub* RadioHub;
 	UPROPERTY(Category="Hub References", BlueprintReadWrite)
@@ -34,15 +34,16 @@ public:
 
 	UPROPERTY(Replicated)
 	TArray<AActor*> tempArray;
-
+	UFUNCTION(BlueprintCallable)
+	void RequestLightsOff();
+	UFUNCTION(BlueprintCallable)
+	void RequestLightsOn();
 	UFUNCTION(BlueprintCallable, Server, Reliable)
 	void TurnLightsOn();
 	UFUNCTION(BlueprintCallable, Server, Reliable)
 	void TurnLightsOff();
 	UFUNCTION(NetMulticast, Reliable)
-	void MulticastLightsOn();
-	UFUNCTION(NetMulticast, Reliable)
-	void MulticastLightsOff();
+	void MultiCastLightOff();
 	UFUNCTION(BlueprintCallable)
 	void TurnCamerasOff();
 	UFUNCTION(BlueprintCallable)
