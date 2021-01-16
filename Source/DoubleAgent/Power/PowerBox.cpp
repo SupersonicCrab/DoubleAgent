@@ -72,14 +72,6 @@ void APowerBox::TurnCamerasOn(){
 	CameraHub->PowerEnabled();
 }
 
-void APowerBox::RequestLightsOff(){
-	TurnLightsOff_Implementation();
-}
-
-void APowerBox::RequestLightsOn(){
-	TurnLightsOn_Implementation();
-}
-
 void APowerBox::TurnCamerasOff(){
 	bCamerasOn = false;
 	CameraHub->PowerDisabled();
