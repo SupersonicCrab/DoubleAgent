@@ -277,19 +277,6 @@ void AStaffAIController::MarkSearchLocationSearched(ASearchLocation* SearchLocat
     }
 }
 
-void AStaffAIController::BeginPlay()
-{
-    //Get all cameras
-    TArray<AActor*> Cameras;
-    UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACamera::StaticClass(), Cameras);
-
-    //Add cameras to memory
-    for (int i = 0; i < Cameras.Num(); i++)
-    {
-        Memory.Cameras.Add(Cast<ACamera>(Cameras[i]));
-    }
-}
-
 void AStaffAIController::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
@@ -375,6 +362,16 @@ void AStaffAIController::OnPossess(APawn* InPawn)
     Blackboard->SetValueAsBool("Power", true);
     Blackboard->SetValueAsBool("BackupAvailable", true);
     Blackboard->SetValueAsObject("SelfActor", GetPawn());
+
+    //Get all cameras
+    TArray<AActor*> Cameras;
+    UGameplayStatics::GetAllActorsOfClass(GetWorld(), ACamera::StaticClass(), Cameras);
+
+    //Add cameras to memory
+    for (int i = 0; i < Cameras.Num(); i++)
+    {
+        Memory.Cameras.Add(Cast<ACamera>(Cameras[i]));
+    }
 }
 
 void AStaffAIController::NPCVisionTick(AActor* CurrentActor, FAIStimulus& CurrentStimulus)
