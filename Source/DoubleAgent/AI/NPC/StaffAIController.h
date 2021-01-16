@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "AIControllerBase.h"
+#include "DoubleAgent/Door.h"
 #include "DoubleAgent/Radio.h"
 #include "DoubleAgent/AI/RoomVolume.h"
 #include "StaffAIController.generated.h"
@@ -41,7 +42,6 @@ enum class EActionStatus : uint8
 	Action_Washroom UMETA(DisplayName = "Washroom")
 };
 
-//A tracked player is any player that has been considered a threat
 USTRUCT()
 struct FTrackedActor
 {
@@ -58,11 +58,29 @@ struct FTrackedActor
 };
 
 USTRUCT()
+struct FTrackedCamera
+{
+	GENERATED_BODY()
+
+	FTrackedCamera(){};
+	FTrackedCamera(ACamera* Camera_);
+	UPROPERTY(EditAnywhere)
+	ACamera* Camera;
+	UPROPERTY(EditAnywhere)
+	bool bAutoRotate;	
+};
+
+USTRUCT()
 struct FTrackedDoor
 {
 	GENERATED_BODY()
 	
-	FTrackedDoor(){};	
+	FTrackedDoor(){};
+	FTrackedDoor(ADoor* Door_);
+	UPROPERTY(EditAnywhere)
+	ADoor* Door;
+	UPROPERTY(EditAnywhere)
+	bool bDoorOpen;
 };
 
 //Memory structure used to hold all important actors
@@ -73,6 +91,12 @@ struct FStaffMemory
 
 	UPROPERTY(EditAnywhere)
 	TArray<FTrackedActor> Players;
+
+	UPROPERTY(EditAnywhere)
+	TArray<FTrackedCamera> Cameras;
+
+	UPROPERTY(EditAnywhere)
+	TArray<FTrackedDoor> Doors;
 };
 
 UCLASS()
@@ -107,11 +131,13 @@ public:
 	//Player spotted 
 	virtual void PlayerVisionTick(AActor* CurrentPlayer, FAIStimulus& CurrentStimulus, float DeltaTime);
 	virtual void PlayerVisionUpdate(AActor* CurrentPlayer, FAIStimulus& CurrentStimulus);
-	/*Todo
-	 *Camera hub
-	 *Camera vision
-	*/
 
+	//Camera
+	virtual void CameraVisionUpdate(AActor* CurrentActor, FAIStimulus& CurrentStimulus);
+
+	//Door
+	virtual void DoorVisionUpdate(AActor* CurrentActor, FAIStimulus& CurrentStimulus);
+	
 	//Radio event
 	void HandleRadioEvent(FRadioEvent RadioEvent);
 	

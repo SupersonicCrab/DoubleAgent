@@ -31,6 +31,15 @@ void AStaffAIController::HandleSight(AActor* CurrentActor, FAIStimulus& CurrentS
     //If actor is staffAI
     if (Cast<APawn>(CurrentActor) != nullptr && Cast<AStaffAIController>(Cast<APawn>(CurrentActor)->GetController()) != nullptr)
         StaffVisionUpdate(CurrentActor, CurrentStimulus);
+
+    //If actor is camera
+    if (Cast<ACamera>(CurrentActor) != nullptr)
+        CameraVisionUpdate(CurrentActor, CurrentStimulus);
+
+    //If actor is a door
+    if (Cast<ADoor>(CurrentActor) != nullptr && Blackboard->GetValueAsFloat("Detection") < 90)
+        DoorVisionUpdate(CurrentActor, CurrentStimulus);
+        
 }
 
 void AStaffAIController::StaffVisionUpdate(AActor* CurrentActor, FAIStimulus& CurrentStimulus)
@@ -42,6 +51,18 @@ FTrackedActor::FTrackedActor(AActor* Actor_, FVector Location_, float Detection_
     Actor = Actor_;
     Location = Location_;
     Detection = Detection_;
+}
+
+FTrackedCamera::FTrackedCamera(ACamera* Camera_)
+{
+    Camera = Camera_;
+    bAutoRotate = Camera->bAutoRotate;
+}
+
+FTrackedDoor::FTrackedDoor(ADoor* Door_)
+{
+    Door = Door_;
+    bDoorOpen = Door->bDoorOpen;
 }
 
 void AStaffAIController::PlayerVisionTick(AActor* CurrentPlayer, FAIStimulus& CurrentStimulus, float DeltaTime)
@@ -144,6 +165,68 @@ void AStaffAIController::PlayerVisionUpdate(AActor* CurrentPlayer, FAIStimulus& 
     {
         Blackboard->ClearValue("LastPlayer");
     }
+}
+
+void AStaffAIController::CameraVisionUpdate(AActor* CurrentActor, FAIStimulus& CurrentStimulus)
+{
+    ACamera* Camera = Cast<ACamera>(CurrentActor);
+
+    //Search for camera in memory
+    int SearchResult = -1;
+    for (int i = 0; i < Memory.Cameras.Num(); i++)
+    {
+        if (Camera == Memory.Cameras[i].Camera)
+            SearchResult = i;
+    }
+    
+    //If camera was found in memory
+    if (SearchResult != -1)
+    {
+        //If camera was previously rotating
+        if (Camera->bAutoRotate != Memory.Cameras[SearchResult].bAutoRotate)
+        {
+            Blackboard->SetValueAsBool("CamerasActive", false);
+            RaiseDetection(40);
+        }   
+    }
+
+    //Camera was not found in memory
+    else
+        Memory.Cameras.Add(Camera);
+}
+
+void AStaffAIController::DoorVisionUpdate(AActor* CurrentActor, FAIStimulus& CurrentStimulus)
+{
+    ADoor* Door = Cast<ADoor>(CurrentActor);
+
+    //If door is being used by an NPC
+    if (Door->InteractingNPC != nullptr)
+        return;
+    
+    //Search for door in memory
+    int SearchResult = -1;
+    for (int i = 0; i < Memory.Doors.Num(); i++)
+    {
+        if (Memory.Doors[i].Door == Door)
+        {
+            SearchResult = i;
+        }
+    }
+
+    //If door was not found in memory
+    if (SearchResult != -1)
+    {
+        //If door was previously closed
+        if (Door->bDoorOpen && !Memory.Doors[SearchResult].bDoorOpen)
+        {
+            Blackboard->SetValueAsObject("OpenedDoor", Door);
+            RaiseDetection(40);
+        }
+    }
+
+    //Door was not found in memory
+    else
+        Memory.Doors.Add(Door);
 }
 
 void AStaffAIController::HandleRadioEvent(FRadioEvent RadioEvent)

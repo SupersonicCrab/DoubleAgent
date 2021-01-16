@@ -7,6 +7,7 @@
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "Builders/CubeBuilder.h"
 #include "Components/BrushComponent.h"
+#include "Components/LightComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/TimelineComponent.h"
 #include "Engine/Polys.h"
@@ -14,6 +15,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Tasks/AITask_MoveTo.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Power/HouseLight.h"
 #include "Sound/SoundBase.h"
 
 ADoor::ADoor()
@@ -24,7 +26,7 @@ ADoor::ADoor()
 
     //Setup open direction
     OpenDirection = CreateDefaultSubobject<UArrowComponent>(TEXT("OpenDirection"));
-    OpenDirection->SetupAttachment(DoorMesh);
+    OpenDirection->SetupAttachment(RootComponent);
 
     //Adding NPCInteraction as delegate
     OnSmartLinkReached.AddDynamic(this, &ADoor::NPCInteraction);
@@ -49,7 +51,7 @@ void ADoor::CloseAnimation()
 
 void ADoor::NPCInteraction(AActor* NPC, const FVector& Destination)
 {
-    InteractingNPC = NPC;
+    InteractingNPC = Cast<AAICharacterBase_CHARACTER>(NPC);
     
     //If a player tries to interact with the door the same frame the NPC is
     if (DoorTimeline != NULL)
@@ -115,12 +117,19 @@ void ADoor::OnOverlapEnd(AActor* OverlappedActor, AActor* OtherActor)
     TArray<AActor*> Players;
     GetOverlappingActors(Players, APlayer_Character::StaticClass());
 
+    //Clear opened door if self
+    UBlackboardComponent* InteractingNPCBlackboard = Cast<AAIController>(InteractingNPC->GetController())->GetBlackboardComponent();
+    if (Cast<ADoor>(InteractingNPCBlackboard->GetValueAsObject("OpenedDoor")) == this)
+        InteractingNPCBlackboard->ClearValue("OpenedDoor");
+
+    //Clear interactingNPC
+    InteractingNPC = nullptr;
+    
     //If there is players near the door
     if (Players.Num() > 0)
         return;
     
     CloseDoor(OtherActor);
-    InteractingNPC = nullptr;
 }
 
 void ADoor::OpenDoor_Implementation(AActor* Interactor)
@@ -243,8 +252,38 @@ void ADoor::Tick(float DeltaTime)
     }
 }
 
-bool ADoor::CanBeSeenFrom(const FVector& ObserverLocation, FVector& OutSeenLocation, int32& NumberOfLoSChecksPerformed,
-    float& OutSightStrength, const AActor* IgnoreActor) const
+bool ADoor::CanBeSeenFrom(const FVector& ObserverLocation, FVector& OutSeenLocation, int32& NumberOfLoSChecksPerformed, float& OutSightStrength, const AActor* IgnoreActor) const
 {
+    //Setup
+    FHitResult HitResult;
+    NumberOfLoSChecksPerformed++;
+    
+    //Get all overlapping lights
+    TArray<AActor*> Lights;
+    GetOverlappingActors(Lights, AHouseLight::StaticClass());
+
+    //Iterate through all lights
+    for (int i = 0; i < Lights.Num(); i++)
+    {
+        AHouseLight* Light = Cast<AHouseLight>(Lights[i]);
+        //If light is not lit
+        if (!Light->Light->IsVisible())
+            continue;
+        
+        //If camera is lit
+        if (!GetWorld()->LineTraceSingleByChannel(HitResult, Light->Light->GetComponentLocation(), OpenDirection->GetComponentLocation(), ECollisionChannel(ECC_Visibility), FCollisionQueryParams(FName(TEXT("Visibility")), true, Lights[i]))  || HitResult.Actor->IsOwnedBy(this))
+        {
+            //If camera is visible
+            if (!GetWorld()->LineTraceSingleByChannel(HitResult, ObserverLocation, OpenDirection->GetComponentLocation(), ECollisionChannel(ECC_Visibility), FCollisionQueryParams(FName(TEXT("CenterLOS")), true, IgnoreActor)) || HitResult.Actor->IsOwnedBy(this))
+            {
+                OutSeenLocation = OpenDirection->GetComponentLocation();
+                OutSightStrength = 1;
+                return true;
+            }
+        }
+    }
+
+    //Return false if nothing was hit
+    OutSightStrength = 0;
     return false;
 }
