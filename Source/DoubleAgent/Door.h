@@ -35,8 +35,6 @@ class DOUBLEAGENT_API ADoor : public ANavLinkProxy, public IAISightTargetInterfa
 	//NPC interaction
 	UFUNCTION()
 	void NPCInteraction(AActor* NPC, const FVector& Destination);
-
-	AActor* InteractingNPC = nullptr;
 	
 	//Unlock navmesh access
 	UFUNCTION()
@@ -68,6 +66,10 @@ public:
 	UFUNCTION(BlueprintCallable, NetMulticast, Reliable)
 	void CloseDoor(AActor* Interactor);
 
+	//NPC interaction
+	UPROPERTY(EditAnywhere)
+	AAICharacterBase_CHARACTER* InteractingNPC = nullptr;
+	
 	//Create a bsp brush cutout the size of the doors bounding box
 	UFUNCTION(CallInEditor)
 	void UpdateCutout();

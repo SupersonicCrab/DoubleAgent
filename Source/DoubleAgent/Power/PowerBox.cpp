@@ -12,8 +12,6 @@
 
 // Sets default values
 APowerBox::APowerBox(){
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
 	//Allow replication
 	bReplicates = true;
 }
@@ -25,6 +23,17 @@ void APowerBox::BeginPlay(){
 	RadioHub = dynamic_cast<ARadioHub*>(temphub); //Cast the radio hub into a radio hub class to store it properly
 	temphub = UGameplayStatics::GetActorOfClass(GetWorld(), ACameraHub::StaticClass()); //Get the camera hub actor
 	CameraHub = dynamic_cast<ACameraHub*>(temphub); //Cast the camera hub into a camera hub class to store it properly
+}
+
+void APowerBox::GetLifetimeReplicatedProps(::TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	
+	DOREPLIFETIME(APowerBox, bLightsOn);
+	DOREPLIFETIME(APowerBox, bLandlinesOn);
+	DOREPLIFETIME(APowerBox, bRadiosOn);
+	DOREPLIFETIME(APowerBox, bCamerasOn);
+	DOREPLIFETIME(APowerBox, bPowerCut);
 }
 
 // Called every frame
@@ -39,16 +48,36 @@ void APowerBox::Interact_Implementation(AActor* Interactor){
 }
 
 void APowerBox::TurnLightsOn_Implementation(){
-	MulticastLightsOn();
+	bLightsOn = true;
+	tempArray.Empty();
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ALightSwitch::StaticClass(), tempArray);
+	for(auto Switch: tempArray){
+		dynamic_cast<ALightSwitch*>(Switch)->bPowerOn = true;
+		dynamic_cast<ALightSwitch*>(Switch)->RestoreLights();
+	}
 }
 
 void APowerBox::TurnLightsOff_Implementation(){
-	MulticastLightsOff();
+	bLightsOn = false;
+	tempArray.Empty();
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ALightSwitch::StaticClass(), tempArray);
+	for(auto Switch: tempArray){
+		dynamic_cast<ALightSwitch*>(Switch)->DisableLightGroup(true);
+		dynamic_cast<ALightSwitch*>(Switch)->bPowerOn = false;
+	}
 }
 
 void APowerBox::TurnCamerasOn(){
 	bCamerasOn = true;
 	CameraHub->PowerEnabled();
+}
+
+void APowerBox::RequestLightsOff(){
+	TurnLightsOff_Implementation();
+}
+
+void APowerBox::RequestLightsOn(){
+	TurnLightsOn_Implementation();
 }
 
 void APowerBox::TurnCamerasOff(){
@@ -86,26 +115,6 @@ void APowerBox::TurnRadiosOff(){
 	bRadiosOn = false;
 }
 
-void APowerBox::MulticastLightsOn_Implementation(){
-	bLightsOn = true;
-	tempArray.Empty();
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ALightSwitch::StaticClass(), tempArray);
-	for(auto Switch: tempArray){
-		dynamic_cast<ALightSwitch*>(Switch)->bPowerOn = true;
-		dynamic_cast<ALightSwitch*>(Switch)->RestoreLights();
-	}
-}
-
-void APowerBox::MulticastLightsOff_Implementation(){
-	bLightsOn = false;
-	tempArray.Empty();
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), ALightSwitch::StaticClass(), tempArray);
-	for(auto Switch: tempArray){
-		dynamic_cast<ALightSwitch*>(Switch)->DisableLightGroup(true);
-		dynamic_cast<ALightSwitch*>(Switch)->bPowerOn = false;
-	}
-}
-
 void APowerBox::CutPower(){
 	bPowerCut = true;
 }
@@ -123,8 +132,4 @@ bool APowerBox::TurnAllPowerOn(){
 	bLandlinesOn = true;
 	bRadiosOn = true;
 	return true;
-}
-
-void APowerBox::GetLifetimeReplicatedProps( TArray< FLifetimeProperty > & OutLifetimeProps ) const{ 
-    DOREPLIFETIME( APowerBox, tempArray); 
 }

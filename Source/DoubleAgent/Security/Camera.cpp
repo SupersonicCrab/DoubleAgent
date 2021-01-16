@@ -2,9 +2,11 @@
 
 #include "Camera.h"
 #include "CameraHub.h"
+#include "Components/LightComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "DoubleAgent/AI/NPC/StaffAIController.h"
+#include "DoubleAgent/Power/HouseLight.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 // Sets default values
@@ -55,6 +57,8 @@ ACamera::ACamera(){
 
     //Assigning perception delegate
     PerceptionComponent->OnPerceptionUpdated.AddDynamic(this, &ACamera::OnPerceptionUpdated);
+
+    PerceptionStimuliSource = CreateDefaultSubobject<UAIPerceptionStimuliSourceComponent>(TEXT("Perception stimuliSource"));
 }
 
 //Use override function as new eyes view point
@@ -63,15 +67,35 @@ void ACamera::GetActorEyesViewPoint(FVector& OutLocation, FRotator& OutRotation)
     OutRotation = CaptureComponent->GetComponentRotation();
 }
 
-bool ACamera::CanBeSeenFrom(const FVector& ObserverLocation, FVector& OutSeenLocation, int32& NumberOfLoSChecksPerformed, float& OutSightStrength, const AActor* IgnoreActor) const{
-    //Raycast to center of camera
+bool ACamera::CanBeSeenFrom(const FVector& ObserverLocation, FVector& OutSeenLocation, int32& NumberOfLoSChecksPerformed, float& OutSightStrength, const AActor* IgnoreActor) const
+{
+    //Setup
     FHitResult HitResult;
     NumberOfLoSChecksPerformed++;
-    //Return true if raycast hit nothing or self
-    if (!GetWorld()->LineTraceSingleByChannel(HitResult, ObserverLocation, CameraStaticMesh->GetComponentLocation() , ECollisionChannel(ECC_Visibility), FCollisionQueryParams(FName(TEXT("CenterLOS")), true, IgnoreActor)) || HitResult.Actor->IsOwnedBy(this)){
-        OutSeenLocation = CameraStaticMesh->GetComponentLocation();
-        OutSightStrength = 1;
-        return true;
+    
+    //Get all overlapping lights
+    TArray<AActor*> Lights;
+    GetOverlappingActors(Lights, AHouseLight::StaticClass());
+
+    //Iterate through all lights
+    for (int i = 0; i < Lights.Num(); i++)
+    {
+        AHouseLight* Light = Cast<AHouseLight>(Lights[i]);
+        //If light is not lit
+        if (!Light->Light->IsVisible())
+            continue;
+        
+        //If camera is lit
+        if (!GetWorld()->LineTraceSingleByChannel(HitResult, Light->Light->GetComponentLocation(), CameraStaticMesh->GetComponentLocation() , ECollisionChannel(ECC_Visibility), FCollisionQueryParams(FName(TEXT("Visibility")), true, Lights[i]))  || HitResult.Actor->IsOwnedBy(this))
+        {
+            //If camera is visible
+            if (!GetWorld()->LineTraceSingleByChannel(HitResult, ObserverLocation, CameraStaticMesh->GetComponentLocation() , ECollisionChannel(ECC_Visibility), FCollisionQueryParams(FName(TEXT("CenterLOS")), true, IgnoreActor)) || HitResult.Actor->IsOwnedBy(this))
+            {
+                OutSeenLocation = CameraStaticMesh->GetComponentLocation();
+                OutSightStrength = 1;
+                return true;
+            }
+        }
     }
 
     //Return false if nothing was hit
@@ -225,4 +249,6 @@ void ACamera::BeginPlay(){
     Super::BeginPlay();
     AActor* CameraHub = UGameplayStatics::GetActorOfClass(GetWorld(), ACameraHub::StaticClass());
     AutoRotateDelay = FMath::RandRange(0.5, 1) + AutoRotateDelay;
+
+    PerceptionStimuliSource->RegisterForSense(UAISense_Sight::StaticClass());
 }

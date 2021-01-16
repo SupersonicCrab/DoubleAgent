@@ -17,32 +17,28 @@ public:
 	// Sets default values for this actor's properties
 	APowerBox();
 
-	UPROPERTY(Category="Power States", BlueprintReadWrite)
+	UPROPERTY(Category="Power States", BlueprintReadWrite, Replicated, EditAnywhere)
 	bool bLightsOn = true;
-	UPROPERTY(Category="Power States", BlueprintReadWrite)
+	UPROPERTY(Category="Power States", BlueprintReadWrite, Replicated, EditAnywhere)
 	bool bLandlinesOn = true;
-	UPROPERTY(Category="Power States", BlueprintReadWrite)
-	bool bRadiosOn;
-	UPROPERTY(Category="Power States", BlueprintReadWrite)
-	bool bCamerasOn;
+	UPROPERTY(Category="Power States", BlueprintReadWrite, Replicated, EditAnywhere)
+	bool bRadiosOn = true;
+	UPROPERTY(Category="Power States", BlueprintReadWrite, Replicated, EditAnywhere)
+	bool bCamerasOn = true;
+	UPROPERTY(Category="Power States", BlueprintReadWrite, Replicated, EditAnywhere)
+    bool bPowerCut = false;
+	
 	UPROPERTY(Category="Hub References", BlueprintReadWrite)
 	ARadioHub* RadioHub;
 	UPROPERTY(Category="Hub References", BlueprintReadWrite)
 	ACameraHub* CameraHub;
-	UPROPERTY(Category="Power States", BlueprintReadWrite)
-	bool bPowerCut = false;
 
-	UPROPERTY(Replicated)
+	UPROPERTY()
 	TArray<AActor*> tempArray;
-
 	UFUNCTION(BlueprintCallable, Server, Reliable)
 	void TurnLightsOn();
 	UFUNCTION(BlueprintCallable, Server, Reliable)
 	void TurnLightsOff();
-	UFUNCTION(NetMulticast, Reliable)
-	void MulticastLightsOn();
-	UFUNCTION(NetMulticast, Reliable)
-	void MulticastLightsOff();
 	UFUNCTION(BlueprintCallable)
 	void TurnCamerasOff();
 	UFUNCTION(BlueprintCallable)
@@ -55,19 +51,18 @@ public:
 	void TurnRadiosOn();
 	UFUNCTION(BlueprintCallable)
 	void TurnRadiosOff();
+	
 	UFUNCTION(BlueprintCallable)
 	void CutPower();
 	UFUNCTION()
 	bool TurnAllPowerOn();
 
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="Interaction") //Setting up the Interact interface to use it's functionality in C++
     void Interact(AActor* Interactor);
 	virtual void Interact_Implementation(AActor* Interactor) override;
 	
-protected:
-	// Called when the game starts or when spawned
+	//Base overrides
+	virtual void Tick(float DeltaTime) override;
 	virtual void BeginPlay() override;
+	virtual void GetLifetimeReplicatedProps(::TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 };

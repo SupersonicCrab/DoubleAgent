@@ -7,6 +7,7 @@
 #include "Components/SceneCaptureComponent2D.h"
 #include "../Power/PowerComponent.h"
 #include "Perception/AIPerceptionComponent.h"
+#include "Perception/AIPerceptionStimuliSourceComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
 #include "Camera.generated.h"
 
@@ -51,13 +52,7 @@ public:
 	UPROPERTY(Category="Rotate", EditAnywhere, BlueprintReadWrite)
 	float AutoRotateDelay = 1;
 
-	//Overriding base function for perception
-	virtual void GetActorEyesViewPoint(FVector& OutLocation, FRotator& OutRotation) const override;
 	
-	//Override base function to add socket locations to raycast
-	UFUNCTION(BlueprintCallable)
-    virtual bool CanBeSeenFrom(const FVector& ObserverLocation, FVector& OutSeenLocation, int32& NumberOfLoSChecksPerformed, float& OutSightStrength, const AActor* IgnoreActor = NULL) const override;
-
 	UFUNCTION(Category="Scene Capture", BlueprintCallable)
 	void SetCaptureEnabled(bool CaptureOn);
 	UFUNCTION(Category="Scene Capture")
@@ -93,9 +88,15 @@ public:
 	//OperatorNPC
 	AStaffAIController* OperatorNPC;
 
+	UPROPERTY(EditAnywhere)
+	UAIPerceptionStimuliSourceComponent* PerceptionStimuliSource;
+	
+	//Called every frame, polls perception data
 	void PerceptionTick(float DeltaTime);
 	
 	//Base overrides
 	virtual void Tick(float DeltaTime) override;
     virtual void BeginPlay() override;
+	virtual bool CanBeSeenFrom(const FVector& ObserverLocation, FVector& OutSeenLocation, int32& NumberOfLoSChecksPerformed, float& OutSightStrength, const AActor* IgnoreActor = NULL) const override;
+	virtual void GetActorEyesViewPoint(FVector& OutLocation, FRotator& OutRotation) const override;
 };
