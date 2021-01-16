@@ -103,10 +103,6 @@ UCLASS()
 class DOUBLEAGENT_API AStaffAIController : public AAIControllerBase
 {
 	GENERATED_BODY()
-
-	//Override
-	virtual void Tick(float DeltaTime) override;
-	void OnPossess(APawn* InPawn) override;
 	
 	//Detection fall off
 	void DetectionDecay(float DeltaTime);
@@ -154,5 +150,6 @@ public:
 	void MarkSearchLocationSearched(ASearchLocation* SearchLocation);
 
 	//Base overrides
-	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaTime) override;
+	virtual void OnPossess(APawn* InPawn) override;
 };
