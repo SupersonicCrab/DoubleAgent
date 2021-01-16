@@ -260,7 +260,7 @@ bool ADoor::CanBeSeenFrom(const FVector& ObserverLocation, FVector& OutSeenLocat
     
     //Get all overlapping lights
     TArray<AActor*> Lights;
-    GetOverlappingActors(Lights, AHouseLight::StaticClass());
+    DoorMesh->GetOverlappingActors(Lights, AHouseLight::StaticClass());
 
     //Iterate through all lights
     for (int i = 0; i < Lights.Num(); i++)

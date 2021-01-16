@@ -42,60 +42,60 @@ enum class EActionStatus : uint8
 	Action_Washroom UMETA(DisplayName = "Washroom")
 };
 
-USTRUCT()
+USTRUCT(BlueprintType)
 struct FTrackedActor
 {
 	GENERATED_BODY()
 
 	FTrackedActor(){};
 	FTrackedActor(AActor* Actor_, FVector Location_, float Detection_);
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	AActor* Actor;
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FVector Location;
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float Detection;
 };
 
-USTRUCT()
+USTRUCT(BlueprintType)
 struct FTrackedCamera
 {
 	GENERATED_BODY()
 
 	FTrackedCamera(){};
 	FTrackedCamera(ACamera* Camera_);
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	ACamera* Camera;
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool bAutoRotate;	
 };
 
-USTRUCT()
+USTRUCT(BlueprintType)
 struct FTrackedDoor
 {
 	GENERATED_BODY()
 	
 	FTrackedDoor(){};
 	FTrackedDoor(ADoor* Door_);
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	ADoor* Door;
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool bDoorOpen;
 };
 
 //Memory structure used to hold all important actors
-USTRUCT()
+USTRUCT(BlueprintType)
 struct FStaffMemory
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FTrackedActor> Players;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FTrackedCamera> Cameras;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FTrackedDoor> Doors;
 };
 
@@ -103,10 +103,6 @@ UCLASS()
 class DOUBLEAGENT_API AStaffAIController : public AAIControllerBase
 {
 	GENERATED_BODY()
-
-	//Staff memory of specific actors
-	UPROPERTY(EditAnywhere)
-	FStaffMemory Memory;
 
 	//Override
 	virtual void Tick(float DeltaTime) override;
@@ -116,6 +112,10 @@ class DOUBLEAGENT_API AStaffAIController : public AAIControllerBase
 	void DetectionDecay(float DeltaTime);
 	
 public:
+	//Staff memory of specific actors
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FStaffMemory Memory;
+	
 	//NPC spotted tick
 	virtual void NPCVisionTick(AActor* CurrentActor, FAIStimulus& CurrentStimulus) override;
 	void StaffVisionTick(AActor* CurrentActor, FAIStimulus& CurrentStimulus);
@@ -152,4 +152,7 @@ public:
 	//Helper functions
 	UFUNCTION(BlueprintCallable)
 	void MarkSearchLocationSearched(ASearchLocation* SearchLocation);
+
+	//Base overrides
+	virtual void BeginPlay() override;
 };
