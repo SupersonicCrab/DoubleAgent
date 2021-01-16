@@ -1,9 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "BaseCharacter_CHARACTER.h"
 #include "Animation/AnimInstance.h"
 #include "Components/LightComponent.h"
+#include "Engine/DemoNetDriver.h"
 #include "Engine/SkeletalMeshSocket.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Power/HouseLight.h"
@@ -136,6 +136,8 @@ void ABaseCharacter_CHARACTER::Tick(float DeltaSeconds)
 void ABaseCharacter_CHARACTER::GetLifetimeReplicatedProps(::TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+    DOREPLIFETIME(ABaseCharacter_CHARACTER, Visibility);
 }
 
 void ABaseCharacter_CHARACTER::NetStopAnimationClient_Implementation()
