@@ -83,6 +83,8 @@ ACameraHub::ACameraHub(){
 	TextureRenderTarget2D = LoadObject<UTextureRenderTarget2D>(NULL, TEXT("TextureRenderTarget2D'/Game/SecuritySystem/Cam_Input/RT_CameraFeed6.RT_CameraFeed6'"));
 	TextureTargets.Add(TextureRenderTarget2D);
 
+	PerceptionStimuliSource = CreateDefaultSubobject<UAIPerceptionStimuliSourceComponent>(TEXT("Perception stimuliSource"));
+	
 	bPowerOn = true;
 }
 
@@ -98,17 +100,34 @@ void ACameraHub::BeginPlay(){
 	for(int i = 0; i < Cameras.Num(); i++){
 		CameraAutoDefault.Add(Cameras[i]->bAutoRotate);
 		Cameras[i]->CaptureComponent->TextureTarget = TextureTargets[i]; //Setting each camera to send their texture target to the associated target texture
-		Cameras[i]->CaptureComponent->CaptureScene();
+		Cameras[i]->CameraHub = this;
 	}
+
+	PerceptionStimuliSource->RegisterForSense(UAISense_Sight::StaticClass());
+	EnableDisplay();
 }
 
-// Called every frame
-void ACameraHub::Tick(float DeltaTime){
-	Super::Tick(DeltaTime);
+bool ACameraHub::CanBeSeenFrom(const FVector& ObserverLocation, FVector& OutSeenLocation, int32& NumberOfLoSChecksPerformed, float& OutSightStrength, const AActor* IgnoreActor) const
+{
+	//Setup
+	FHitResult HitResult;
+	NumberOfLoSChecksPerformed++;
+	
+	//If door is visible
+	if (!GetWorld()->LineTraceSingleByChannel(HitResult, ObserverLocation, GetActorLocation(), ECollisionChannel(ECC_Visibility), FCollisionQueryParams(FName(TEXT("CenterLOS")), true, IgnoreActor)) || HitResult.Actor->IsOwnedBy(this))
+	{
+		OutSeenLocation = GetActorLocation();
+		OutSightStrength = 1;
+		return true;
+	}
+
+	//Return false if nothing was hit
+	OutSightStrength = 0;
+	return false;
 }
 
 void ACameraHub::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult){
+                                   UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult){
 	if(OtherActor->IsA(APlayer_Character::StaticClass())){
 		if(bPowerOn){
 			EnableCapture();
@@ -131,7 +150,31 @@ void ACameraHub::PowerEnabled(){
 		c->bPowerOn = true;
 	}
 	bPowerOn = true;
+}
 
+void ACameraHub::PowerDisabled(){
+	for(auto c: Cameras){
+		c->bPowerOn = false;
+	}
+	bPowerOn = false;
+}
+
+void ACameraHub::EnableCapture(){
+	for(auto c: Cameras){
+		c->SetCaptureEnabled(true);
+	}
+}
+
+void ACameraHub::DisableCapture(){
+	for(auto c: Cameras){
+		c->SetCaptureEnabled(false);
+	}
+}
+
+void ACameraHub::EnableDisplay()
+{
+	bDisplayOn = true;
+	
 	UMaterial* Material = LoadObject<UMaterial>(NULL, TEXT("Material'/Game/SecuritySystem/Cam_Output/M_ViewScreen.M_ViewScreen'"));
 	ScreenMeshes[0]->SetMaterial(0, Material);
 	Material = LoadObject<UMaterial>(NULL, TEXT("Material'/Game/SecuritySystem/Cam_Output/M_ViewScreen2.M_ViewScreen2'"));
@@ -146,27 +189,13 @@ void ACameraHub::PowerEnabled(){
 	ScreenMeshes[5]->SetMaterial(0, Material);
 }
 
-void ACameraHub::PowerDisabled(){
-	for(auto c: Cameras){
-		c->bPowerOn = false;
-	}
-	bPowerOn = false;
-
+void ACameraHub::DisableDisplay()
+{
+	bDisplayOn = false;
+	
 	UMaterial* Material = LoadObject<UMaterial>(NULL, TEXT("Material'/Engine/EngineDebugMaterials/BlackUnlitMaterial.BlackUnlitMaterial'"));
 	for (int i = 0; i < ScreenMeshes.Num(); i++)
 	{
 		ScreenMeshes[i]->SetMaterial(0, Material);
-	}
-}
-
-void ACameraHub::EnableCapture(){
-	for(auto c: Cameras){
-		c->SetCaptureEnabled(true);
-	}
-}
-
-void ACameraHub::DisableCapture(){
-	for(auto c: Cameras){
-		c->SetCaptureEnabled(false);
 	}
 }

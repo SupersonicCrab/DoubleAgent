@@ -21,10 +21,20 @@ public:
 	
 	UPROPERTY(BlueprintReadWrite, Category = "Default", EditAnywhere)
 	bool bIllegalAction;
+	UPROPERTY(BlueprintReadWrite, Category = "Default", EditAnywhere)
+	bool bIllegalEquipment;
 
 	UFUNCTION()
 	void CheckRooms(class AActor* OverlappedActor = nullptr, class AActor* OtherActor = nullptr);
 
+	FTimerHandle IllegalActionTimer;
+	
+	UFUNCTION(BlueprintCallable)
+	void PerformIllegalAction();
+
+	UFUNCTION()
+	void FinishIllegalAction();
+	
 	//Overrides
 	virtual void BeginPlay() override;
 };

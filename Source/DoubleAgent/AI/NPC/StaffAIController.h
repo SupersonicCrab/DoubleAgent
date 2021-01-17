@@ -55,6 +55,8 @@ struct FTrackedCharacter
 	FVector Location = FVector();
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float Detection;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FAIStimulus LastSensedStimuli;
 };
 
 USTRUCT(BlueprintType)
@@ -131,6 +133,9 @@ public:
 	//Camera
 	virtual void CameraVisionUpdate(AActor* CurrentActor, FAIStimulus& CurrentStimulus);
 
+	//Camera hub
+	virtual void CameraHubVisionUpdate(AActor* CurrentActor, FAIStimulus& CurrentStimulus);
+	
 	//Door
 	virtual void DoorVisionUpdate(AActor* CurrentActor, FAIStimulus& CurrentStimulus);
 	

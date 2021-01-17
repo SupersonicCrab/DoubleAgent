@@ -22,7 +22,7 @@ ABaseCharacter_CHARACTER::ABaseCharacter_CHARACTER()
 
 bool ABaseCharacter_CHARACTER::CanBeSeenFrom(const FVector& ObserverLocation, FVector& OutSeenLocation, int32& NumberOfLoSChecksPerformed, float& OutSightStrength, const AActor* IgnoreActor) const
 {
-    if (!BCanBeSeen)
+    if (!bCanBeSeen)
         return false;
     
     //Setup

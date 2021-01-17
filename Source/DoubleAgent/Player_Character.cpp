@@ -31,6 +31,22 @@ void APlayer_Character::CheckRooms(class AActor* OverlappedActor, class AActor* 
 	}
 }
 
+void APlayer_Character::PerformIllegalAction()
+{
+	bIllegalAction = true;
+
+	//If timer is already active
+	if (UKismetSystemLibrary::K2_IsTimerActiveHandle(GetWorld(), IllegalActionTimer))
+		GetWorld()->GetTimerManager().SetTimer(IllegalActionTimer, this, &APlayer_Character::FinishIllegalAction, GetWorld()->GetTimerManager().GetTimerRemaining(IllegalActionTimer)+1.0f, false);
+	else
+		GetWorld()->GetTimerManager().SetTimer(IllegalActionTimer, this, &APlayer_Character::FinishIllegalAction, 1.0f, false);
+}
+
+void APlayer_Character::FinishIllegalAction()
+{
+	bIllegalAction = false;
+}
+
 void APlayer_Character::BeginPlay()
 {
 	Super::BeginPlay();

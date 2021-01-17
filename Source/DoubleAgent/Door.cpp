@@ -270,10 +270,10 @@ bool ADoor::CanBeSeenFrom(const FVector& ObserverLocation, FVector& OutSeenLocat
         if (!Light->Light->IsVisible())
             continue;
         
-        //If camera is lit
+        //If door is lit
         if (!GetWorld()->LineTraceSingleByChannel(HitResult, Light->Light->GetComponentLocation(), OpenDirection->GetComponentLocation(), ECollisionChannel(ECC_Visibility), FCollisionQueryParams(FName(TEXT("Visibility")), true, Lights[i]))  || HitResult.Actor->IsOwnedBy(this))
         {
-            //If camera is visible
+            //If door is visible
             if (!GetWorld()->LineTraceSingleByChannel(HitResult, ObserverLocation, OpenDirection->GetComponentLocation(), ECollisionChannel(ECC_Visibility), FCollisionQueryParams(FName(TEXT("CenterLOS")), true, IgnoreActor)) || HitResult.Actor->IsOwnedBy(this))
             {
                 OutSeenLocation = OpenDirection->GetComponentLocation();

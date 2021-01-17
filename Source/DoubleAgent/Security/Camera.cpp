@@ -46,8 +46,8 @@ ACamera::ACamera(){
     PerceptionComponent = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("Perception Component"));
     
     //Setup sight
-    SightConfig->SightRadius = 1500.0f;
-    SightConfig->LoseSightRadius = 2000.0f;
+    SightConfig->SightRadius = 3000.0f;
+    SightConfig->LoseSightRadius = 3500.0f;
     SightConfig->PeripheralVisionAngleDegrees = CaptureComponent->FOVAngle/2;
     SightConfig->SetMaxAge(1.0f);
     SightConfig->DetectionByAffiliation.bDetectEnemies = true;
@@ -192,22 +192,26 @@ void ACamera::NetRequestRotate_Implementation(int Direction_){
 
 void ACamera::OnPerceptionUpdated(const TArray<AActor*>& DetectedActors)
 {
-    //If OperatorNPC is valid
-    if (OperatorNPC != nullptr)
+    if (CameraHub->OperatorNPC == nullptr)
+        return;
+
+    TArray<AActor*> temp;
+    CameraHub->OperatorNPC->PerceptionComponent->GetCurrentlyPerceivedActors(UAISense_Sight::StaticClass(), temp);
+    if (!temp.Contains(CameraHub))
+        return;
+
+    //Iterate through detected actors
+    for (int a = 0; a < DetectedActors.Num(); a++)
     {
-        //Iterate through detected actors
-        for (int a = 0; a < DetectedActors.Num(); a++)
+        //Get last sensed stimuli for each sense
+        TArray<FAIStimulus> Stimuli = PerceptionComponent->GetActorInfo(*DetectedActors[a])->LastSensedStimuli;
+        //Iterate through sense
+        for (int i = 0; i < Stimuli.Num(); i++)
         {
-            //Get last sensed stimuli for each sense
-            TArray<FAIStimulus> Stimuli = PerceptionComponent->GetActorInfo(*DetectedActors[a])->LastSensedStimuli;
-            //Iterate through sense
-            for (int i = 0; i < Stimuli.Num(); i++)
+            //If stimuli just happened
+            if (Stimuli[i].GetAge() == 0 && Stimuli[i].Type.Name == "Default__AISense_Sight")
             {
-                //If stimuli just happened
-                if (Stimuli[i].GetAge() == 0 && Stimuli[i].Type.Name == "Default__AISense_Sight")
-                {
-                    OperatorNPC->HandleSight(DetectedActors[a], Stimuli[i]);
-                }
+                CameraHub->OperatorNPC->HandleSight(DetectedActors[a], Stimuli[i]);
             }
         }
     }
@@ -215,6 +219,15 @@ void ACamera::OnPerceptionUpdated(const TArray<AActor*>& DetectedActors)
 
 void ACamera::PerceptionTick(float DeltaTime)
 {
+    if (CameraHub->OperatorNPC == nullptr)
+        return;
+
+    TArray<AActor*> temp;
+    CameraHub->OperatorNPC->PerceptionComponent->GetCurrentlyPerceivedActors(UAISense_Sight::StaticClass(), temp);
+    if (!temp.Contains(CameraHub))
+        return;
+
+    
     //Get visible actors
     TArray<AActor*> DetectedActors;
     TSubclassOf<UAISense> SightSense;
@@ -230,7 +243,7 @@ void ACamera::PerceptionTick(float DeltaTime)
         {
             if (Stimuli[i].GetAge() == 0 && Stimuli[i].IsActive() && Stimuli[i].Type.Name == "Default__AISense_Sight")
             {
-                OperatorNPC->HandleSightTick(DetectedActors[a], Stimuli[i], DeltaTime);
+                CameraHub->OperatorNPC->HandleSightTick(DetectedActors[a], Stimuli[i], DeltaTime);
             }
         }      
     }
@@ -241,13 +254,12 @@ void ACamera::Tick(float DeltaTime){
     RotationTick(DeltaTime);
     
     //If OperatorNPC is valid
-    if (OperatorNPC != nullptr)
+    if (CameraHub->OperatorNPC != nullptr)
         PerceptionTick(DeltaTime);
 }
 
 void ACamera::BeginPlay(){
     Super::BeginPlay();
-    AActor* CameraHub = UGameplayStatics::GetActorOfClass(GetWorld(), ACameraHub::StaticClass());
     AutoRotateDelay = FMath::RandRange(0.5, 1) + AutoRotateDelay;
 
     PerceptionStimuliSource->RegisterForSense(UAISense_Sight::StaticClass());
