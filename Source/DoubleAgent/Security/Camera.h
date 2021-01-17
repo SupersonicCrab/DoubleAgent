@@ -22,6 +22,8 @@ public:
 	// Sets default values for this actor's properties
 	ACamera();
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Details")
+	FString FriendlyName = "DefaultCameraName";
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Components")
     UStaticMeshComponent* CameraStaticMesh;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Components")
