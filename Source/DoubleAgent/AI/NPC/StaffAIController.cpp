@@ -37,7 +37,7 @@ void AStaffAIController::HandleSight(AActor* CurrentActor, FAIStimulus& CurrentS
         CameraVisionUpdate(CurrentActor, CurrentStimulus);
 
     //If actor is a door
-    if (Cast<ADoor>(CurrentActor) != nullptr && Blackboard->GetValueAsFloat("Detection") < 90)
+    if (Cast<ADoor>(CurrentActor) != nullptr)
         DoorVisionUpdate(CurrentActor, CurrentStimulus);
         
 }
@@ -46,7 +46,7 @@ void AStaffAIController::StaffVisionUpdate(AActor* CurrentActor, FAIStimulus& Cu
 {
 }
 
-FTrackedActor::FTrackedActor(AActor* Actor_, FVector Location_, float Detection_)
+FTrackedCharacter::FTrackedCharacter(AActor* Actor_, FVector Location_, float Detection_)
 {
     Actor = Actor_;
     Location = Location_;
@@ -91,7 +91,7 @@ void AStaffAIController::PlayerVisionTick(AActor* CurrentPlayer, FAIStimulus& Cu
             DetectionStep = DetectionRate * CurrentStimulus.Strength * DeltaTime;
 
         //Add player to memory
-        Memory.Players.Add(FTrackedActor(CurrentPlayer, CurrentStimulus.StimulusLocation, DetectionStep));
+        Memory.Players.Add(FTrackedCharacter(CurrentPlayer, CurrentStimulus.StimulusLocation, DetectionStep));
 
         //Update blackboard detection
         RaiseDetection(Memory.Players[0].Detection);
@@ -150,7 +150,7 @@ void AStaffAIController::PlayerVisionTick(AActor* CurrentPlayer, FAIStimulus& Cu
                 DetectionStep = DetectionRate * CurrentStimulus.Strength * DeltaTime;
 
             //Add player to memory
-            Memory.Players.Add(FTrackedActor(CurrentPlayer, CurrentStimulus.StimulusLocation, DetectionStep));
+            Memory.Players.Add(FTrackedCharacter(CurrentPlayer, CurrentStimulus.StimulusLocation, DetectionStep));
 
             //Update blackboard detection
             RaiseDetection(Memory.Players[0].Detection);
@@ -216,6 +216,12 @@ void AStaffAIController::DoorVisionUpdate(AActor* CurrentActor, FAIStimulus& Cur
     //If door was not found in memory
     if (SearchResult != -1)
     {
+        //If alert or greater and door closed
+        if (Blackboard->GetValueAsFloat("Detection") >= 90 && !Door->bDoorOpen)
+        {
+            Blackboard->SetValueAsObject("ClosedDoor", Door);
+        }
+        
         //If door was previously closed
         if (Door->bDoorOpen && !Memory.Doors[SearchResult].bDoorOpen)
         {

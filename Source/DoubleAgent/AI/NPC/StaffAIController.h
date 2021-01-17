@@ -43,16 +43,16 @@ enum class EActionStatus : uint8
 };
 
 USTRUCT(BlueprintType)
-struct FTrackedActor
+struct FTrackedCharacter
 {
 	GENERATED_BODY()
 
-	FTrackedActor(){};
-	FTrackedActor(AActor* Actor_, FVector Location_, float Detection_);
+	FTrackedCharacter(){};
+	FTrackedCharacter(AActor* Actor_, FVector Location_, float Detection_);
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	AActor* Actor;
+	AActor* Actor = nullptr;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FVector Location;
+	FVector Location = FVector();
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float Detection;
 };
@@ -65,7 +65,7 @@ struct FTrackedCamera
 	FTrackedCamera(){};
 	FTrackedCamera(ACamera* Camera_);
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	ACamera* Camera;
+	ACamera* Camera = nullptr;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool bAutoRotate;	
 };
@@ -78,7 +78,7 @@ struct FTrackedDoor
 	FTrackedDoor(){};
 	FTrackedDoor(ADoor* Door_);
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	ADoor* Door;
+	ADoor* Door = nullptr;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool bDoorOpen;
 };
@@ -90,7 +90,7 @@ struct FStaffMemory
 	GENERATED_BODY()
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<FTrackedActor> Players;
+	TArray<FTrackedCharacter> Players;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FTrackedCamera> Cameras;
