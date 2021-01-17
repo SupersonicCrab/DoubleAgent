@@ -67,7 +67,7 @@ public:
 	void CloseDoor(AActor* Interactor);
 
 	//NPC interaction
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	AAICharacterBase_CHARACTER* InteractingNPC = nullptr;
 	
 	//Create a bsp brush cutout the size of the doors bounding box

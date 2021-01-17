@@ -131,6 +131,19 @@ void ACameraHub::PowerEnabled(){
 		c->bPowerOn = true;
 	}
 	bPowerOn = true;
+
+	UMaterial* Material = LoadObject<UMaterial>(NULL, TEXT("Material'/Game/SecuritySystem/Cam_Output/M_ViewScreen.M_ViewScreen'"));
+	ScreenMeshes[0]->SetMaterial(0, Material);
+	Material = LoadObject<UMaterial>(NULL, TEXT("Material'/Game/SecuritySystem/Cam_Output/M_ViewScreen2.M_ViewScreen2'"));
+	ScreenMeshes[1]->SetMaterial(0, Material);
+	Material = LoadObject<UMaterial>(NULL, TEXT("Material'/Game/SecuritySystem/Cam_Output/M_ViewScreen3.M_ViewScreen3'"));
+	ScreenMeshes[2]->SetMaterial(0, Material);
+	Material = LoadObject<UMaterial>(NULL, TEXT("Material'/Game/SecuritySystem/Cam_Output/M_ViewScreen4.M_ViewScreen4'"));
+	ScreenMeshes[3]->SetMaterial(0, Material);
+	Material = LoadObject<UMaterial>(NULL, TEXT("Material'/Game/SecuritySystem/Cam_Output/M_ViewScreen5.M_ViewScreen5'"));
+	ScreenMeshes[4]->SetMaterial(0, Material);
+	Material = LoadObject<UMaterial>(NULL, TEXT("Material'/Game/SecuritySystem/Cam_Output/M_ViewScreen6.M_ViewScreen6'"));
+	ScreenMeshes[5]->SetMaterial(0, Material);
 }
 
 void ACameraHub::PowerDisabled(){
@@ -138,6 +151,12 @@ void ACameraHub::PowerDisabled(){
 		c->bPowerOn = false;
 	}
 	bPowerOn = false;
+
+	UMaterial* Material = LoadObject<UMaterial>(NULL, TEXT("Material'/Engine/EngineDebugMaterials/BlackUnlitMaterial.BlackUnlitMaterial'"));
+	for (int i = 0; i < ScreenMeshes.Num(); i++)
+	{
+		ScreenMeshes[i]->SetMaterial(0, Material);
+	}
 }
 
 void ACameraHub::EnableCapture(){

@@ -48,7 +48,7 @@ ACamera::ACamera(){
     //Setup sight
     SightConfig->SightRadius = 1500.0f;
     SightConfig->LoseSightRadius = 2000.0f;
-    SightConfig->PeripheralVisionAngleDegrees = CaptureComponent->FOVAngle;
+    SightConfig->PeripheralVisionAngleDegrees = CaptureComponent->FOVAngle/2;
     SightConfig->SetMaxAge(1.0f);
     SightConfig->DetectionByAffiliation.bDetectEnemies = true;
     SightConfig->DetectionByAffiliation.bDetectNeutrals = true;
@@ -113,7 +113,7 @@ void ACamera::SetCaptureEnabled(bool CaptureOn){
 void ACamera::CaptureTick(){
     if(bPowerOn && UpdatingCapture){ //If the power is on and the cameras are set to update
         CaptureComponent->CaptureSceneDeferred(); //Then update the scene capture
-        UKismetSystemLibrary::K2_SetTimer(this, "CaptureTick", (1.0f/CaptureFPS), false); //Then call this function again according to the CaptureFPS
+        UKismetSystemLibrary::K2_SetTimer(this, "CaptureTick", UGameplayStatics::GetWorldDeltaSeconds(GetWorld()) * 30, false); //Then call this function again according to the CaptureFPS
     }
 }
 

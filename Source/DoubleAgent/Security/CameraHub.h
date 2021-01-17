@@ -9,7 +9,7 @@
 #include "CameraHub.generated.h"
 
 UCLASS()
-class DOUBLEAGENT_API ACameraHub : public AActor{
+class DOUBLEAGENT_API ACameraHub : public APowerComponent{
 	GENERATED_BODY()
 	
 public:	
@@ -24,8 +24,6 @@ public:
 	TArray<ACamera*> Cameras;
 	UPROPERTY()
 	TArray<bool> CameraAutoDefault;
-	UPROPERTY(BlueprintReadWrite)
-	bool bPowerOn = true;
 	UPROPERTY(BlueprintReadWrite)
 	bool bDisplayOn;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)

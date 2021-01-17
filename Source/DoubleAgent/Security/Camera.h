@@ -86,6 +86,7 @@ public:
 	UAIPerceptionComponent* PerceptionComponent;
 
 	//OperatorNPC
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	AStaffAIController* OperatorNPC;
 
 	UPROPERTY(EditAnywhere)
