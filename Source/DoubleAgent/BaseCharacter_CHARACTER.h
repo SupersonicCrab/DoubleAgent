@@ -40,7 +40,7 @@ public:
 
 	//Disables CanBeSeenFrom()
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Debug")
-	bool BCanBeSeen = true;
+	bool bCanBeSeen = true;
 
 	//How many sockets are visible from any given light
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Debug", Replicated)
