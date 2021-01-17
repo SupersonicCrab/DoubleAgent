@@ -6,17 +6,19 @@
 #include "Camera.h"
 #include "GameFramework/Actor.h"
 #include "Components/BoxComponent.h"
+#include "DoubleAgent/AI/AICharacterBase_CHARACTER.h"
 #include "CameraHub.generated.h"
 
+//Forward declarations
+class AStaffAIController;
+
 UCLASS()
-class DOUBLEAGENT_API ACameraHub : public APowerComponent{
+class DOUBLEAGENT_API ACameraHub : public APowerComponent, public IAISightTargetInterface{
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
 	ACameraHub();
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
 
 	UPROPERTY()
 	UBoxComponent* BoxCollision;
@@ -48,8 +50,19 @@ public:
 	void EnableCapture();
 	UFUNCTION(Category="Scene Capture")
     void DisableCapture();
+
+	UFUNCTION(Category="Display")
+    void EnableDisplay();
+	UFUNCTION(Category="Display")
+	void DisableDisplay();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	AStaffAIController* OperatorNPC;
 	
-protected:
-	// Called when the game starts or when spawned
+	UPROPERTY(EditAnywhere)
+	UAIPerceptionStimuliSourceComponent* PerceptionStimuliSource;
+	
+	//Base overrides
 	virtual void BeginPlay() override;
+	virtual bool CanBeSeenFrom(const FVector& ObserverLocation, FVector& OutSeenLocation, int32& NumberOfLoSChecksPerformed, float& OutSightStrength, const AActor* IgnoreActor = nullptr) const override;
 };

@@ -39,6 +39,10 @@ void AStaffAIController::HandleSight(AActor* CurrentActor, FAIStimulus& CurrentS
     //If actor is a door
     if (Cast<ADoor>(CurrentActor) != nullptr)
         DoorVisionUpdate(CurrentActor, CurrentStimulus);
+
+    //If actor is the camera hub
+    if (Cast<ACameraHub>(CurrentActor) != nullptr)
+        CameraHubVisionUpdate(CurrentActor, CurrentStimulus);
         
 }
 
@@ -69,7 +73,7 @@ void AStaffAIController::PlayerVisionTick(AActor* CurrentPlayer, FAIStimulus& Cu
 {
     //Skip detection calculations if player is doing nothing wrong
     APlayer_Character* Player = Cast<APlayer_Character>(CurrentPlayer);
-    if (!Player->bTresspassing && !Player->bIllegalAction)
+    if (!Player->bTresspassing && !Player->bIllegalAction && !Player->bIllegalEquipment)
         return;
     
     //Setup
@@ -106,14 +110,22 @@ void AStaffAIController::PlayerVisionTick(AActor* CurrentPlayer, FAIStimulus& Cu
             {
                 //Distance modifier
                 float DistanceModifier = UKismetMathLibrary::Abs(
-                    SightRadius / FVector().Dist(CurrentStimulus.StimulusLocation, GetPawn()->GetActorLocation()));
+                    SightRadius / FVector().Dist(CurrentStimulus.StimulusLocation, CurrentStimulus.ReceiverLocation));
 
-                //Angle modifier               
-                float AngleModifier = 1 - UKismetMathLibrary::Abs(FVector().DotProduct(
-                    Cast<ACharacter>(GetPawn())->GetMesh()->GetSocketLocation("headSocket").ForwardVector,
-                    UKismetMathLibrary::FindLookAtRotation(GetPawn()->GetActorLocation(),
-                                                           CurrentStimulus.StimulusLocation).Vector()));
+                float AngleModifier = 1;
 
+                TArray<AActor*> temp;
+                PerceptionComponent->GetCurrentlyPerceivedActors(UAISense_Sight::StaticClass(), temp);
+                //If player is being seen from self and not cameras
+                if (temp.Contains(CurrentPlayer))
+                {
+                    //Angle modifier               
+                    AngleModifier = 1 - UKismetMathLibrary::Abs(FVector().DotProduct(
+                        Cast<ACharacter>(GetPawn())->GetMesh()->GetSocketLocation("headSocket").ForwardVector,
+                        UKismetMathLibrary::FindLookAtRotation(CurrentStimulus.ReceiverLocation,
+                                                               CurrentStimulus.StimulusLocation).Vector()));
+                }
+                
                 //Detection calculations
                 DetectionStep = Memory.Players[i].Detection + DetectionRate * CurrentStimulus.Strength * (AngleModifier
                     + DistanceModifier) / 2 * DeltaTime;
@@ -160,6 +172,16 @@ void AStaffAIController::PlayerVisionTick(AActor* CurrentPlayer, FAIStimulus& Cu
 
 void AStaffAIController::PlayerVisionUpdate(AActor* CurrentPlayer, FAIStimulus& CurrentStimulus)
 {
+    //Update last stimulus
+    for (int i = 0; i < Memory.Players.Num(); i++)
+    {
+        if (Memory.Players[i].Actor == CurrentPlayer)
+        {
+            Memory.Players[i].LastSensedStimuli = CurrentStimulus;
+            break;
+        }
+    }
+    
     //If player was lost and was being tracked
     if (!CurrentStimulus.IsActive() && Blackboard->GetValueAsObject("LastPlayer") == CurrentPlayer)
     {
@@ -193,6 +215,13 @@ void AStaffAIController::CameraVisionUpdate(AActor* CurrentActor, FAIStimulus& C
     //Camera was not found in memory
     else
         Memory.Cameras.Add(Camera);
+}
+
+void AStaffAIController::CameraHubVisionUpdate(AActor* CurrentActor, FAIStimulus& CurrentStimulus)
+{
+    ACameraHub* CameraHub = Cast<ACameraHub>(CurrentActor);
+    if (CameraHub->OperatorNPC == nullptr)
+        Blackboard->SetValueAsBool("CamerasActive", false);
 }
 
 void AStaffAIController::DoorVisionUpdate(AActor* CurrentActor, FAIStimulus& CurrentStimulus)
@@ -319,25 +348,20 @@ void AStaffAIController::DetectionDecay(float DeltaTime)
         //Iterate through all players
         for (int i = 0; i < Memory.Players.Num(); i++)
         {
-            TArray<FAIStimulus> Stimuli = PerceptionComponent->GetActorInfo(*Memory.Players[i].Actor)->LastSensedStimuli;
-
-            for (int a = 0; a < Stimuli.Num(); a++)
+            if (!Memory.Players[i].LastSensedStimuli.IsActive())
             {
-                if (Stimuli[a].Type.Name == "Default__AISense_Sight" && !Stimuli[a].IsActive())
+                const int MemoryDetection = round(Memory.Players[i].Detection);
+                if (MemoryDetection > 0 && MemoryDetection != 90 && MemoryDetection != 40)
                 {
-                    const int MemoryDetection = round(Memory.Players[i].Detection);
-                    if (MemoryDetection > 0 && MemoryDetection != 90 && MemoryDetection != 40)
-                    {
-                        //Decay calculations
-                        DecayStep = DetectionRate * DeltaTime;
+                    //Decay calculations
+                    DecayStep = DetectionRate * DeltaTime;
 
-                        Memory.Players[i].Detection -= DecayStep;
-                        //Clamp if needed
-                        if (Memory.Players[i].Detection < 0)
-                            Memory.Players[i].Detection = 0;
-                    }
-                    break;
+                    Memory.Players[i].Detection -= DecayStep;
+                    //Clamp if needed
+                    if (Memory.Players[i].Detection < 0)
+                        Memory.Players[i].Detection = 0;
                 }
+                break;
             }
         }
     }

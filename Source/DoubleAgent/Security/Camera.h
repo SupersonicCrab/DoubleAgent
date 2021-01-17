@@ -11,8 +11,8 @@
 #include "Perception/AISenseConfig_Sight.h"
 #include "Camera.generated.h"
 
-//Forward declaration 
-class AStaffAIController;
+//Forward declaration
+class ACameraHub;
 
 UCLASS()
 class DOUBLEAGENT_API ACamera : public APowerComponent, public IAISightTargetInterface{
@@ -79,15 +79,14 @@ public:
 	UFUNCTION()
     void OnPerceptionUpdated(const TArray<AActor*>& DetectedActors);
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	ACameraHub* CameraHub;
+	
 	//Perception configurations
 	UAISenseConfig_Sight* SightConfig;
 	
 	//Perception component
 	UAIPerceptionComponent* PerceptionComponent;
-
-	//OperatorNPC
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	AStaffAIController* OperatorNPC;
 
 	UPROPERTY(EditAnywhere)
 	UAIPerceptionStimuliSourceComponent* PerceptionStimuliSource;
