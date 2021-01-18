@@ -60,6 +60,11 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	AStaffAIController* OperatorNPC;
+
+	UFUNCTION()
+	void AutoRotateDisableReaction();
+
+	FTimerHandle OperatorReactionTimer;
 	
 	UPROPERTY(EditAnywhere)
 	UAIPerceptionStimuliSourceComponent* PerceptionStimuliSource;

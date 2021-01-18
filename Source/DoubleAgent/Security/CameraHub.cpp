@@ -118,9 +118,9 @@ bool ACameraHub::CanBeSeenFrom(const FVector& ObserverLocation, FVector& OutSeen
 	NumberOfLoSChecksPerformed++;
 	
 	//If door is visible
-	if (!GetWorld()->LineTraceSingleByChannel(HitResult, ObserverLocation, GetActorLocation(), ECollisionChannel(ECC_Visibility), FCollisionQueryParams(FName(TEXT("CenterLOS")), true, IgnoreActor)) || HitResult.Actor->IsOwnedBy(this))
+	if (!GetWorld()->LineTraceSingleByChannel(HitResult, ObserverLocation, ScreenMeshes[2]->GetComponentLocation(), ECollisionChannel(ECC_Visibility), FCollisionQueryParams(FName(TEXT("CenterLOS")), true, IgnoreActor)) || HitResult.Actor->IsOwnedBy(this))
 	{
-		OutSeenLocation = GetActorLocation();
+		OutSeenLocation = ScreenMeshes[2]->GetComponentLocation();
 		OutSightStrength = 1;
 		return true;
 	}
@@ -214,5 +214,21 @@ void ACameraHub::DisableDisplay()
 	for (int i = 0; i < ScreenMeshes.Num(); i++)
 	{
 		ScreenMeshes[i]->SetMaterial(0, Material);
+	}
+}
+
+void ACameraHub::AutoRotateDisableReaction()
+{
+	if (OperatorNPC != nullptr)
+	{
+		for (int i = 0; i < Cameras.Num(); i++)
+		{
+			//If cameras was previously rotating
+			if (CameraAutoDefault[i] != Cameras[i]->bAutoRotate)
+			{
+				Cameras[i]->bAutoRotate = true;
+				Cameras[i]->TargetYaw = Cameras[i]->RightYawLimit;
+			}
+		}
 	}
 }

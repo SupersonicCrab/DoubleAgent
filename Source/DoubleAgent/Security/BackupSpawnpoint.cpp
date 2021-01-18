@@ -8,7 +8,10 @@
 #include "Kismet/KismetMathLibrary.h"
 
 // Sets default values
-ABackupSpawnpoint::ABackupSpawnpoint(){}
+ABackupSpawnpoint::ABackupSpawnpoint()
+{
+	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
+}
 
 void ABackupSpawnpoint::SpawnGuard(){
 	FVector loc = GetActorTransform().GetLocation();
@@ -21,7 +24,7 @@ void ABackupSpawnpoint::SpawnGuard(){
 	//UNavigationSystemV1::ProjectPointToNavigation(loc, output, FVector(100,100,100));
 FTransform trans = UKismetMathLibrary::MakeTransform(output, rot.Rotator(), FVector(1.0f, 1.0f, 1.0f));
 	if(!Backup){
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Magenta, FString::Printf(TEXT("No guard class to spawn selected")));
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Magenta, FString::Printf(TEXT("No class to spawn selected")));
 		return;
 	}
 	FActorSpawnParameters spawnParams;

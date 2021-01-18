@@ -181,7 +181,17 @@ void AStaffAIController::PlayerVisionTick(AActor* CurrentPlayer, FAIStimulus& Cu
 }
 
 void AStaffAIController::PlayerVisionUpdate(AActor* CurrentPlayer, FAIStimulus& CurrentStimulus)
-{   
+{
+    //Update last stimulus
+    for (int i = 0; i < Memory.Players.Num(); i++)
+    {
+        if (Memory.Players[i].Actor == CurrentPlayer)
+        {
+            Memory.Players[i].LastSensedStimuli = CurrentStimulus;
+            break;
+        }
+    }
+    
     //If tracked player was lost
     if (!CurrentStimulus.IsActive() && Blackboard->GetValueAsObject("LastPlayer") == CurrentPlayer)
     {
@@ -352,6 +362,8 @@ void AStaffAIController::DetectionDecay(float DeltaTime)
             //If stimuli has expired and is not being tracked
             if (Memory.Players[i].LastSensedStimuli.IsExpired() && Blackboard->GetValueAsObject("LastPlayer") != Memory.Players[i].Actor)
             {
+                if (Memory.Players[i].Actor == Blackboard->GetValueAsObject("LastPlayer"))
+                    Blackboard->ClearValue("LastPlayer");
                 const int MemoryDetection = round(Memory.Players[i].Detection);
                 if (MemoryDetection > 0 && MemoryDetection != 90 && MemoryDetection != 40)
                 {
@@ -445,6 +457,10 @@ void AStaffAIController::StaffVisionTick(AActor* CurrentActor, FAIStimulus& Curr
     UBlackboardComponent* OtherNPCBlackboard = Cast<AAIController>(Cast<APawn>(CurrentActor)->GetController())->GetBlackboardComponent();
     EActionStatus ActionStatus = static_cast<EActionStatus>(Blackboard->GetValueAsEnum("ActionStatus"));
 
+    //If other staff is using cameras
+    if (OtherNPCBlackboard->GetValueAsBool("UsingCameras"))
+        Blackboard->SetValueAsBool("CamerasActive", true);
+        
     //If action status is not idle and both staffAI are performing the same action
     if (ActionStatus != EActionStatus::Action_Idle && static_cast<EActionStatus>(OtherNPCBlackboard->GetValueAsEnum("ActionStatus")) == ActionStatus)
     {
