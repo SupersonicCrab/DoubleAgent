@@ -3,6 +3,7 @@
 
 #include "CameraHub.h"
 #include "DoubleAgent/Player_Character.h"
+#include "DoubleAgent/AI/NPC/StaffAIController.h"
 #include "Engine/TextureRenderTarget2D.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -13,6 +14,9 @@ ACameraHub::ACameraHub(){
 	//Create the root
 	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	this->SetRootComponent(Root);
+	OperatorPosition = CreateDefaultSubobject<USceneComponent>(TEXT("OperatorPosition"));
+	OperatorPosition->SetupAttachment(Root);
+	OperatorPosition->SetRelativeLocation(FVector(0, 200, 0), false);
 	//Create the box collision and attach it to the root
 	BoxCollision = CreateDefaultSubobject<UBoxComponent>(TEXT("BoxCollision"));
 	BoxCollision->SetupAttachment(Root);
@@ -100,11 +104,11 @@ void ACameraHub::BeginPlay(){
 	for(int i = 0; i < Cameras.Num(); i++){
 		CameraAutoDefault.Add(Cameras[i]->bAutoRotate);
 		Cameras[i]->CaptureComponent->TextureTarget = TextureTargets[i]; //Setting each camera to send their texture target to the associated target texture
+		Cameras[i]->CaptureComponent->CaptureSceneDeferred();
 		Cameras[i]->CameraHub = this;
 	}
 
 	PerceptionStimuliSource->RegisterForSense(UAISense_Sight::StaticClass());
-	EnableDisplay();
 }
 
 bool ACameraHub::CanBeSeenFrom(const FVector& ObserverLocation, FVector& OutSeenLocation, int32& NumberOfLoSChecksPerformed, float& OutSightStrength, const AActor* IgnoreActor) const
@@ -140,8 +144,13 @@ void ACameraHub::OnComponentOverlapEnd(UPrimitiveComponent* OverlappedComp, AAct
 	if(OtherActor->IsA(APlayer_Character::StaticClass())){
 		DisableCapture();
 	} else{
-		//Chris AI stuff
-		//Operator AI leaves CameraHub
+		//If camera operator just left
+		if (OperatorNPC != nullptr)
+		{
+			OperatorNPC->GetBlackboardComponent()->SetValueAsBool("CamerasActive", false);
+			OperatorNPC->GetBlackboardComponent()->SetValueAsBool("UsingCameras", false);
+			OperatorNPC = nullptr;
+		}
 	}
 }
 
@@ -173,6 +182,10 @@ void ACameraHub::DisableCapture(){
 
 void ACameraHub::EnableDisplay()
 {
+	//If display is already on
+	if (bDisplayOn)
+		return;
+	
 	bDisplayOn = true;
 	
 	UMaterial* Material = LoadObject<UMaterial>(NULL, TEXT("Material'/Game/SecuritySystem/Cam_Output/M_ViewScreen.M_ViewScreen'"));
@@ -191,6 +204,10 @@ void ACameraHub::EnableDisplay()
 
 void ACameraHub::DisableDisplay()
 {
+	//If display is already off
+	if (!bDisplayOn)
+		return;
+	
 	bDisplayOn = false;
 	
 	UMaterial* Material = LoadObject<UMaterial>(NULL, TEXT("Material'/Engine/EngineDebugMaterials/BlackUnlitMaterial.BlackUnlitMaterial'"));

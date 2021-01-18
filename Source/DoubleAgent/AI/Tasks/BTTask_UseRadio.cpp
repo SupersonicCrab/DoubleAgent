@@ -2,6 +2,8 @@
 
 
 #include "BTTask_UseRadio.h"
+
+#include "BehaviorTree/Blackboard/BlackboardKeyType_Vector.h"
 #include "DoubleAgent/AI/NPC/AIControllerBase.h"
 #include "DoubleAgent/Security/RadioHub.h"
 #include "Kismet/GameplayStatics.h"
@@ -20,7 +22,13 @@ EBTNodeResult::Type UBTTask_UseRadio::ExecuteTask(UBehaviorTreeComponent& OwnerC
 
     //Update radio event structure
     NewRadioEvent.NPC = Cast<AAICharacterBase_CHARACTER>(Cast<AAIControllerBase>(OwnerComp.GetOwner())->GetPawn());
-    NewRadioEvent.Location = OwnerComp.GetOwner()->GetActorLocation();
+    //Use NPC location if custom location not provided
+    if (!bUseBlackboardLocation)
+        NewRadioEvent.Location = OwnerComp.GetOwner()->GetActorLocation();
+    else
+    {
+        NewRadioEvent.Location = Cast<AAIController>(OwnerComp.GetAIOwner())->GetBlackboardComponent()->GetValueAsVector(Location.SelectedKeyName);
+    }
 
     //If radio hub does not have any power
     if (!RadioHub->StartRadioEvent(NewRadioEvent))

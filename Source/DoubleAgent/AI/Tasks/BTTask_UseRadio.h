@@ -20,6 +20,12 @@ class DOUBLEAGENT_API UBTTask_UseRadio : public UBTTaskNode
 
     UPROPERTY(EditAnywhere)
     FRadioEvent NewRadioEvent;
+
+	UPROPERTY(EditAnywhere)
+	bool bUseBlackboardLocation;
+
+	UPROPERTY(EditAnywhere)
+	FBlackboardKeySelector Location;
     
 public:
     virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;

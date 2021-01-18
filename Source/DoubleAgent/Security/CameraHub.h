@@ -20,16 +20,18 @@ public:
 	// Sets default values for this actor's properties
 	ACameraHub();
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	UBoxComponent* BoxCollision;
-	UPROPERTY(BlueprintReadWrite)
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TArray<ACamera*> Cameras;
-	UPROPERTY()
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TArray<bool> CameraAutoDefault;
-	UPROPERTY(BlueprintReadWrite)
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	bool bDisplayOn;
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	TArray<UTextureRenderTarget2D*> TextureTargets;
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	USceneComponent* OperatorPosition;
 	UPROPERTY()
 	USceneComponent* Root;
 	UPROPERTY()
@@ -46,14 +48,14 @@ public:
 	void PowerEnabled();
 	UFUNCTION(Category="Power System")
 	void PowerDisabled();
-	UFUNCTION(Category="Scene Capture")
+	UFUNCTION(Category="Scene Capture", CallInEditor)
 	void EnableCapture();
-	UFUNCTION(Category="Scene Capture")
+	UFUNCTION(Category="Scene Capture", CallInEditor)
     void DisableCapture();
 
-	UFUNCTION(Category="Display")
+	UFUNCTION(Category="Display", BlueprintCallable)
     void EnableDisplay();
-	UFUNCTION(Category="Display")
+	UFUNCTION(Category="Display", BlueprintCallable)
 	void DisableDisplay();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
