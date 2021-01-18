@@ -45,7 +45,7 @@ class DOUBLEAGENT_API AAIControllerBase : public AAIController
 
     //Amount of time in seconds the stimulus stays after being lost
     UPROPERTY(EditAnywhere)
-    float MaxStimulusAge = 1;
+    float MaxStimulusAge = 5;
 
     //Range in cm based on location
     UPROPERTY(EditAnywhere)

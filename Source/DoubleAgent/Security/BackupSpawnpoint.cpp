@@ -2,9 +2,12 @@
 
 
 #include "BackupSpawnpoint.h"
+
+#include "AIController.h"
 #include "NavigationSystem.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "DoubleAgent/AI/AICharacterBase_CHARACTER.h"
+#include "DoubleAgent/AI/NPC/StaffAIController.h"
 #include "Kismet/KismetMathLibrary.h"
 
 // Sets default values
@@ -30,6 +33,6 @@ FTransform trans = UKismetMathLibrary::MakeTransform(output, rot.Rotator(), FVec
 	FActorSpawnParameters spawnParams;
 	spawnParams.Owner = this;
 	ACharacter* SpawnedCharacter = GetWorld()->SpawnActor<ACharacter>(Backup, trans, spawnParams);
-	//Do blackboard stuff once I find out how to access the characters blackboard
+	Cast<AStaffAIController>(SpawnedCharacter->GetController())->RaiseVocalStatus(EVocalStatus::Vocal_Engaging);
 }
 

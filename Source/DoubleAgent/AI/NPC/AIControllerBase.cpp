@@ -72,19 +72,15 @@ void AAIControllerBase::OnPerceptionUpdated(const TArray<AActor*>& DetectedActor
             //Iterate through sense
             for (int i = 0; i < Stimuli.Num(); i++)
             {
-                //If stimuli just happened
-                if (Stimuli[i].GetAge() == 0)
+                //If sense is hearing
+                if (Stimuli[i].Type.Name == "Default__AISense_Hearing")
                 {
-                    //If sense is hearing
-                    if (Stimuli[i].Type.Name == "Default__AISense_Hearing")
-                    {
-                        HandleHearing(DetectedActors[a], Stimuli[i]);
-                    }
+                    HandleHearing(DetectedActors[a], Stimuli[i]);
+                }
                     //If sense is sight
-                    else if (Stimuli[i].Type.Name == "Default__AISense_Sight")
-                    {
-                        HandleSight(DetectedActors[a], Stimuli[i]);
-                    }
+                else if (Stimuli[i].Type.Name == "Default__AISense_Sight")
+                {
+                    HandleSight(DetectedActors[a], Stimuli[i]);
                 }
             }
         }
