@@ -42,7 +42,7 @@ void ARadioHub::BroadcastRadioEvent()
         AStaffAIController* StaffNPC = Cast<AStaffAIController>(Cast<AAICharacterBase_CHARACTER>(Staff[i])->GetController());
         //If staff is not unconscious
         if (StaffNPC->BrainComponent->IsRunning())
-            StaffNPC->HandleRadioEvent(RadioEvent);
+            StaffNPC->HandleRadioEvent(&RadioEvent);
     }
 }
 

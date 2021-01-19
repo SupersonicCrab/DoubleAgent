@@ -71,6 +71,16 @@ FTrackedDoor::FTrackedDoor(ADoor* Door_)
 
 void AStaffAIController::PlayerVisionTick(AActor* CurrentPlayer, FAIStimulus& CurrentStimulus, float DeltaTime)
 {
+    //Update last stimulus
+    for (int i = 0; i < Memory.Players.Num(); i++)
+    {
+        if (Memory.Players[i].Actor == CurrentPlayer)
+        {
+            Memory.Players[i].LastSensedStimuli = CurrentStimulus;
+            break;
+        }
+    }
+    
     //Skip detection calculations if player is doing nothing wrong
     APlayer_Character* Player = Cast<APlayer_Character>(CurrentPlayer);
     if (!Player->bTresspassing && !Player->bIllegalAction && !Player->bIllegalEquipment)
@@ -182,7 +192,7 @@ void AStaffAIController::PlayerVisionUpdate(AActor* CurrentPlayer, FAIStimulus& 
         }
     }
     
-    //If player was lost and was being tracked
+    //If tracked player was lost
     if (!CurrentStimulus.IsActive() && Blackboard->GetValueAsObject("LastPlayer") == CurrentPlayer)
     {
         Blackboard->ClearValue("LastPlayer");
@@ -220,8 +230,9 @@ void AStaffAIController::CameraVisionUpdate(AActor* CurrentActor, FAIStimulus& C
 void AStaffAIController::CameraHubVisionUpdate(AActor* CurrentActor, FAIStimulus& CurrentStimulus)
 {
     ACameraHub* CameraHub = Cast<ACameraHub>(CurrentActor);
-    if (CameraHub->OperatorNPC == nullptr)
-        Blackboard->SetValueAsBool("CamerasActive", false);
+    Blackboard->SetValueAsBool("CamerasActive", CameraHub->OperatorNPC != nullptr);
+    if (CameraHub->bDisplayOn && CameraHub->OperatorNPC == nullptr)
+        RaiseDetection(40);
 }
 
 void AStaffAIController::DoorVisionUpdate(AActor* CurrentActor, FAIStimulus& CurrentStimulus)
@@ -264,19 +275,19 @@ void AStaffAIController::DoorVisionUpdate(AActor* CurrentActor, FAIStimulus& Cur
         Memory.Doors.Add(Door);
 }
 
-void AStaffAIController::HandleRadioEvent(FRadioEvent RadioEvent)
+void AStaffAIController::HandleRadioEvent(FRadioEvent* RadioEvent)
 {
-    switch (RadioEvent.RadioEvent)
+    switch (RadioEvent->RadioEvent)
     {
         //Alert
     case ERadioEvent::Radio_Alert:
-        Blackboard->SetValueAsVector("LoudNoiseLocation", RadioEvent.Location);
+        Blackboard->SetValueAsVector("LoudNoiseLocation", RadioEvent->Location);
         RaiseVocalStatus(EVocalStatus::Vocal_Alert);
         break;
 
         //Engage
     case ERadioEvent::Radio_Engage:
-        Blackboard->SetValueAsVector("LoudNoiseLocation", RadioEvent.Location);
+        Blackboard->SetValueAsVector("LoudNoiseLocation", RadioEvent->Location);
         Blackboard->ClearValue("InitialLastSeen");
         RaiseVocalStatus(EVocalStatus::Vocal_Engaging);
         break;
@@ -348,8 +359,11 @@ void AStaffAIController::DetectionDecay(float DeltaTime)
         //Iterate through all players
         for (int i = 0; i < Memory.Players.Num(); i++)
         {
-            if (!Memory.Players[i].LastSensedStimuli.IsActive())
+            //If stimuli has expired and is not being tracked
+            if (Memory.Players[i].LastSensedStimuli.IsExpired() && Blackboard->GetValueAsObject("LastPlayer") != Memory.Players[i].Actor)
             {
+                if (Memory.Players[i].Actor == Blackboard->GetValueAsObject("LastPlayer"))
+                    Blackboard->ClearValue("LastPlayer");
                 const int MemoryDetection = round(Memory.Players[i].Detection);
                 if (MemoryDetection > 0 && MemoryDetection != 90 && MemoryDetection != 40)
                 {
@@ -443,6 +457,10 @@ void AStaffAIController::StaffVisionTick(AActor* CurrentActor, FAIStimulus& Curr
     UBlackboardComponent* OtherNPCBlackboard = Cast<AAIController>(Cast<APawn>(CurrentActor)->GetController())->GetBlackboardComponent();
     EActionStatus ActionStatus = static_cast<EActionStatus>(Blackboard->GetValueAsEnum("ActionStatus"));
 
+    //If other staff is using cameras
+    if (OtherNPCBlackboard->GetValueAsBool("UsingCameras"))
+        Blackboard->SetValueAsBool("CamerasActive", true);
+        
     //If action status is not idle and both staffAI are performing the same action
     if (ActionStatus != EActionStatus::Action_Idle && static_cast<EActionStatus>(OtherNPCBlackboard->GetValueAsEnum("ActionStatus")) == ActionStatus)
     {
@@ -457,6 +475,13 @@ void AStaffAIController::StaffVisionTick(AActor* CurrentActor, FAIStimulus& Curr
         else if (ActionStatus == EActionStatus::Action_NoiseInvestigation && Blackboard->GetValueAsVector("NoiseLocation").Equals(OtherNPCBlackboard->GetValueAsVector("NoiseLocation"),50))
         {
             Blackboard->ClearValue("NoiseLocation");
+            Blackboard->SetValueAsEnum("ActionStatus", static_cast<uint8>(EActionStatus::Action_Idle));
+        }
+
+        //If both staff is going to man the cameras
+        else if (ActionStatus == EActionStatus::Action_CameraHub)
+        {
+            Blackboard->SetValueAsBool("CamerasActive", false);
             Blackboard->SetValueAsEnum("ActionStatus", static_cast<uint8>(EActionStatus::Action_Idle));
         }
 

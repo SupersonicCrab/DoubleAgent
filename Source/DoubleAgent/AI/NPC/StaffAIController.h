@@ -140,7 +140,7 @@ public:
 	virtual void DoorVisionUpdate(AActor* CurrentActor, FAIStimulus& CurrentStimulus);
 	
 	//Radio event
-	void HandleRadioEvent(FRadioEvent RadioEvent);
+	void HandleRadioEvent(FRadioEvent* RadioEvent);
 	
 	//Percent change per second
 	UPROPERTY(EditAnywhere)

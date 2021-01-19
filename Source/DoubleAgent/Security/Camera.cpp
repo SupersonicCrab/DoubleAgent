@@ -170,7 +170,8 @@ void ACamera::DisableAutoRotate(){
     if(&UWorld::IsServer){ //Is this the server?
         if(bAutoRotate){ //Is auto rotate enabled?
             bAutoRotate = false; //Set Auto rotate to be disabled
-            //CHRIS FINISH THIS CODE, IT'S YOUR AI STUFF <3 Luv ya ;*
+            if (!GetWorldTimerManager().IsTimerActive(CameraHub->OperatorReactionTimer))
+                GetWorldTimerManager().SetTimer(CameraHub->OperatorReactionTimer, CameraHub, &ACameraHub::AutoRotateDisableReaction, 10);
         }
     }
 }

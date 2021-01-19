@@ -16,7 +16,8 @@ public:
 	ALandline();
 
 	UStaticMeshComponent* StaticMesh;
-	
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool bFunctional = true; //This variable is linked to 2 things: When the landline has been used, and when the player has sabotaged the landline. If either of those have happened, the landline will not be functional
 	UFUNCTION(BlueprintCallable, CallInEditor, Category="Debugging")
 	bool CallBackup();
