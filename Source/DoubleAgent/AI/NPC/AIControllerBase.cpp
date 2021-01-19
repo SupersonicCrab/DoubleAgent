@@ -72,8 +72,8 @@ void AAIControllerBase::OnPerceptionUpdated(const TArray<AActor*>& DetectedActor
             //Iterate through sense
             for (int i = 0; i < Stimuli.Num(); i++)
             {
-                //If sense is hearing
-                if (Stimuli[i].Type.Name == "Default__AISense_Hearing")
+                //If sense is hearing and is not expired
+                if (Stimuli[i].Type.Name == "Default__AISense_Hearing" && !Stimuli[i].IsExpired())
                 {
                     HandleHearing(DetectedActors[a], Stimuli[i]);
                 }
