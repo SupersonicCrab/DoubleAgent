@@ -6,6 +6,7 @@
 #include "../Player_Character.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "NPC/StaffAIController.h"
 
 ARoomVolume::ARoomVolume()
 {
@@ -67,9 +68,13 @@ void ARoomVolume::UpdateLight(bool bRoomLit_){
 
 void ARoomVolume::UpdateNPC(AActor* NPC)
 {
+	//If not staff AI
+	if (Cast<AStaffAIController>(Cast<APawn>(NPC)->GetController()) == nullptr)
+		return;
+	
 	//Get NPC blackboard
 	UBlackboardComponent* NPCBlackboard = UAIBlueprintHelperLibrary::GetBlackboard(NPC);
-
+	
 	if (bLit)
 	{
 		//Removing light switch from NPC if room is now lit
