@@ -9,7 +9,7 @@
 #include "AIControllerBase.generated.h"
 
 UENUM(BlueprintType, meta = (DisplayName = "VocalStatus", ToolTip = "Used to communicate vocally between NPCs via a bark system"))
-enum class EVocalStatus :uint8
+enum class EVocalStatus : uint8
 {
     //Default state
     Vocal_Idle UMETA(DisplayName = "Idle"),

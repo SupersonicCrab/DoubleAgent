@@ -73,11 +73,11 @@ void AAIControllerBase::OnPerceptionUpdated(const TArray<AActor*>& DetectedActor
             for (int i = 0; i < Stimuli.Num(); i++)
             {
                 //If sense is hearing and is not expired
-                if (Stimuli[i].Type.Name == "Default__AISense_Hearing" && !Stimuli[i].IsExpired())
+                if (Stimuli[i].Type.Name == "Default__AISense_Hearing" && Stimuli[i].GetAge() == 0)
                 {
                     HandleHearing(DetectedActors[a], Stimuli[i]);
                 }
-                    //If sense is sight
+                //If sense is sight
                 else if (Stimuli[i].Type.Name == "Default__AISense_Sight")
                 {
                     HandleSight(DetectedActors[a], Stimuli[i]);

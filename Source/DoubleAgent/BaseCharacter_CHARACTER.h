@@ -17,9 +17,9 @@ enum class EVisbilityLevel : uint8
 	Visibility_1 UMETA(DisplayName="Level1"),
 	//Two body parts visible
 	Visibility_2 UMETA(DisplayName="Level2"),
-	//Three body parts visible
+	//Three body parts visible or just spine
 	Visibility_3 UMETA(DisplayName="Level3"),
-	//Four body parts visible
+	//Four body parts visible or just head
 	Visibility_4 UMETA(DisplayName="Level4"),
 	//Five body parts visible
 	Visibility_5 UMETA(DisplayName="Level5"),
