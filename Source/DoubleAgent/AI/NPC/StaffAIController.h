@@ -153,6 +153,8 @@ public:
 	//Helper functions
 	UFUNCTION(BlueprintCallable)
 	void MarkSearchLocationSearched(ASearchLocation* SearchLocation);
+	UFUNCTION(BlueprintCallable)
+	void RemoveRoomSearchLocations(ARoomVolume* RoomVolume);
 
 	//Base overrides
 	virtual void Tick(float DeltaTime) override;
