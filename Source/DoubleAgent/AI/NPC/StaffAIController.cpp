@@ -257,13 +257,14 @@ void AStaffAIController::DoorVisionUpdate(AActor* CurrentActor, FAIStimulus& Cur
     if (SearchResult != -1)
     {
         //If alert or greater and door closed
-        if (Blackboard->GetValueAsFloat("Detection") >= 90 && !Door->bDoorOpen)
+        if (Blackboard->GetValueAsFloat("Detection") >= 90 && !Door->bDoorOpen && Blackboard->GetValueAsObject("ClosedDoor") == nullptr)
         {
             Blackboard->SetValueAsObject("ClosedDoor", Door);
+            //TODO Remove search locations close to door
         }
         
         //If door was previously closed
-        if (Door->bDoorOpen && !Memory.Doors[SearchResult].bDoorOpen)
+        if (Door->bDoorOpen && !Memory.Doors[SearchResult].bDoorOpen && Blackboard->GetValueAsObject("OpenedDoor") == nullptr)
         {
             Blackboard->SetValueAsObject("OpenedDoor", Door);
             RaiseDetection(40);
