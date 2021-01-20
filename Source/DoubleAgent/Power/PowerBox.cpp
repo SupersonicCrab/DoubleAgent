@@ -69,12 +69,14 @@ void APowerBox::TurnLightsOff_Implementation(){
 
 void APowerBox::TurnCamerasOn(){
 	bCamerasOn = true;
-	CameraHub->PowerEnabled();
+	if (CameraHub != nullptr)
+		CameraHub->PowerEnabled();
 }
 
 void APowerBox::TurnCamerasOff(){
 	bCamerasOn = false;
-	CameraHub->PowerDisabled();
+	if (CameraHub != nullptr)
+		CameraHub->PowerDisabled();
 }
 
 void APowerBox::TurnLandlinesOn(){
@@ -98,13 +100,13 @@ void APowerBox::TurnLandlinesOff(){
 }
 
 void APowerBox::TurnRadiosOn(){
-	RadioHub->PowerOn();
-	bRadiosOn = true;
+	if (RadioHub != nullptr)
+		RadioHub->PowerOn();
 }
 
 void APowerBox::TurnRadiosOff(){
-	RadioHub->PowerOff();
-	bRadiosOn = false;
+	if (RadioHub != nullptr)
+		RadioHub->PowerOff();
 }
 
 void APowerBox::CutPower(){
@@ -119,9 +121,6 @@ bool APowerBox::TurnAllPowerOn(){
 	TurnCamerasOn();
 	TurnLandlinesOn();
 	TurnRadiosOn();
-	bLightsOn = true;
-	bCamerasOn = true;
-	bLandlinesOn = true;
-	bRadiosOn = true;
+
 	return true;
 }
