@@ -154,6 +154,17 @@ void ACameraHub::OnComponentOverlapEnd(UPrimitiveComponent* OverlappedComp, AAct
 	}
 }
 
+void ACameraHub::ResetCameraRotate()
+{
+	//Reset cameras auto rotate to default state
+	for (int i = 0; i < Cameras.Num(); i++)
+	{
+		Cameras[i]->bAutoRotate = CameraAutoDefault[i];
+		if (CameraAutoDefault[i] = true)
+			Cameras[i]->TargetYaw = Cameras[i]->LeftYawLimit;
+	}
+}
+
 void ACameraHub::PowerEnabled(){
 	for(auto c: Cameras){
 		c->bPowerOn = true;

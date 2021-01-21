@@ -2,6 +2,7 @@
 
 #include "FSM.h"
 #include "EnvironmentQuery/EnvQueryManager.h"
+#include "Kismet/KismetMathLibrary.h"
 
 FSMState::~FSMState()
 {
@@ -31,10 +32,8 @@ FSMTransition::~FSMTransition()
     Action = nullptr;
 }
 
-void AFSMController::Tick(float DeltaSeconds)
-{
-    Super::Tick(DeltaSeconds);
-
+void AFSMController::BehaviourTick()
+{    
     //Iterate through possible transitions
     for (int i = 0; i < CurrentState->Transitions.Num(); i++)
     {
@@ -87,5 +86,19 @@ void AFSMController::GoToEQS(TSharedPtr<FEnvQueryResult> Result)
 {
     FVector Location = Result->GetItemAsLocation(0);
 
-    MoveToLocation(Location, 10.0f, true, true, true, true, 0, false);   
+    LastMoveResult = MoveToLocation(Location, 10.0f, true, true, true, true, nullptr, false);
+}
+
+void AFSMController::BeginPlay()
+{
+    Super::BeginPlay();
+
+    GetWorld()->GetTimerManager().SetTimer(BehaviourTickHandle, this, &AFSMController::BehaviourTick, 1.0/BehaviourFPS, true, UKismetMathLibrary::RandomFloatInRange(0, .9));
+}
+
+void AFSMController::OnMoveCompleted(FAIRequestID RequestID, const FPathFollowingResult& Result)
+{
+    Super::OnMoveCompleted(RequestID, Result);
+    
+    LastMoveResult = Result;
 }

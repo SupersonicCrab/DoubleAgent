@@ -12,6 +12,9 @@
 
 bool DeleteSelf::PerformAction(AFSMController* Controller)
 {
+    if (Controller->LastMoveResult.IsFailure())
+        return false;
+    
     //If NPC is not moving or animating
     if (Controller->GetMoveStatus() == EPathFollowingStatus::Idle && !Cast<ACharacter>(Controller->GetPawn())->GetMesh()->GetAnimInstance()->IsAnyMontagePlaying())
     {
@@ -25,6 +28,9 @@ bool DeleteSelf::PerformAction(AFSMController* Controller)
 
 bool CowerAnimation::PerformAction(AFSMController* Controller)
 {
+    //Set detection to 100
+    Controller->GetBlackboardComponent()->SetValueAsFloat("Detection", 100);
+    
     //Stop all movement if any
     Controller->StopMovement();
 
