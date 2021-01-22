@@ -147,13 +147,14 @@ void AStaffAIController::PlayerVisionTick(AActor* CurrentPlayer, FAIStimulus& Cu
                 //Update memory
                 Memory.Players[i].Detection = DetectionStep;
                 Memory.Players[i].Location = CurrentStimulus.StimulusLocation;
+
+                //Set player last seen
+                if (Blackboard->GetValueAsObject("LastPlayer") == CurrentPlayer && Blackboard->GetValueAsFloat("Detection") > 90) 
+                    Blackboard->SetValueAsVector("PlayerLastSeen", CurrentStimulus.StimulusLocation);
                 
                 //Clamp if needed
                 if (Memory.Players[i].Detection > 100)
                 {
-                    //Set player last seen
-                    if (Blackboard->GetValueAsObject("LastPlayer") == CurrentPlayer)
-                        Blackboard->SetValueAsVector("PlayerLastSeen", CurrentStimulus.StimulusLocation);
                     Memory.Players[i].Detection = 100;
                 }
 
@@ -166,7 +167,9 @@ void AStaffAIController::PlayerVisionTick(AActor* CurrentPlayer, FAIStimulus& Cu
         if (DetectionStep == 0)
         {
             //Detection calculations
-            if (Blackboard->GetValueAsFloat("Detection") >= 40)
+            if (Blackboard->GetValueAsFloat("Detection") >= 90)
+                DetectionStep = 90 + DetectionRate * CurrentStimulus.Strength * DeltaTime;
+            else if (Blackboard->GetValueAsFloat("Detection") >= 40)
                 DetectionStep = 40 + DetectionRate * CurrentStimulus.Strength * DeltaTime;
             else
                 DetectionStep = DetectionRate * CurrentStimulus.Strength * DeltaTime;
@@ -257,13 +260,21 @@ void AStaffAIController::DoorVisionUpdate(AActor* CurrentActor, FAIStimulus& Cur
     if (SearchResult != -1)
     {
         //If alert or greater and door closed
-        if (Blackboard->GetValueAsFloat("Detection") >= 90 && !Door->bDoorOpen)
+        if (Blackboard->GetValueAsFloat("Detection") >= 90 && !Door->bDoorOpen && Blackboard->GetValueAsObject("ClosedDoor") == nullptr)
         {
             Blackboard->SetValueAsObject("ClosedDoor", Door);
+
+            TArray<AActor*> RoomVolumes;
+            GetOverlappingActors(RoomVolumes, ARoomVolume::StaticClass());
+
+            for (int i = 0; i < RoomVolumes.Num(); i++)
+            {
+                RemoveRoomSearchLocations(Cast<ARoomVolume>(RoomVolumes[i]));
+            }
         }
         
         //If door was previously closed
-        if (Door->bDoorOpen && !Memory.Doors[SearchResult].bDoorOpen)
+        if (Door->bDoorOpen && !Memory.Doors[SearchResult].bDoorOpen && Blackboard->GetValueAsObject("OpenedDoor") == nullptr)
         {
             Blackboard->SetValueAsObject("OpenedDoor", Door);
             RaiseDetection(40);
@@ -323,6 +334,17 @@ void AStaffAIController::MarkSearchLocationSearched(ASearchLocation* SearchLocat
     }
 }
 
+void AStaffAIController::RemoveRoomSearchLocations(ARoomVolume* RoomVolume)
+{
+    TArray<AActor*> SearchLocations;
+    RoomVolume->GetOverlappingActors(SearchLocations, ASearchLocation::StaticClass());
+
+    for (int i = 0; i < SearchLocations.Num(); i++)
+    {
+        SearchedLocations.Remove(Cast<ASearchLocation>(SearchLocations[i]));
+    }
+}
+
 void AStaffAIController::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
@@ -359,8 +381,8 @@ void AStaffAIController::DetectionDecay(float DeltaTime)
         //Iterate through all players
         for (int i = 0; i < Memory.Players.Num(); i++)
         {
-            //If stimuli has expired and is not being tracked
-            if (Memory.Players[i].LastSensedStimuli.IsExpired() && Blackboard->GetValueAsObject("LastPlayer") != Memory.Players[i].Actor)
+            //If stimuli is not recent and is not being tracked
+            if (Memory.Players[i].LastSensedStimuli.GetAge() == 0 && Blackboard->GetValueAsObject("LastPlayer") != Memory.Players[i].Actor)
             {
                 if (Memory.Players[i].Actor == Blackboard->GetValueAsObject("LastPlayer"))
                     Blackboard->ClearValue("LastPlayer");

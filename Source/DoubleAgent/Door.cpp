@@ -52,13 +52,16 @@ void ADoor::CloseAnimation()
 void ADoor::NPCInteraction(AActor* NPC, const FVector& Destination)
 {
     InteractingNPC = Cast<AAICharacterBase_CHARACTER>(NPC);
-    
+
+    UBlackboardComponent* NPCBlackboard = UAIBlueprintHelperLibrary::GetBlackboard(InteractingNPC);
+    if (NPCBlackboard->GetValueAsObject("ClosedDoor") != nullptr && NPCBlackboard->GetValueAsObject("ClosedDoor") == this)
+        NPCBlackboard->ClearValue("ClosedDoor");
+        
     //If a player tries to interact with the door the same frame the NPC is
     if (DoorTimeline != NULL)
     {
         ForceOpenDoor(NPC);
 
-        UBlackboardComponent* NPCBlackboard = UAIBlueprintHelperLibrary::GetBlackboard(NPC);
         NPCBlackboard->SetValueAsVector("NoiseLocation", GetActorLocation());
     }
     
@@ -138,8 +141,8 @@ void ADoor::OpenDoor_Implementation(AActor* Interactor)
     TArray<AActor*> Characters;
     GetOverlappingActors(Characters, ABaseCharacter_CHARACTER::StaticClass());
 
-    //If the door is actually closed and there isn't an animation playing
-    if (!bDoorOpen && DoorTimeline == NULL && (!HasMovingAgents() || Interactor->IsA(AAICharacterBase_CHARACTER::StaticClass())))
+    //If the door is actually closed, there isn't an animation playing, and there is no interacting NPC or is an NPC
+    if (!bDoorOpen && DoorTimeline == NULL && (InteractingNPC == nullptr || Interactor->IsA(AAICharacterBase_CHARACTER::StaticClass())))
     {
         //Lock smart link
         SetSmartLinkEnabled(false);

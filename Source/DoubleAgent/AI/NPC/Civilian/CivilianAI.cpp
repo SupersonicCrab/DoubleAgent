@@ -6,4 +6,5 @@
 ACivilianAI::ACivilianAI()
 {
     CurrentState = new Wander();
+    BehaviourFPS = 3;
 }

@@ -16,25 +16,27 @@ public:
 	APlayer_Character();
 
 	//Variables
-	UPROPERTY(BlueprintReadWrite, Category = "Default", EditAnywhere)
+	UPROPERTY(BlueprintReadWrite, Category = "Default", EditAnywhere, Replicated)
 	bool bTresspassing;
 	
-	UPROPERTY(BlueprintReadWrite, Category = "Default", EditAnywhere)
+	UPROPERTY(BlueprintReadWrite, Category = "Default", EditAnywhere, Replicated)
 	bool bIllegalAction;
-	UPROPERTY(BlueprintReadWrite, Category = "Default", EditAnywhere)
+	UPROPERTY(BlueprintReadWrite, Category = "Default", EditAnywhere, Replicated)
 	bool bIllegalEquipment;
 
 	UFUNCTION()
 	void CheckRooms(class AActor* OverlappedActor = nullptr, class AActor* OtherActor = nullptr);
 
 	FTimerHandle IllegalActionTimer;
-	
-	UFUNCTION(BlueprintCallable)
-	void PerformIllegalAction();
+
+	//If TimeToRemove is set to 0 the state will not disappear
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void PerformIllegalAction(float TimeToRemove = 1.0f);
 
 	UFUNCTION()
 	void FinishIllegalAction();
 	
 	//Overrides
 	virtual void BeginPlay() override;
+	virtual void GetLifetimeReplicatedProps(::TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 };

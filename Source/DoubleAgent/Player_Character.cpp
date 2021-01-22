@@ -3,6 +3,7 @@
 
 #include "Player_Character.h"
 #include "AI/RoomVolume.h"
+#include "Engine/DemoNetDriver.h"
 
 APlayer_Character::APlayer_Character()
 {
@@ -31,15 +32,18 @@ void APlayer_Character::CheckRooms(class AActor* OverlappedActor, class AActor* 
 	}
 }
 
-void APlayer_Character::PerformIllegalAction()
+void APlayer_Character::PerformIllegalAction_Implementation(float TimeToRemove)
 {
 	bIllegalAction = true;
 
+	if (TimeToRemove == 0 )
+		return;
+	
 	//If timer is already active
 	if (UKismetSystemLibrary::K2_IsTimerActiveHandle(GetWorld(), IllegalActionTimer))
 		GetWorld()->GetTimerManager().SetTimer(IllegalActionTimer, this, &APlayer_Character::FinishIllegalAction, GetWorld()->GetTimerManager().GetTimerRemaining(IllegalActionTimer)+1.0f, false);
 	else
-		GetWorld()->GetTimerManager().SetTimer(IllegalActionTimer, this, &APlayer_Character::FinishIllegalAction, 1.0f, false);
+		GetWorld()->GetTimerManager().SetTimer(IllegalActionTimer, this, &APlayer_Character::FinishIllegalAction, TimeToRemove, false);
 }
 
 void APlayer_Character::FinishIllegalAction()
@@ -52,4 +56,13 @@ void APlayer_Character::BeginPlay()
 	Super::BeginPlay();
 	
 	CheckRooms(nullptr, nullptr);
+}
+
+void APlayer_Character::GetLifetimeReplicatedProps(::TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(APlayer_Character, bTresspassing);
+	DOREPLIFETIME(APlayer_Character, bIllegalAction);
+	DOREPLIFETIME(APlayer_Character, bIllegalEquipment);
 }

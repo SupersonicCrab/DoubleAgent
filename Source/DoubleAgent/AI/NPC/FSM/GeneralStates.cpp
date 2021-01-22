@@ -32,7 +32,8 @@ Cower::Cower()
 
 bool CowerCondition::TestCondition(AFSMController* Controller)
 {
-    return Controller->GetBlackboardComponent()->IsVectorValueSet("LoudNoiseLocation");
+    //If a loud noise has been heard or at engaging
+    return (Controller->GetBlackboardComponent()->IsVectorValueSet("LoudNoiseLocation") || (Controller->GetBlackboardComponent()->GetValueAsFloat("Detection") != 100 && static_cast<EVocalStatus>(Controller->GetBlackboardComponent()->GetValueAsEnum("VocalStatus")) == EVocalStatus::Vocal_Engaging));
 }
 
 FSMState* CowerTransition::GetNewState()

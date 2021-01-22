@@ -54,7 +54,7 @@ public:
 	
 	UFUNCTION(BlueprintCallable)
 	void CutPower();
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	bool TurnAllPowerOn();
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="Interaction") //Setting up the Interact interface to use it's functionality in C++

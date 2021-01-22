@@ -4,6 +4,8 @@
 
 #include "DoubleAgent/AI/NPC/AIControllerBase.h"
 #include "EnvironmentQuery/EnvQuery.h"
+#include "EnvironmentQuery/EnvQueryManager.h"
+
 #include "FSM.generated.h"
 
 
@@ -70,14 +72,26 @@ UCLASS()
 class AFSMController : public AAIControllerBase
 {
     GENERATED_BODY()
+
 public:
     FSMState* CurrentState;
 
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
     UBlackboardData* BlackboardData;
 
-    virtual void Tick(float DeltaSeconds) override;
+    UPROPERTY()
+    float BehaviourFPS = 15;
+    
+    FTimerHandle BehaviourTickHandle;
+    
+    void BehaviourTick();
 
     void FindEQS(UEnvQuery* Query);
     void GoToEQS(TSharedPtr<FEnvQueryResult> Result);
+
+    FPathFollowingResult LastMoveResult = FPathFollowingResult(FPathFollowingResultFlags::Success);
+
+    //Base overrides
+    virtual void BeginPlay() override;
+    virtual void OnMoveCompleted(FAIRequestID RequestID, const FPathFollowingResult& Result);
 };

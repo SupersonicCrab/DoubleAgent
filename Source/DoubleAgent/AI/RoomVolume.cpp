@@ -83,6 +83,9 @@ void ARoomVolume::UpdateNPC(AActor* NPC)
 		{
 			NPCBlackboard->ClearValue("LightSwitch");
 		}
+
+		//Updating power status
+		NPCBlackboard->SetValueAsBool("Power", true);
 	}
 	else
 	{
