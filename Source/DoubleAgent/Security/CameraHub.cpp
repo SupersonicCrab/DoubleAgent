@@ -160,7 +160,7 @@ void ACameraHub::ResetCameraRotate()
 	for (int i = 0; i < Cameras.Num(); i++)
 	{
 		Cameras[i]->bAutoRotate = CameraAutoDefault[i];
-		if (CameraAutoDefault[i] = true)
+		if (CameraAutoDefault[i] == true)
 			Cameras[i]->TargetYaw = Cameras[i]->LeftYawLimit;
 	}
 }
