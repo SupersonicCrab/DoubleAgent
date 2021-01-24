@@ -61,6 +61,10 @@ void ALightSwitch::DisableLightGroup_Implementation(bool bFromPowerBox){ //Check
 void ALightSwitch::BeginPlay(){
     Super::BeginPlay();
 
+    //Skip client execution
+    if (!UKismetSystemLibrary::IsServer(GetWorld()))
+        return;
+    
     //Update room volume of lightswitch
     AssociatedRoom->LightSwitch = this;
 
