@@ -25,6 +25,8 @@ class DOUBLEAGENT_API ADoor : public ANavLinkProxy, public IAISightTargetInterfa
 	void OpenAnimation();
 	UFUNCTION()
 	void CloseAnimation();
+	UFUNCTION(Unreliable, NetMulticast)
+	void UpdateRotation(float Yaw);
 
 	//Used to determine animation direction
 	float Direction = 1;
@@ -54,18 +56,21 @@ public:
 	UCurveFloat* CloseCurve;
 	
 	//Door mesh reference
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
 	UStaticMeshComponent* DoorMesh;
 	
 	//Used to determine direction
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UArrowComponent* OpenDirection;
 
-	UFUNCTION(BlueprintCallable, NetMulticast, Reliable)
+	UFUNCTION(BlueprintCallable, Server, Reliable)
 	void OpenDoor(AActor* Interactor);
-	UFUNCTION(BlueprintCallable, NetMulticast, Reliable)
+	UFUNCTION(BlueprintCallable, Server, Reliable)
 	void CloseDoor(AActor* Interactor);
 
+	UFUNCTION(NetMulticast, Reliable)
+	void PlaySound(USoundBase* Sound);
+	
 	//NPC interaction
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	AAICharacterBase_CHARACTER* InteractingNPC = nullptr;
@@ -73,18 +78,17 @@ public:
 	//Create a bsp brush cutout the size of the doors bounding box
 	UFUNCTION(CallInEditor)
 	void UpdateCutout();
-
 	UPROPERTY(EditAnywhere)
 	ABrush* DoorCutout = nullptr;
-
 	UFUNCTION(BlueprintImplementableEvent)
 	FBoxSphereBounds GetMeshBounds();
 	
 	//Whether or not the door is open
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
 	bool bDoorOpen = false;
 
 	//Override base functions
 	virtual void Tick(float DeltaTime) override;
+	virtual void GetLifetimeReplicatedProps(::TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	virtual bool CanBeSeenFrom(const FVector& ObserverLocation, FVector& OutSeenLocation, int32& NumberOfLoSChecksPerformed, float& OutSightStrength, const AActor* IgnoreActor = nullptr) const override;
 };

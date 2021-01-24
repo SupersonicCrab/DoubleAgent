@@ -10,6 +10,7 @@
 #include "Components/LightComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/TimelineComponent.h"
+#include "Engine/DemoNetDriver.h"
 #include "Engine/Polys.h"
 #include "Engine/SkeletalMeshSocket.h"
 #include "Kismet/GameplayStatics.h"
@@ -23,6 +24,8 @@ ADoor::ADoor()
     //Setup door mesh
     DoorMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("DoorMesh"));
     DoorMesh->SetupAttachment(RootComponent);
+    DoorMesh->SetIsReplicated(true);
+    DoorMesh->bReplicatePhysicsToAutonomousProxy = false;
 
     //Setup open direction
     OpenDirection = CreateDefaultSubobject<UArrowComponent>(TEXT("OpenDirection"));
@@ -39,14 +42,17 @@ ADoor::ADoor()
 
 void ADoor::OpenAnimation()
 {
-    //Set door rotation to current to curve value
-    DoorMesh->SetRelativeRotation(FQuat(FRotator(0.f, Direction*OpenCurve->GetFloatValue(DoorTimeline->GetPlaybackPosition()), 0.f)), false, NULL, ETeleportType::TeleportPhysics);
+    UpdateRotation(Direction*OpenCurve->GetFloatValue(DoorTimeline->GetPlaybackPosition()));
 }
 
 void ADoor::CloseAnimation()
 {
-    //Set door rotation to current to curve value
-    DoorMesh->SetRelativeRotation(FQuat(FRotator(0.f, Direction*CloseCurve->GetFloatValue(DoorTimeline->GetPlaybackPosition()), 0.f)), false, NULL, ETeleportType::TeleportPhysics);
+    UpdateRotation(Direction*CloseCurve->GetFloatValue(DoorTimeline->GetPlaybackPosition()));
+}
+
+void ADoor::UpdateRotation_Implementation(float Yaw)
+{
+    DoorMesh->SetRelativeRotation(FQuat(FRotator(0.f, Yaw, 0.f)), false, NULL, ETeleportType::TeleportPhysics);
 }
 
 void ADoor::NPCInteraction(AActor* NPC, const FVector& Destination)
@@ -142,7 +148,7 @@ void ADoor::OpenDoor_Implementation(AActor* Interactor)
     GetOverlappingActors(Characters, ABaseCharacter_CHARACTER::StaticClass());
 
     //If the door is actually closed, there isn't an animation playing, and there is no interacting NPC or is an NPC
-    if (!bDoorOpen && DoorTimeline == NULL && (InteractingNPC == nullptr || Interactor->IsA(AAICharacterBase_CHARACTER::StaticClass())))
+    if (!bDoorOpen && DoorTimeline == NULL && (!HasMovingAgents() || Interactor->IsA(AAICharacterBase_CHARACTER::StaticClass())))
     {
         //Lock smart link
         SetSmartLinkEnabled(false);
@@ -166,10 +172,9 @@ void ADoor::OpenDoor_Implementation(AActor* Interactor)
         //Play timeline
         DoorTimeline->PlayFromStart();
         bDoorOpen = true;
-
+      
         //Play sound
-        USoundBase* SoundCue = LoadObject<USoundBase>(NULL, TEXT("SoundCue'/Game/Audio/SoundEffects/Door/Wooden/WoodenDoorOpen_Cue.WoodenDoorOpen_Cue'"));
-        UGameplayStatics::PlaySoundAtLocation(GetWorld(), SoundCue, GetActorLocation(), GetActorRotation(), FMath::RandRange(0.9f, 1.0f), 1.0f, 0.0f, nullptr, nullptr, this);
+        PlaySound(LoadObject<USoundBase>(NULL, TEXT("SoundCue'/Game/Audio/SoundEffects/Door/Wooden/WoodenDoorOpen_Cue.WoodenDoorOpen_Cue'")));
     }
 }
 
@@ -196,9 +201,13 @@ void ADoor::CloseDoor_Implementation(AActor* Interactor)
         bDoorOpen = false;
 
         //Play sound
-        USoundBase* SoundCue = LoadObject<USoundBase>(NULL, TEXT("SoundCue'/Game/Audio/SoundEffects/Door/Wooden/WoodenDoorClose_Cue.WoodenDoorClose_Cue'"));
-        UGameplayStatics::PlaySoundAtLocation(GetWorld(), SoundCue, GetActorLocation(), GetActorRotation(), FMath::RandRange(0.9f, 1.0f), 1.0f, 0.0f, nullptr, nullptr, this);
+        PlaySound(LoadObject<USoundBase>(NULL, TEXT("SoundCue'/Game/Audio/SoundEffects/Door/Wooden/WoodenDoorClose_Cue.WoodenDoorClose_Cue'")));
     }
+}
+
+void ADoor::PlaySound_Implementation(USoundBase* Sound)
+{
+    UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, GetActorLocation(), GetActorRotation(), FMath::RandRange(0.9f, 1.0f), 1.0f, 0.0f, nullptr, nullptr, this);
 }
 
 void ADoor::UpdateCutout()
@@ -253,6 +262,13 @@ void ADoor::Tick(float DeltaTime)
             DoorTimeline = NULL;
         }
     }
+}
+
+void ADoor::GetLifetimeReplicatedProps(::TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+    Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+    DOREPLIFETIME(ADoor, bDoorOpen);
 }
 
 bool ADoor::CanBeSeenFrom(const FVector& ObserverLocation, FVector& OutSeenLocation, int32& NumberOfLoSChecksPerformed, float& OutSightStrength, const AActor* IgnoreActor) const
