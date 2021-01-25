@@ -36,7 +36,7 @@ struct FRadioEvent
 	
 	//Type of event
 	UPROPERTY(EditAnywhere)
-	ERadioEvent RadioEvent;
+	ERadioEvent RadioEvent = ERadioEvent::Radio_Chatter;
 	//Important location if any
 	FVector Location;
 	//Delay used for speech
