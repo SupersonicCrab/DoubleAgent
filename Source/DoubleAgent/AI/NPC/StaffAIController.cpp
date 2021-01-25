@@ -401,7 +401,8 @@ void AStaffAIController::DetectionDecay(float DeltaTime)
             }
         }
     }
-    if (DecayStep != 0)
+    //If decay step is not zero and no player is being tracked
+    if (DecayStep != 0 && Blackboard->GetValueAsObject("LastPlayer") == nullptr)
     {
         //Decay blackboard detection if greater than 0 and not 40 or 90
         float BlackboardDetection = round(Blackboard->GetValueAsFloat("Detection"));
