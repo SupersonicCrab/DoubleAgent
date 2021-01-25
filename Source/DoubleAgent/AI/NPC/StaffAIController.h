@@ -52,9 +52,9 @@ struct FTrackedCharacter
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	AActor* Actor = nullptr;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FVector Location = FVector();
+	FVector Location = FVector(0);
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float Detection;
+	float Detection = 0.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FAIStimulus LastSensedStimuli;
 };
@@ -69,7 +69,7 @@ struct FTrackedCamera
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	ACamera* Camera = nullptr;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool bAutoRotate;	
+	bool bAutoRotate = false;	
 };
 
 USTRUCT(BlueprintType)
@@ -82,7 +82,7 @@ struct FTrackedDoor
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	ADoor* Door = nullptr;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool bDoorOpen;
+	bool bDoorOpen = false;
 };
 
 //Memory structure used to hold all important actors

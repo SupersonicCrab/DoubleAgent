@@ -255,7 +255,7 @@ void ACamera::Tick(float DeltaTime){
     RotationTick(DeltaTime);
     
     //If OperatorNPC is valid
-    if (CameraHub->OperatorNPC != nullptr)
+    if (CameraHub != nullptr && CameraHub->OperatorNPC != nullptr)
         PerceptionTick(DeltaTime);
 }
 
