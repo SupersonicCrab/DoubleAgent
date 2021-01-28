@@ -83,7 +83,7 @@ void AStaffAIController::PlayerVisionTick(AActor* CurrentPlayer, FAIStimulus& Cu
     
     //Skip detection calculations if player is doing nothing wrong
     APlayer_Character* Player = Cast<APlayer_Character>(CurrentPlayer);
-    if (!Player->bTresspassing && !Player->bIllegalAction && !Player->bIllegalEquipment)
+    if (!Player->IsThreat())
         return;
     
     //Setup
@@ -401,7 +401,8 @@ void AStaffAIController::DetectionDecay(float DeltaTime)
             }
         }
     }
-    if (DecayStep != 0)
+    //If decay step is not zero and no player is being tracked
+    if (DecayStep != 0 && Blackboard->GetValueAsObject("LastPlayer") == nullptr)
     {
         //Decay blackboard detection if greater than 0 and not 40 or 90
         float BlackboardDetection = round(Blackboard->GetValueAsFloat("Detection"));

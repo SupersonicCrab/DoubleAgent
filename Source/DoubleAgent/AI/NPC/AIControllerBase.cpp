@@ -58,7 +58,7 @@ void AAIControllerBase::OnPossess(APawn* InPawn)
 
 void AAIControllerBase::OnPerceptionUpdated(const TArray<AActor*>& DetectedActors)
 {   
-    if (!BPerceptionEnabled)
+    if (!bPerceptionEnabled)
         return;
     
     //Iterate through detected actors
@@ -91,7 +91,7 @@ void AAIControllerBase::Tick(float DeltaTime)
 {
     Super::Tick(DeltaTime);
 
-    if (!BPerceptionEnabled)
+    if (!bPerceptionEnabled)
         return;
     
     //Get visible actors

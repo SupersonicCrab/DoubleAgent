@@ -65,7 +65,15 @@ bool SpeakToCrowd::PerformAction(AFSMController* Controller)
 
 bool GotoCrowd::PerformAction(AFSMController* Controller)
 {
-    return false;
+    //Change characters speed to walking
+    Cast<ACharacter>(Controller->GetPawn())->GetCharacterMovement()->MaxWalkSpeed = 130;
+
+    //Load eqs query to be run
+    UEnvQuery* Query = LoadObject<UEnvQuery>(NULL, TEXT("EnvQuery'/Game/AI/EQS/Queries/FindCrowd_EQSQUERY.FindCrowd_EQSQUERY'"));
+
+    //Run eqs behaviour
+    Controller->FindEQS(Query);
+    return true;
 }
 
 bool GoToDespawn::PerformAction(AFSMController* Controller)

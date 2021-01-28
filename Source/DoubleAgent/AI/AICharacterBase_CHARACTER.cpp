@@ -9,14 +9,14 @@ void AAICharacterBase_CHARACTER::DisableNPC()
 {
 	AAIControllerBase* NPCController = Cast<AAIControllerBase>(GetController());
 	NPCController->BrainComponent->StopLogic(FString("DisablingNPCBehaviour"));
-	NPCController->BPerceptionEnabled = false;
+	NPCController->bPerceptionEnabled = false;
 }
 
 void AAICharacterBase_CHARACTER::EnableNPC()
 {
 	AAIControllerBase* NPCController = Cast<AAIControllerBase>(GetController());
 	NPCController->BrainComponent->StartLogic();
-	NPCController->BPerceptionEnabled = true;
+	NPCController->bPerceptionEnabled = true;
 }
 
 void AAICharacterBase_CHARACTER::GetActorEyesViewPoint(FVector& Location, FRotator& Rotation) const
