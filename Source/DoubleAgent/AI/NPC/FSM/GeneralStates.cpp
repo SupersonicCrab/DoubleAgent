@@ -4,7 +4,10 @@
 #include "GeneralActions.h"
 #include "Animation/AnimInstance.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "DoubleAgent/AI/AICharacterBase_CHARACTER.h"
 #include "GameFramework/Character.h"
+#include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Runtime/CoreUObject/Public/UObject/ConstructorHelpers.h"
 
 Despawn::Despawn()
@@ -32,8 +35,11 @@ Cower::Cower()
 
 bool CowerCondition::TestCondition(AFSMController* Controller)
 {
-    //If a loud noise has been heard or at engaging
-    return (Controller->GetBlackboardComponent()->IsVectorValueSet("LoudNoiseLocation") || (Controller->GetBlackboardComponent()->GetValueAsFloat("Detection") != 100 && static_cast<EVocalStatus>(Controller->GetBlackboardComponent()->GetValueAsEnum("VocalStatus")) == EVocalStatus::Vocal_Engaging));
+    //If a loud noise has been heard or at engaging or lightswitch is set
+    return (Controller->GetBlackboardComponent()->GetValueAsFloat("Detection") != 100 &&
+        (Controller->GetBlackboardComponent()->IsVectorValueSet("LoudNoiseLocation") ||
+            Controller->GetBlackboardComponent()->GetValueAsEnum("VocalStatus") == static_cast<uint8>(EVocalStatus::Vocal_Engaging) ||
+            Controller->GetBlackboardComponent()->GetValueAsObject("LightSwitch") != nullptr));
 }
 
 FSMState* CowerTransition::GetNewState()
@@ -51,7 +57,14 @@ Talk::Talk()
 
 bool TalkCondition::TestCondition(AFSMController* Controller)
 {
-    return false;
+    TArray<AActor*> NPCs;
+    TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
+    ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Pawn));
+    TArray<AActor*> Ignore;
+    Ignore.Add(Controller->GetPawn());
+    UKismetSystemLibrary::SphereOverlapActors(Controller->GetWorld(), Controller->GetPawn()->GetActorLocation(), 200, ObjectTypes, AAICharacterBase_CHARACTER::StaticClass(), Ignore, NPCs);
+
+    return (NPCs.Num() >= 2);
 }
 
 FSMState* TalkTransition::GetNewState()

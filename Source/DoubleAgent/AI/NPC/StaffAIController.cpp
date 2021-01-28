@@ -83,7 +83,7 @@ void AStaffAIController::PlayerVisionTick(AActor* CurrentPlayer, FAIStimulus& Cu
     
     //Skip detection calculations if player is doing nothing wrong
     APlayer_Character* Player = Cast<APlayer_Character>(CurrentPlayer);
-    if (!Player->bTresspassing && !Player->bIllegalAction && !Player->bIllegalEquipment)
+    if (!Player->IsThreat())
         return;
     
     //Setup

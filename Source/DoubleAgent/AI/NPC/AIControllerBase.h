@@ -83,7 +83,7 @@ public:
 
     //Used to disable perception
     UPROPERTY(EditAnywhere, BlueprintReadWrite)
-    bool BPerceptionEnabled = true;
+    bool bPerceptionEnabled = true;
     
     //Process sight perception
     UFUNCTION()

@@ -35,6 +35,12 @@ public:
 
 	UFUNCTION()
 	void FinishIllegalAction();
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	bool IsThreat()
+	{
+		return (bTresspassing || bIllegalAction || bIllegalEquipment);
+	};
 	
 	//Overrides
 	virtual void BeginPlay() override;

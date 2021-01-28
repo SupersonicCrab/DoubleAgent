@@ -84,6 +84,10 @@ void AFSMController::FindEQS(UEnvQuery* Query)
 
 void AFSMController::GoToEQS(TSharedPtr<FEnvQueryResult> Result)
 {
+    //Stop if EQS failed
+    if (!Result->IsSuccsessful())
+        return;
+    
     FVector Location = Result->GetItemAsLocation(0);
 
     LastMoveResult = MoveToLocation(Location, 10.0f, true, true, true, true, nullptr, false);
