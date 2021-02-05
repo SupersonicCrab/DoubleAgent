@@ -64,6 +64,10 @@ void ALightSwitch::BeginPlay(){
     //Skip client execution
     if (!UKismetSystemLibrary::IsServer(GetWorld()))
         return;
+
+    //Error checking
+    if (AssociatedRoom == nullptr)
+        return;
     
     //Update room volume of lightswitch
     AssociatedRoom->LightSwitch = this;
