@@ -30,8 +30,10 @@ public:
 	UPROPERTY(EditAnywhere)
 	TArray<AHouseLight*> Lights;
 
-	//Static meshs
+	//Static mesh's
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UStaticMeshComponent* MeshBase;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UStaticMeshComponent* MeshSwitch;
 	
 	//Constructor
