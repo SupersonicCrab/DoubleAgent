@@ -66,6 +66,7 @@ class TalkTransition : public FSMTransition
 public:
     TalkTransition()
     {
+        Action = new StopMovement();
         Condition = new TalkCondition();
     };
     virtual FSMState* GetNewState() override;

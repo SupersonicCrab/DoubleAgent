@@ -18,6 +18,7 @@ Despawn::Despawn()
 
 bool DespawnCondition::TestCondition(AFSMController* Controller)
 {
+    //todo UnconsciousNPC
     UBlackboardComponent* Blackboard = Controller->GetBlackboardComponent();
     return Blackboard->GetValueAsFloat("Detection") > 90 && !Controller->GetBlackboardComponent()->IsVectorValueSet("LoudNoiseLocation") && !Cast<ACharacter>(Controller->GetPawn())->GetMesh()->GetAnimInstance()->IsAnyMontagePlaying();
 }
@@ -35,11 +36,12 @@ Cower::Cower()
 
 bool CowerCondition::TestCondition(AFSMController* Controller)
 {
-    //If a loud noise has been heard or at engaging or lightswitch is set
+    //If a loud noise has been heard or at engaging or lightswitch is set or UnconsciousNPC is set
     return (Controller->GetBlackboardComponent()->GetValueAsFloat("Detection") != 100 &&
         (Controller->GetBlackboardComponent()->IsVectorValueSet("LoudNoiseLocation") ||
             Controller->GetBlackboardComponent()->GetValueAsEnum("VocalStatus") == static_cast<uint8>(EVocalStatus::Vocal_Engaging) ||
-            Controller->GetBlackboardComponent()->GetValueAsObject("LightSwitch") != nullptr));
+            Controller->GetBlackboardComponent()->GetValueAsObject("LightSwitch") != nullptr) ||
+            Controller->GetBlackboardComponent()->GetValueAsObject("UnconsciousNPC") != nullptr);
 }
 
 FSMState* CowerTransition::GetNewState()
@@ -49,6 +51,7 @@ FSMState* CowerTransition::GetNewState()
 
 Talk::Talk()
 {
+    EntryActions.Add(new TurnAtCrowd());
     Actions.Add(new SpeakToCrowd());
     Transitions.Add(new CowerTransition());
     Transitions.Add(new DespawnTransition());
@@ -64,7 +67,13 @@ bool TalkCondition::TestCondition(AFSMController* Controller)
     Ignore.Add(Controller->GetPawn());
     UKismetSystemLibrary::SphereOverlapActors(Controller->GetWorld(), Controller->GetPawn()->GetActorLocation(), 200, ObjectTypes, AAICharacterBase_CHARACTER::StaticClass(), Ignore, NPCs);
 
-    return (NPCs.Num() >= 2);
+    for (int i = NPCs.Num()-1; i > 0; i--)
+    {
+        if (NPCs[i]->GetVelocity().Size() > 1)
+            NPCs.RemoveAt(i);
+    }
+    
+    return (NPCs.Num() >= 1);
 }
 
 FSMState* TalkTransition::GetNewState()

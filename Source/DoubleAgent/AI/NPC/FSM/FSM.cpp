@@ -90,7 +90,7 @@ void AFSMController::GoToEQS(TSharedPtr<FEnvQueryResult> Result)
     
     FVector Location = Result->GetItemAsLocation(0);
 
-    LastMoveResult = MoveToLocation(Location, 10.0f, true, true, true, true, nullptr, false);
+    LastMoveResult = MoveToLocation(Location, 5.0f, true, true, true, true, nullptr, false);
 }
 
 void AFSMController::BeginPlay()

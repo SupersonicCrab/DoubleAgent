@@ -4,10 +4,12 @@
 #include "Animation/AnimInstance.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "DoubleAgent/BaseCharacter_CHARACTER.h"
+#include "DoubleAgent/AI/AICharacterBase_CHARACTER.h"
 #include "EnvironmentQuery/EnvQuery.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Kismet/KismetMathLibrary.h"
 
 
 bool DeleteSelf::PerformAction(AFSMController* Controller)
@@ -60,11 +62,38 @@ bool CowerAnimation::PerformAction(AFSMController* Controller)
 
 bool SpeakToCrowd::PerformAction(AFSMController* Controller)
 {
-    return false;
+    ABaseCharacter_CHARACTER* Speaker = Cast<ABaseCharacter_CHARACTER>(Controller->GetBlackboardComponent()->GetValueAsObject("Speaker"));
+    
+    //If someone has already spoken nearby recently
+    if (IsValid(Speaker))
+    {
+        //If speaker is within speaking distance and is not self
+        if (Controller->GetPawn()->GetDistanceTo(Speaker) <= SpeakingDistance && Speaker != Controller->GetPawn())
+        {
+            //Look at speaker
+            Controller->SetControlRotation(UKismetMathLibrary::FindLookAtRotation(Controller->GetPawn()->GetActorLocation(), Speaker->GetActorLocation()));
+        }
+        return true;
+    }
+    
+    //Register speech event
+    UAISense_Hearing::ReportNoiseEvent(Controller->GetWorld(), Controller->GetPawn()->GetActorLocation(), 1, Controller->GetPawn(), 0, FName("Speech"));
+
+    //Mark self as speaker
+    Controller->GetBlackboardComponent()->SetValueAsObject("Speaker", Controller->GetPawn());
+    
+    //Print to log and screen new vocal status
+    UKismetSystemLibrary::PrintString(Controller->GetWorld(), FString::Printf(TEXT("%s spoke with status: %s"), *Controller->GetPawn()->GetDebugName(Controller->GetPawn()), *UEnum::GetDisplayValueAsText(EVocalStatus::Vocal_Idle).ToString()), true, true, FLinearColor::Red, 10.0f);
+    
+    return true;
 }
 
 bool GotoCrowd::PerformAction(AFSMController* Controller)
 {
+    //Skip if already moving
+    if (Controller->GetMoveStatus() != EPathFollowingStatus::Idle)
+        return true;
+    
     //Change characters speed to walking
     Cast<ACharacter>(Controller->GetPawn())->GetCharacterMovement()->MaxWalkSpeed = 130;
 
@@ -86,5 +115,47 @@ bool GoToDespawn::PerformAction(AFSMController* Controller)
 
     //Run eqs behaviour
     Controller->FindEQS(Query);
+    return true;
+}
+
+bool StopMovement::PerformAction(AFSMController* Controller)
+{
+    //If already stopped
+    if (Controller->GetMoveStatus() == EPathFollowingStatus::Idle)
+        return true;
+
+    Controller->StopMovement();
+    return true;
+}
+
+bool TurnAtCrowd::PerformAction(AFSMController* Controller)
+{
+    //Get all nearby characters
+    TArray<AActor*> NPCs;
+    TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
+    ObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Pawn));
+    TArray<AActor*> Ignore;
+    Ignore.Add(Controller->GetPawn());
+    UKismetSystemLibrary::SphereOverlapActors(Controller->GetWorld(), Controller->GetPawn()->GetActorLocation(), 500, ObjectTypes, AAICharacterBase_CHARACTER::StaticClass(), Ignore, NPCs);
+    
+    //Remove moving characters
+    for (int i = NPCs.Num()-1; i > 0; i--)
+    {
+        if (NPCs[i]->GetVelocity().Size() > 1)
+            NPCs.RemoveAt(i);
+    }
+
+    //Stop if no nearby NPCs was found
+    if (NPCs.Num() == 0)
+        return true;
+
+    //Average locations of nearby NPCs
+    FVector Temp;
+    for (int i = 0; i < NPCs.Num(); i++)
+        Temp += NPCs[i]->GetActorLocation();
+    Temp = Temp/NPCs.Num();
+
+    //Look at averaged location
+    Controller->SetControlRotation(UKismetMathLibrary::FindLookAtRotation(Controller->GetPawn()->GetActorLocation(), Temp));
     return true;
 }

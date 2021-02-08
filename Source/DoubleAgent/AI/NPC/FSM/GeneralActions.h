@@ -25,6 +25,7 @@ class SpeakToCrowd : public FSMAction
 public:
     SpeakToCrowd(){};
     virtual bool PerformAction(AFSMController* Controller) override;
+    float SpeakingDistance = 550;
 };
 
 class GotoCrowd : public FSMAction
@@ -38,5 +39,19 @@ class GoToDespawn : public FSMAction
 {
 public:
     GoToDespawn(){};
+    virtual bool PerformAction(AFSMController* Controller) override;
+};
+
+class StopMovement : public FSMAction
+{
+public:
+    StopMovement(){};
+    virtual bool PerformAction(AFSMController* Controller) override;
+};
+
+class TurnAtCrowd : public FSMAction
+{
+public:
+    TurnAtCrowd(){};
     virtual bool PerformAction(AFSMController* Controller) override;
 };
