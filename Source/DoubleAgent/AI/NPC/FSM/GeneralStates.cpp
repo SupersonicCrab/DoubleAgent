@@ -20,7 +20,7 @@ bool DespawnCondition::TestCondition(AFSMController* Controller)
 {
     //todo UnconsciousNPC
     UBlackboardComponent* Blackboard = Controller->GetBlackboardComponent();
-    return Blackboard->GetValueAsFloat("Detection") > 90 && !Controller->GetBlackboardComponent()->IsVectorValueSet("LoudNoiseLocation") && !Cast<ACharacter>(Controller->GetPawn())->GetMesh()->GetAnimInstance()->IsAnyMontagePlaying();
+    return Blackboard->GetValueAsFloat("Detection") > 90 && !Blackboard->IsVectorValueSet("LoudNoiseLocation") && !Cast<ACharacter>(Controller->GetPawn())->GetMesh()->GetAnimInstance()->IsAnyMontagePlaying();
 }
 
 FSMState* DespawnTransition::GetNewState()
