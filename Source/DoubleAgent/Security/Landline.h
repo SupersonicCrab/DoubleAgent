@@ -14,7 +14,8 @@ class DOUBLEAGENT_API ALandline : public APowerComponent, public IInteractInterf
 public:	
 	// Sets default values for this actor's properties
 	ALandline();
-
+	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	UStaticMeshComponent* StaticMesh;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
