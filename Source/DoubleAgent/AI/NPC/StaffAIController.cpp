@@ -384,7 +384,7 @@ void AStaffAIController::DetectionDecay(float DeltaTime)
         for (int i = 0; i < Memory.Players.Num(); i++)
         {
             //If stimuli is not tracked
-            if (Memory.Players[i].LastSensedStimuli.SensingFailed)
+            if (!Memory.Players[i].LastSensedStimuli.WasSuccessfullySensed())
             {
                 //Remove blackboard tracker
                 if (Memory.Players[i].Actor == Blackboard->GetValueAsObject("LastPlayer"))
