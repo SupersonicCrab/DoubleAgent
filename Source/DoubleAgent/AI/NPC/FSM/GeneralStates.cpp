@@ -18,9 +18,11 @@ Despawn::Despawn()
 
 bool DespawnCondition::TestCondition(AFSMController* Controller)
 {
-    //todo UnconsciousNPC
     UBlackboardComponent* Blackboard = Controller->GetBlackboardComponent();
-    return Blackboard->GetValueAsFloat("Detection") > 90 && !Blackboard->IsVectorValueSet("LoudNoiseLocation") && !Cast<ACharacter>(Controller->GetPawn())->GetMesh()->GetAnimInstance()->IsAnyMontagePlaying();
+    //If no animation is playing and detection is above 90
+    return (!Cast<ACharacter>(Controller->GetPawn())->GetMesh()->GetAnimInstance()->IsAnyMontagePlaying() && Blackboard->GetValueAsFloat("Detection") > 90) &&
+        //If LoudNoiseLocation is not set or UnconsciousNPC is set
+        (!Blackboard->IsVectorValueSet("LoudNoiseLocation") || Blackboard->GetValueAsObject("UnconsciousNPC") != nullptr);
 }
 
 FSMState* DespawnTransition::GetNewState()
@@ -91,7 +93,10 @@ Wander::Wander()
 
 bool WanderCondition::TestCondition(AFSMController* Controller)
 {
-    return false;
+    FDateTime Temp;
+    Temp.Now();
+    
+    return (ArrivalTime - Temp > WaitTime*60);
 }
 
 FSMState* WanderTransition::GetNewState()

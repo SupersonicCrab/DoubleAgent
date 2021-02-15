@@ -364,11 +364,13 @@ void AStaffAIController::DetectionDecay(float DeltaTime)
         for (int i = 0; i < Memory.Players.Num(); i++)
         {
             const int MemoryDetection = round(Memory.Players[i].Detection);
-            if (MemoryDetection > 0 && MemoryDetection != 90 && MemoryDetection != 40)
+            //If detection is above 40 and not 90
+            if (MemoryDetection > 40 && MemoryDetection != 90)
             {
                 //Decay calculations
                 DecayStep = DetectionRate * DeltaTime;
 
+                //Update memory detection
                 Memory.Players[i].Detection -= DecayStep;
                 //Clamp if needed
                 if (Memory.Players[i].Detection < 0)
@@ -381,17 +383,20 @@ void AStaffAIController::DetectionDecay(float DeltaTime)
         //Iterate through all players
         for (int i = 0; i < Memory.Players.Num(); i++)
         {
-            //If stimuli is not recent and is not being tracked
-            if (Memory.Players[i].LastSensedStimuli.GetAge() == 0 && Blackboard->GetValueAsObject("LastPlayer") != Memory.Players[i].Actor)
+            //If stimuli is not tracked
+            if (!Memory.Players[i].LastSensedStimuli.WasSuccessfullySensed())
             {
+                //Remove blackboard tracker
                 if (Memory.Players[i].Actor == Blackboard->GetValueAsObject("LastPlayer"))
                     Blackboard->ClearValue("LastPlayer");
                 const int MemoryDetection = round(Memory.Players[i].Detection);
-                if (MemoryDetection > 0 && MemoryDetection != 90 && MemoryDetection != 40)
+                //If detection is above 40 and not 90
+                if (MemoryDetection > 40 && MemoryDetection != 90)
                 {
                     //Decay calculations
                     DecayStep = DetectionRate * DeltaTime;
 
+                    //Update memory detection
                     Memory.Players[i].Detection -= DecayStep;
                     //Clamp if needed
                     if (Memory.Players[i].Detection < 0)
@@ -404,10 +409,11 @@ void AStaffAIController::DetectionDecay(float DeltaTime)
     //If decay step is not zero and no player is being tracked
     if (DecayStep != 0 && Blackboard->GetValueAsObject("LastPlayer") == nullptr)
     {
-        //Decay blackboard detection if greater than 0 and not 40 or 90
+        //If detection is above 40 and not 90
         float BlackboardDetection = round(Blackboard->GetValueAsFloat("Detection"));
-        if (BlackboardDetection > 0 && BlackboardDetection != 90 && BlackboardDetection != 40)
+        if (BlackboardDetection > 40 && BlackboardDetection != 90)
         {
+            //Update blackboard detection
             Blackboard->SetValueAsFloat("Detection",Blackboard->GetValueAsFloat("Detection") - DetectionRate * DeltaTime);
             //Clamp if needed
             BlackboardDetection = Blackboard->GetValueAsFloat("Detection");

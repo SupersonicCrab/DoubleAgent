@@ -82,6 +82,11 @@ class WanderCondition : public FSMCondition
 {
 public:
     virtual bool TestCondition(AFSMController* Controller) override;
+    //Start timestamp
+    FDateTime ArrivalTime;
+    
+    //How long to wait
+    float WaitTime = 120;
 };
 
 class WanderTransition : public FSMTransition

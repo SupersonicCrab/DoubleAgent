@@ -16,4 +16,7 @@ class DOUBLEAGENT_API ACivilianAI : public AFSMController
 	GENERATED_BODY()
 public:
     ACivilianAI();
+
+	//Override base
+	virtual void HandleSight(AActor* CurrentActor, FAIStimulus& CurrentStimulus) override;
 };
