@@ -261,7 +261,7 @@ void ACamera::Tick(float DeltaTime){
 
 void ACamera::BeginPlay(){
     Super::BeginPlay();
-    AutoRotateDelay = FMath::RandRange(0.5, 1) + AutoRotateDelay;
+    AutoRotateDelay = FMath::RandRange(0, 1) + AutoRotateDelay;
 
     PerceptionStimuliSource->RegisterForSense(UAISense_Sight::StaticClass());
 }

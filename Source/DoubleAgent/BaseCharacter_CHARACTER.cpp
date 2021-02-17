@@ -144,7 +144,7 @@ void ABaseCharacter_CHARACTER::NetStopAnimationClient_Implementation()
 {
     //If not server
     if (!UKismetSystemLibrary::IsServer(GetWorld()))
-        GetMesh()->GetAnimInstance()->Montage_Stop(NULL);
+        GetMesh()->GetAnimInstance()->Montage_Stop(0);
 }
 
 
