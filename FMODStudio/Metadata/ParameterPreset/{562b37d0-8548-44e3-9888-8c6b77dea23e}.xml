@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.01.00">
+	<object class="ParameterPreset" id="{562b37d0-8548-44e3-9888-8c6b77dea23e}">
+		<property name="name">
+			<value>butlerLevel</value>
+		</property>
+		<relationship name="folder">
+			<destination>{20b4ea36-0cd2-44d6-ae62-535c3222b16b}</destination>
+		</relationship>
+		<relationship name="parameter">
+			<destination>{c4b81039-1b83-45e1-b617-f793d55a0a43}</destination>
+		</relationship>
+	</object>
+	<object class="GameParameter" id="{c4b81039-1b83-45e1-b617-f793d55a0a43}">
+		<property name="initialValue">
+			<value>0</value>
+		</property>
+	</object>
+</objects>
