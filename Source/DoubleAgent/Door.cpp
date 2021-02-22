@@ -148,7 +148,7 @@ void ADoor::OpenDoor_Implementation(AActor* Interactor)
     GetOverlappingActors(Characters, ABaseCharacter_CHARACTER::StaticClass());
 
     //If the door is actually closed, there isn't an animation playing, and there is no interacting NPC or is an NPC
-    if (!bDoorOpen && DoorTimeline == NULL && (!HasMovingAgents() || Interactor->IsA(AAICharacterBase_CHARACTER::StaticClass())))
+    if (!bDoorOpen && DoorTimeline == NULL && (InteractingNPC == nullptr || Interactor->IsA(AAICharacterBase_CHARACTER::StaticClass())))
     {
         //Lock smart link
         SetSmartLinkEnabled(false);
@@ -181,7 +181,7 @@ void ADoor::OpenDoor_Implementation(AActor* Interactor)
 void ADoor::CloseDoor_Implementation(AActor* Interactor)
 {
     //If door is actually open and there isn't an animation playing
-    if (bDoorOpen && DoorTimeline == NULL && (!HasMovingAgents() || (Interactor != nullptr && Interactor->IsA(AAICharacterBase_CHARACTER::StaticClass()))))
+    if (bDoorOpen && DoorTimeline == NULL && (InteractingNPC == nullptr || (Interactor != nullptr && Interactor->IsA(AAICharacterBase_CHARACTER::StaticClass()))))
     {
         //Setup timeline
         FOnTimelineFloat TimelineCallback;
