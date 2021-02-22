@@ -3,10 +3,60 @@
 #pragma once
 
 #include "CoreMinimal.h"
+
+
+#include "Chaos/AABBTree.h"
+#include "Chaos/AABBTree.h"
 #include "GameFramework/Character.h"
 #include "Perception/AISightTargetInterface.h"
 #include "Sound/DialogueVoice.h"
 #include "BaseCharacter_CHARACTER.generated.h"
+
+UENUM(BlueprintType)
+enum class EGender : uint8
+{
+	Gender_Masculine UMETA(DisplayName="Masculine"),
+	Gender_Feminine UMETA(DisplayName="Feminine"),
+};
+
+UENUM(BlueprintType)
+enum class EVoiceActor : uint8
+{
+	VoiceActor_MaleCivilian1,
+	VoiceActor_MaleCivilian2,
+	VoiceActor_FemaleCivilian1,
+	VoiceActor_FemaleCivilian2,
+	VoiceActor_MaleWaiter,
+	VoiceActor_FemaleWaiter,
+	VoiceActor_MaleGuard1,
+	VoiceActor_MaleGuard2,
+	VoiceActor_FemaleGuard1,
+	VoiceActor_FemaleGuard2,
+	VoiceActor_MobBoss,
+	VoiceActor_Butler,
+};
+
+UENUM(BlueprintType)
+enum class ESpeechEvent : uint8
+{
+	SpeechEvent_Idle,
+	SpeechEvent_Patrol,
+	SpeechEvent_Cautious,
+	SpeechEvent_Alert,
+	SpeechEvent_Searching,
+	SpeechEvent_Subduing,
+	SpeechEvent_Engaging,
+	SpeechEvent_Action_BathroomBreak,
+	SpeechEvent_Action_PowerBox,
+	SpeechEvent_Action_CameraHub,
+	SpeechEvent_Action_Revive,
+	SpeechEvent_Action_Backup,
+	SpeechEvent_Action_BodySearch,
+	SpeechEvent_Action_NoiseInvestigation,
+	SpeechEvent_Action_Cleaning,
+	SpeechEvent_Action_Restocking,
+	SpeechEvent_Action_Reloading,
+};
 
 UENUM(BlueprintType, meta = (DisplayName = "Visibilty Level", ToolTip = "Amount of light visible on character"))
 enum class EVisbilityLevel : uint8
@@ -46,9 +96,22 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Debug", Replicated)
 	EVisbilityLevel Visibility;
 
-	//Voice actor assigned to this character
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Default")
-	UDialogueVoice* Voice;
+	//Speaker
+	UPROPERTY(BlueprintReadOnly)
+	bool bIsSpeaking = false;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	EGender Gender;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	EVoiceActor VoiceActor;
+
+	UFUNCTION(BlueprintCallable)
+	virtual void Speak(ESpeechEvent NewSpeech);
+	UFUNCTION(BlueprintCallable)
+	float GetSpeechTimeRemaining();
+	UFUNCTION(BlueprintCallable)
+	ESpeechEvent GetCurrentSpeechEvent();
+	UFUNCTION(BlueprintCallable)
+	void StopSpeaking();	
 	
 	//Animation rpc
 	UFUNCTION(BlueprintCallable, NetMulticast, Reliable)

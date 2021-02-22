@@ -18,6 +18,14 @@ public:
 	// Sets default values for this character's properties
 	AAICharacterBase_CHARACTER(){};
 
+	//Speaker
+	UPROPERTY(BlueprintReadOnly)
+	ESpeechEvent QueuedSpeech;
+
+	UFUNCTION(BlueprintCallable)
+	void QueueSpeech(ESpeechEvent Speech, float TimeToWait);
+    virtual void Speak(ESpeechEvent NewSpeech) override;
+	
 	//Disable NPC behaviour and perceptions
 	UFUNCTION(CallInEditor, BlueprintCallable, Category = "Debug")
 	virtual void DisableNPC();

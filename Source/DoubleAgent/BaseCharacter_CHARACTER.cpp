@@ -20,6 +20,24 @@ ABaseCharacter_CHARACTER::ABaseCharacter_CHARACTER()
     Sockets.Add("calfRightSocket");
 }
 
+void ABaseCharacter_CHARACTER::Speak(ESpeechEvent NewSpeech)
+{
+}
+
+float ABaseCharacter_CHARACTER::GetSpeechTimeRemaining()
+{
+    return -1;
+}
+
+ESpeechEvent ABaseCharacter_CHARACTER::GetCurrentSpeechEvent()
+{
+    return ESpeechEvent::SpeechEvent_Idle;
+}
+
+void ABaseCharacter_CHARACTER::StopSpeaking()
+{
+}
+
 bool ABaseCharacter_CHARACTER::CanBeSeenFrom(const FVector& ObserverLocation, FVector& OutSeenLocation, int32& NumberOfLoSChecksPerformed, float& OutSightStrength, const AActor* IgnoreActor) const
 {
     if (!bCanBeSeen)

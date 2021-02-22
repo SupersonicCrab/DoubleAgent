@@ -35,26 +35,6 @@ class DOUBLEAGENT_API AAIControllerBase : public AAIController
 {
     GENERATED_BODY()
 
-    //Falloff range in cm based on fov
-    UPROPERTY(EditAnywhere)
-    float LoseSightRadius = 3500;
-
-    //Fov from forward vector
-    UPROPERTY(EditAnywhere)
-    float FOV = 90;
-
-    //Amount of time in seconds the stimulus stays after being lost
-    UPROPERTY(EditAnywhere)
-    float MaxStimulusAge = 1;
-
-    //Range in cm based on location
-    UPROPERTY(EditAnywhere)
-    float HearingRange = 3000;
-
-    //Perception configurations
-    UAISenseConfig_Sight* SightConfig;
-    UAISenseConfig_Hearing* HearingConfig;
-
     //Behaviour tree asset
     UPROPERTY(EditAnywhere)
     UBehaviorTree* BehaviourTree;
@@ -68,10 +48,25 @@ public:
 
     //Override
     virtual void OnPossess(APawn* InPawn) override;
-  
+
+    //Perception configurations
+    UAISenseConfig_Sight* SightConfig;
+    UAISenseConfig_Hearing* HearingConfig;
+    
     //Range in cm based on fov
-    UPROPERTY(EditAnywhere)
     float SightRadius = 3000;
+
+    //Falloff range in cm based on fov
+    float LoseSightRadius = 3500;
+
+    //Fov from forward vector
+    float FOV = 90;
+
+    //Amount of time in seconds the stimulus stays after being lost
+    float MaxStimulusAge = 1;
+
+    //Range in cm based on location
+    float HearingRange = 3000;
     
     //NPC spotted tick
     UFUNCTION()

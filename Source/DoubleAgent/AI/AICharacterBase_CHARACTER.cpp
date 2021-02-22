@@ -5,6 +5,14 @@
 #include "NPC/AIControllerBase.h"
 #include "Perception/AIPerceptionComponent.h"
 
+void AAICharacterBase_CHARACTER::QueueSpeech(ESpeechEvent Speech, float TimeToWait)
+{
+}
+
+void AAICharacterBase_CHARACTER::Speak(ESpeechEvent NewSpeech)
+{
+}
+
 void AAICharacterBase_CHARACTER::DisableNPC()
 {
 	AAIControllerBase* NPCController = Cast<AAIControllerBase>(GetController());
