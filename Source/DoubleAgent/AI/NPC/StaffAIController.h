@@ -39,7 +39,9 @@ enum class EActionStatus : uint8
 	//Reloading
 	Action_Reloading UMETA(DisplayName = "Reloading"),
 	//Using the washroom
-	Action_Washroom UMETA(DisplayName = "Washroom")
+	Action_Washroom UMETA(DisplayName = "Washroom"),
+	//Returning to idle
+	Action_IdleTransition UMETA(DisplayName = "IdleTransition")
 };
 
 USTRUCT(BlueprintType)

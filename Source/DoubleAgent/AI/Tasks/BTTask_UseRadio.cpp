@@ -2,7 +2,6 @@
 
 
 #include "BTTask_UseRadio.h"
-
 #include "BehaviorTree/Blackboard/BlackboardKeyType_Vector.h"
 #include "DoubleAgent/AI/NPC/AIControllerBase.h"
 #include "DoubleAgent/Security/RadioHub.h"
@@ -33,6 +32,8 @@ EBTNodeResult::Type UBTTask_UseRadio::ExecuteTask(UBehaviorTreeComponent& OwnerC
     //If radio hub does not have any power
     if (!RadioHub->StartRadioEvent(NewRadioEvent))
         return EBTNodeResult::Failed;
+
+    
 
     return EBTNodeResult::Succeeded;
 

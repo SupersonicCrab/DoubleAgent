@@ -3,13 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
-
-
-#include "Chaos/AABBTree.h"
 #include "Chaos/AABBTree.h"
 #include "GameFramework/Character.h"
 #include "Perception/AISightTargetInterface.h"
-#include "Sound/DialogueVoice.h"
 #include "BaseCharacter_CHARACTER.generated.h"
 
 UENUM(BlueprintType)
@@ -41,21 +37,25 @@ enum class ESpeechEvent : uint8
 {
 	SpeechEvent_Idle,
 	SpeechEvent_Patrol,
-	SpeechEvent_Cautious,
-	SpeechEvent_Alert,
-	SpeechEvent_Searching,
-	SpeechEvent_Subduing,
-	SpeechEvent_Engaging,
+	SpeechEvent_Radio_Chatter,
+	SpeechEvent_Action_Cleaning,
 	SpeechEvent_Action_BathroomBreak,
-	SpeechEvent_Action_PowerBox,
-	SpeechEvent_Action_CameraHub,
-	SpeechEvent_Action_Revive,
-	SpeechEvent_Action_Backup,
+	SpeechEvent_Action_IdleTransition,
+	SpeechEvent_Cautious,
 	SpeechEvent_Action_BodySearch,
 	SpeechEvent_Action_NoiseInvestigation,
-	SpeechEvent_Action_Cleaning,
+	SpeechEvent_Action_PowerBox,
+	SpeechEvent_Action_CameraHub,
+	SpeechEvent_Alert,
+	SpeechEvent_Radio_Alert,
+	SpeechEvent_Subduing,
+	SpeechEvent_Searching,
+	SpeechEvent_Engaging,
+	SpeechEvent_Radio_Engage,
 	SpeechEvent_Action_Restocking,
+	SpeechEvent_Action_Backup,
 	SpeechEvent_Action_Reloading,
+	SpeechEvent_Action_Revive,
 };
 
 UENUM(BlueprintType, meta = (DisplayName = "Visibilty Level", ToolTip = "Amount of light visible on character"))

@@ -6,7 +6,6 @@
 #include "../BaseCharacter_CHARACTER.h"
 #include "BehaviorTree/BehaviorTreeComponent.h"
 #include "BehaviorTree/BlackboardComponent.h"
-
 #include "AICharacterBase_CHARACTER.generated.h"
 
 UCLASS()

@@ -6,6 +6,7 @@
 #include "Engine/DemoNetDriver.h"
 #include "Engine/SkeletalMeshSocket.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Perception/AISense_Hearing.h"
 #include "Power/HouseLight.h"
 
 // Sets default values
@@ -22,6 +23,10 @@ ABaseCharacter_CHARACTER::ABaseCharacter_CHARACTER()
 
 void ABaseCharacter_CHARACTER::Speak(ESpeechEvent NewSpeech)
 {
+    UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("%s spoke with status %s"),  *AActor::GetDebugName(GetOwner()), *UEnum::GetDisplayValueAsText(NewSpeech).ToString()), true, true, FLinearColor::Red);
+
+    //Register speech event
+    UAISense_Hearing::ReportNoiseEvent(GetWorld(), GetActorLocation(), 1, this, 0, FName("Speech"));
 }
 
 float ABaseCharacter_CHARACTER::GetSpeechTimeRemaining()

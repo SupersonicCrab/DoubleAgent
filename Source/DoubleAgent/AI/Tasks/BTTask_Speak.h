@@ -24,4 +24,6 @@ class DOUBLEAGENT_API UBTTask_Speak : public UBTTaskNode
 
 public:
     virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
+
+	ESpeechEvent GetSpeechEvent();
 };

@@ -76,15 +76,7 @@ bool SpeakToCrowd::PerformAction(AFSMController* Controller)
         return true;
     }
     
-    //Register speech event
-    UAISense_Hearing::ReportNoiseEvent(Controller->GetWorld(), Controller->GetPawn()->GetActorLocation(), 1, Controller->GetPawn(), 0, FName("Speech"));
-
-    //Mark self as speaker
-    Controller->GetBlackboardComponent()->SetValueAsObject("Speaker", Controller->GetPawn());
-    
-    //Print to log and screen new vocal status
-    UKismetSystemLibrary::PrintString(Controller->GetWorld(), FString::Printf(TEXT("%s spoke with status: %s"), *Controller->GetPawn()->GetDebugName(Controller->GetPawn()), *UEnum::GetDisplayValueAsText(EVocalStatus::Vocal_Idle).ToString()), true, true, FLinearColor::Red, 10.0f);
-    
+    Cast<ABaseCharacter_CHARACTER>(Controller->GetPawn())->Speak(ESpeechEvent::SpeechEvent_Idle);
     return true;
 }
 
