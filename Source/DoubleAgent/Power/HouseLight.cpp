@@ -9,13 +9,7 @@
 // Sets default values
 AHouseLight::AHouseLight()
 {
-	RootComponent = CreateDefaultSubobject<USceneComponent>(TEXT("RootComponent"));
 	RootComponent->SetMobility(EComponentMobility::Stationary);
-	
-	//Setup sphere
-	Sphere = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
-	Sphere->SetupAttachment(RootComponent);
-	Sphere->SetVisibility(false);
 
 	//Setup static mesh
 	StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
@@ -26,20 +20,6 @@ AHouseLight::AHouseLight()
 
 	//Network replication
 	bReplicates = true;
-}
-
-void AHouseLight::UpdateSphere()
-{
-	//Get bounding sphere of attenuation radius
-	if (Light == nullptr)
-		return;
-		
-	FSphere BoundingSphere = Light->GetBoundingSphere();
-
-	//Set collision sphere to bounding sphere
-	Sphere->SetWorldLocation(BoundingSphere.Center);
-	Sphere->SetSphereRadius(BoundingSphere.W * BoundaryMultiplier);
-	Sphere->SetVisibility(false);
 }
 
 void AHouseLight::UpdateLight()
@@ -147,14 +127,6 @@ void AHouseLight::UpdateLight()
 			}
 		break;
 	}
-
-	UpdateSphere();
-}
-
-// Called when the game starts or when spawned
-void AHouseLight::BeginPlay()
-{
-	Super::BeginPlay();
 
 	UpdateSphere();
 }

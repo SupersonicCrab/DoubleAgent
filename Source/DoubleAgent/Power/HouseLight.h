@@ -3,6 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+
+#include "LightBase.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/Actor.h"
 #include "HouseLight.generated.h"
@@ -30,30 +32,16 @@ enum class ELightType : uint8
 };
 
 UCLASS()
-class DOUBLEAGENT_API AHouseLight : public AActor{
+class DOUBLEAGENT_API AHouseLight : public ALightBase{
 	GENERATED_BODY()
 	
 public:	
 	// Sets default values for this actor's properties
 	AHouseLight();
-	
-	//Light component
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	ULightComponent* Light;
 
 	//Static mesh
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UStaticMeshComponent* StaticMesh;
-	
-	//Sphere overlap component
-	UPROPERTY(EditAnywhere)
-	USphereComponent* Sphere;
-	
-	UPROPERTY(EditAnywhere)
-	float BoundaryMultiplier = 1.1f;
-
-	UFUNCTION(CallInEditor)
-	void UpdateSphere();
 
 	UFUNCTION(CallInEditor)
 	void UpdateLight();
@@ -69,8 +57,4 @@ public:
 
 	UPROPERTY(EditAnywhere)
 	ELightMesh MeshType;
-	
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
 };

@@ -527,8 +527,8 @@ void AStaffAIController::StaffVisionTick(AActor* CurrentActor, FAIStimulus& Curr
                     //If other npc is closer to search location
                     if (GetPawn()->GetDistanceTo(ContestedLocation) > CurrentActor->GetDistanceTo(ContestedLocation))
                     {
-                        Blackboard->SetValueAsEnum("ActionStatus", static_cast<uint8>(EActionStatus::Action_Idle));
                         MarkSearchLocationSearched(Cast<ASearchLocation>(Blackboard->GetValueAsObject("TempObject")));
+                        Blackboard->ClearValue("TempObject");
                     }
                 }
                 
