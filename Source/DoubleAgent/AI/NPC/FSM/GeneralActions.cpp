@@ -10,6 +10,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Misc/OutputDeviceNull.h"
 
 
 bool DeleteSelf::PerformAction(AFSMController* Controller)
@@ -35,28 +36,16 @@ bool CowerAnimation::PerformAction(AFSMController* Controller)
     
     //Stop all movement if any
     Controller->StopMovement();
-
-    //If another animation is already playing
-    if (Cast<ACharacter>(Controller->GetPawn())->GetMesh()->GetAnimInstance()->IsAnyMontagePlaying())
-        return false;
     
     //Update blackboard
     UBlackboardComponent* Blackboard = Controller->GetBlackboardComponent();
     Controller->RaiseDetection(100.0f);
     Blackboard->ClearValue("LoudNoiseLocation");
 
-    //Load animation
-    UAnimSequence* AnimationToPlay = LoadObject<UAnimSequence>(
-        NULL, TEXT("AnimSequence'/Game/Animations/Sequences/Crouched/A_Crouch_Idle.A_Crouch_Idle'"));
-
-    //If animation wasn't found
-    if (AnimationToPlay == NULL)
-        return false;
-
-    //Play animation as dynamic montage
-    UAnimInstance* AnimInstance = Cast<ACharacter>(Controller->GetPawn())->GetMesh()->GetAnimInstance();
-    if (!AnimInstance->IsAnyMontagePlaying())
-        Cast<ABaseCharacter_CHARACTER>(Controller->GetPawn())->NetPlayAnimation(AnimationToPlay);
+    FOutputDeviceNull OutputDeviceNull;
+    const TCHAR* CmdAndParams = TEXT("NetCower True");
+    Controller->GetPawn()->CallFunctionByNameWithArguments(CmdAndParams, OutputDeviceNull, nullptr, true);
+    
     return true;
 }
 
