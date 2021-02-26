@@ -169,6 +169,7 @@ void ABaseCharacter_CHARACTER::GetLifetimeReplicatedProps(::TArray<FLifetimeProp
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
     DOREPLIFETIME(ABaseCharacter_CHARACTER, Visibility);
+    DOREPLIFETIME(ABaseCharacter_CHARACTER, bSelfLit);
 }
 
 void ABaseCharacter_CHARACTER::NetStopAnimationClient_Implementation()
