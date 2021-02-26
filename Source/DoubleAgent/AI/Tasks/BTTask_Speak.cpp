@@ -25,8 +25,8 @@ EBTNodeResult::Type UBTTask_Speak::ExecuteTask(UBehaviorTreeComponent& OwnerComp
 		return EBTNodeResult::Succeeded;
 	}
 	
-	//If vocal status was raised
-	if (Cast<AStaffAIController>(OwnerComp.GetOwner())->RaiseVocalStatus(NewVocalStatus))
+	//If vocal status was raised or restating
+	if (Cast<AStaffAIController>(OwnerComp.GetOwner())->RaiseVocalStatus(NewVocalStatus) || bRestateVocalStatus)
 		Cast<AAICharacterBase_CHARACTER>(NPC)->Speak(GetSpeechEvent());
 
 	return EBTNodeResult::Succeeded;

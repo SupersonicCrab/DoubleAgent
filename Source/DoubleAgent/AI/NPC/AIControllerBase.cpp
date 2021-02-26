@@ -57,31 +57,27 @@ void AAIControllerBase::OnPossess(APawn* InPawn)
 }
 
 void AAIControllerBase::OnPerceptionUpdated(const TArray<AActor*>& DetectedActors)
-{   
+{
     if (!bPerceptionEnabled)
         return;
-    
+
     //Iterate through detected actors
     for (int a = 0; a < DetectedActors.Num(); a++)
     {
-        //If actor is not self
-        if (DetectedActors[a] != GetPawn())
+        //Get last sensed stimuli for each sense
+        TArray<FAIStimulus> Stimuli = PerceptionComponent->GetActorInfo(*DetectedActors[a])->LastSensedStimuli;
+        //Iterate through sense
+        for (int i = 0; i < Stimuli.Num(); i++)
         {
-            //Get last sensed stimuli for each sense
-            TArray<FAIStimulus> Stimuli = PerceptionComponent->GetActorInfo(*DetectedActors[a])->LastSensedStimuli;
-            //Iterate through sense
-            for (int i = 0; i < Stimuli.Num(); i++)
+            //If sense is hearing and was sensed
+            if (Stimuli[i].Type.Name == "Default__AISense_Hearing" && Stimuli[i].WasSuccessfullySensed())
             {
-                //If sense is hearing and is not expired
-                if (Stimuli[i].Type.Name == "Default__AISense_Hearing" && Stimuli[i].GetAge() == 0)
-                {
-                    HandleHearing(DetectedActors[a], Stimuli[i]);
-                }
-                //If sense is sight
-                else if (Stimuli[i].Type.Name == "Default__AISense_Sight")
-                {
-                    HandleSight(DetectedActors[a], Stimuli[i]);
-                }
+                HandleHearing(DetectedActors[a], Stimuli[i]);
+            }
+            //If sense is sight
+            else if (Stimuli[i].Type.Name == "Default__AISense_Sight")
+            {
+                HandleSight(DetectedActors[a], Stimuli[i]);
             }
         }
     }

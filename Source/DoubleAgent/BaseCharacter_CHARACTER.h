@@ -96,6 +96,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="Debug", Replicated)
 	EVisbilityLevel Visibility;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
+	bool bSelfLit = false;
+
 	//Speaker
 	UPROPERTY(BlueprintReadOnly)
 	bool bIsSpeaking = false;

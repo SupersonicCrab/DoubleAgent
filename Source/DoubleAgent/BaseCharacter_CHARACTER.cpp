@@ -96,14 +96,18 @@ void ABaseCharacter_CHARACTER::Tick(float DeltaSeconds)
 {
     Super::Tick(DeltaSeconds);
 
+    
     //Run on server only
     if (UKismetSystemLibrary::IsServer(GetWorld()))
     {
         //Get all overlapping lights
         TArray<AActor*> Lights;
-        GetOverlappingActors(Lights, AHouseLight::StaticClass());
+        GetOverlappingActors(Lights, ALightBase::StaticClass());
 
         EVisbilityLevel Temp = EVisbilityLevel::Visibility_None;
+
+        if (bSelfLit)
+            Temp = EVisbilityLevel::Visibility_3;
 
         //Iterate through lights
         for (int i = 0; i < Lights.Num(); i++)
@@ -120,7 +124,11 @@ void ABaseCharacter_CHARACTER::Tick(float DeltaSeconds)
                     VisibilityIncrease = 3;
 
                 //Save light cast
-                AHouseLight* Light = Cast<AHouseLight>(Lights[i]);
+                ALightBase* Light = Cast<ALightBase>(Lights[i]);
+
+                //If light is owned by this actor
+                if (Light->GetOwner() == this)
+                    continue;
 
                 //Error checking
                 if (!IsValid(Light->Light))
@@ -128,7 +136,7 @@ void ABaseCharacter_CHARACTER::Tick(float DeltaSeconds)
                 
                 //Raycast from light to sockets
                 FHitResult SocketHitResult;
-                GetWorld()->LineTraceSingleByChannel(SocketHitResult, Light->Light->GetComponentLocation(), GetMesh()->GetSocketLocation(Sockets[a]), ECollisionChannel::ECC_Visibility, FCollisionQueryParams(FName(TEXT("SocketLineOfSight")), true, Light));
+                GetWorld()->LineTraceSingleByChannel(SocketHitResult, Light->Light->GetComponentLocation(), GetMesh()->GetSocketLocation(Sockets[a]), ECollisionChannel::ECC_Visibility, FCollisionQueryParams(FName(TEXT("SocketLineOfSight")), true, Light->GetOwner()));
 
                 //If light was on and socket was hit
                 if (Light->Light->GetVisibleFlag() && SocketHitResult.Actor == this)
@@ -161,6 +169,7 @@ void ABaseCharacter_CHARACTER::GetLifetimeReplicatedProps(::TArray<FLifetimeProp
     Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
     DOREPLIFETIME(ABaseCharacter_CHARACTER, Visibility);
+    DOREPLIFETIME(ABaseCharacter_CHARACTER, bSelfLit);
 }
 
 void ABaseCharacter_CHARACTER::NetStopAnimationClient_Implementation()
