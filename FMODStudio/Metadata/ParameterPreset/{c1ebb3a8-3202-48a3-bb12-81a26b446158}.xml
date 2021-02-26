@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.01.00">
+	<object class="ParameterPreset" id="{c1ebb3a8-3202-48a3-bb12-81a26b446158}">
+		<property name="name">
+			<value>dialogueFloat</value>
+		</property>
+		<relationship name="folder">
+			<destination>{20b4ea36-0cd2-44d6-ae62-535c3222b16b}</destination>
+		</relationship>
+		<relationship name="parameter">
+			<destination>{b547063b-2636-42e7-a2ef-08dabbf0899a}</destination>
+		</relationship>
+	</object>
+	<object class="GameParameter" id="{b547063b-2636-42e7-a2ef-08dabbf0899a}">
+		<property name="initialValue">
+			<value>0</value>
+		</property>
+	</object>
+</objects>

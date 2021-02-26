@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.01.00">
+	<object class="EncodableAsset" id="{5f42c4e4-0a87-4613-b825-9d26e2ed2ce7}">
+		<property name="assetPath">
+			<value>Lightswitch/</value>
+		</property>
+		<relationship name="masterAssetFolder">
+			<destination>{6f3c2759-e38e-4bfc-9e72-e116469008c9}</destination>
+		</relationship>
+	</object>
+</objects>
