@@ -123,7 +123,7 @@
 	</object>
 	<object class="EventMixerGroup" id="{66521090-2845-485e-8cfe-a7772b60a9fb}">
 		<property name="volume">
-			<value>-8.5</value>
+			<value>-17.5</value>
 		</property>
 		<property name="name">
 			<value>Wood</value>
@@ -349,19 +349,8 @@
 		<property name="fftSize">
 			<value>1900</value>
 		</property>
-		<relationship name="modulators">
-			<destination>{f469cf1e-d4af-4244-b7cf-aab999b913e9}</destination>
-		</relationship>
 	</object>
 	<object class="MixerBusFader" id="{49c0b1f2-0b77-4b1a-8c64-4f9851a4b0fa}" />
 	<object class="MixerBusFader" id="{3f0bacd5-3276-4711-b23d-a2364ebb39aa}" />
 	<object class="MixerBusFader" id="{9b664731-1432-45a9-a580-449e6e2c5ed4}" />
-	<object class="RandomizerModulator" id="{f469cf1e-d4af-4244-b7cf-aab999b913e9}">
-		<property name="nameOfPropertyBeingModulated">
-			<value>pitch</value>
-		</property>
-		<property name="amount">
-			<value>4.5</value>
-		</property>
-	</object>
 </objects>

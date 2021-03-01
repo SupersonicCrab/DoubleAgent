@@ -16,7 +16,7 @@
 			<value>Dialogue Lines</value>
 		</property>
 		<property name="sourceDirectory">
-			<value>Assets/Dialogue Lines</value>
+			<value>Assets/Dialogue Lines Processed</value>
 		</property>
 	</object>
 </objects>
