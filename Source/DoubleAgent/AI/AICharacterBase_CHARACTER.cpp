@@ -3,7 +3,9 @@
 #include "AICharacterBase_CHARACTER.h"
 #include "AIController.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Kismet/KismetSystemLibrary.h"
 #include "NPC/AIControllerBase.h"
 #include "Perception/AIPerceptionComponent.h"
 
@@ -41,9 +43,16 @@ void AAICharacterBase_CHARACTER::Speak(ESpeechEvent NewSpeech)
 
 void AAICharacterBase_CHARACTER::DisableNPC()
 {
+	//If client
+	if (!UKismetSystemLibrary::IsServer(GetWorld()))
+		return;
+		
 	AAIControllerBase* NPCController = Cast<AAIControllerBase>(GetController());
 	NPCController->BrainComponent->StopLogic(FString("DisablingNPCBehaviour"));
 	NPCController->bPerceptionEnabled = false;
+
+	GetCharacterMovement()->bUseControllerDesiredRotation = false;
+	UAIBlueprintHelperLibrary::GetAIController(this)->ClearFocus(EAIFocusPriority::Default);
 }
 
 void AAICharacterBase_CHARACTER::EnableNPC()
