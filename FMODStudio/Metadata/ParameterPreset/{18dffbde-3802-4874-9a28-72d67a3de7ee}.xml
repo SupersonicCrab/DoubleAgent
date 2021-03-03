@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.01.00">
+	<object class="ParameterPreset" id="{18dffbde-3802-4874-9a28-72d67a3de7ee}">
+		<property name="name">
+			<value>metalPannelState</value>
+		</property>
+		<relationship name="folder">
+			<destination>{20b4ea36-0cd2-44d6-ae62-535c3222b16b}</destination>
+		</relationship>
+		<relationship name="parameter">
+			<destination>{918e89d3-5d62-45a3-a211-b71b12b65351}</destination>
+		</relationship>
+	</object>
+	<object class="GameParameter" id="{918e89d3-5d62-45a3-a211-b71b12b65351}">
+		<property name="parameterType">
+			<value>2</value>
+		</property>
+		<property name="maximum">
+			<value>2</value>
+		</property>
+		<property name="enumerationLabels">
+			<value>Closed</value>
+			<value>Open</value>
+		</property>
+		<property name="initialValue">
+			<value>0</value>
+		</property>
+	</object>
+</objects>

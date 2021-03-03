@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<objects serializationModel="Studio.02.01.00">
+	<object class="ParameterPreset" id="{11196eac-5575-4047-8464-091909bda898}">
+		<property name="name">
+			<value>nightVisionState</value>
+		</property>
+		<relationship name="folder">
+			<destination>{20b4ea36-0cd2-44d6-ae62-535c3222b16b}</destination>
+		</relationship>
+		<relationship name="parameter">
+			<destination>{5ecdcc0b-f1c9-4a35-93c8-2036aa1c2f57}</destination>
+		</relationship>
+	</object>
+	<object class="GameParameter" id="{5ecdcc0b-f1c9-4a35-93c8-2036aa1c2f57}">
+		<property name="parameterType">
+			<value>2</value>
+		</property>
+		<property name="maximum">
+			<value>2</value>
+		</property>
+		<property name="enumerationLabels">
+			<value>Off</value>
+			<value>On</value>
+		</property>
+		<property name="initialValue">
+			<value>0</value>
+		</property>
+	</object>
+</objects>

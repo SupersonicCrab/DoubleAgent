@@ -2,7 +2,7 @@
 <objects serializationModel="Studio.02.01.00">
 	<object class="AudioFile" id="{33f7293f-7174-468e-8102-45281fb012dd}">
 		<property name="assetPath">
-			<value>Double Agent 1 Layer BUTLER WAV.wav</value>
+			<value>Music/Double Agent 1 Layer BUTLER WAV.wav</value>
 		</property>
 		<property name="isStreaming">
 			<value>true</value>
