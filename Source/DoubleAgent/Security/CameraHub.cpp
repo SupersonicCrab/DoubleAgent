@@ -141,11 +141,14 @@ void ACameraHub::OnBoxBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* 
 
 void ACameraHub::OnComponentOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex){
+	if (OtherActor == nullptr)
+		return;
+	
 	if(OtherActor->IsA(APlayer_Character::StaticClass())){
 		DisableCapture();
 	} else{
 		//If camera operator just left
-		if (OperatorNPC != nullptr)
+		if (OperatorNPC != nullptr && OtherActor != nullptr && OtherActor->IsA(ABaseCharacter_CHARACTER::StaticClass()) && Cast<APawn>(OtherActor)->GetController() == OperatorNPC)
 		{
 			OperatorNPC->GetBlackboardComponent()->SetValueAsBool("CamerasActive", false);
 			OperatorNPC->GetBlackboardComponent()->SetValueAsBool("UsingCameras", false);
@@ -191,7 +194,22 @@ void ACameraHub::DisableCapture(){
 	}
 }
 
-void ACameraHub::EnableDisplay()
+void ACameraHub::DisableDisplay_Implementation()
+{
+	//If display is already off
+	if (!bDisplayOn)
+		return;
+	
+	bDisplayOn = false;
+	
+	UMaterial* Material = LoadObject<UMaterial>(NULL, TEXT("Material'/Engine/EngineDebugMaterials/BlackUnlitMaterial.BlackUnlitMaterial'"));
+	for (int i = 0; i < ScreenMeshes.Num(); i++)
+	{
+		ScreenMeshes[i]->SetMaterial(0, Material);
+	}
+}
+
+void ACameraHub::EnableDisplay_Implementation()
 {
 	//If display is already on
 	if (bDisplayOn)
@@ -211,21 +229,6 @@ void ACameraHub::EnableDisplay()
 	ScreenMeshes[4]->SetMaterial(0, Material);
 	Material = LoadObject<UMaterial>(NULL, TEXT("Material'/Game/SecuritySystem/Cam_Output/M_ViewScreen6.M_ViewScreen6'"));
 	ScreenMeshes[5]->SetMaterial(0, Material);
-}
-
-void ACameraHub::DisableDisplay()
-{
-	//If display is already off
-	if (!bDisplayOn)
-		return;
-	
-	bDisplayOn = false;
-	
-	UMaterial* Material = LoadObject<UMaterial>(NULL, TEXT("Material'/Engine/EngineDebugMaterials/BlackUnlitMaterial.BlackUnlitMaterial'"));
-	for (int i = 0; i < ScreenMeshes.Num(); i++)
-	{
-		ScreenMeshes[i]->SetMaterial(0, Material);
-	}
 }
 
 void ACameraHub::AutoRotateDisableReaction()

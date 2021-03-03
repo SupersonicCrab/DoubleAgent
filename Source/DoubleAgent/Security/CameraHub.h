@@ -56,9 +56,9 @@ public:
 	UFUNCTION(Category="Scene Capture", CallInEditor)
     void DisableCapture();
 
-	UFUNCTION(Category="Display", BlueprintCallable)
+	UFUNCTION(Category="Display", BlueprintCallable, NetMulticast, Reliable)
     void EnableDisplay();
-	UFUNCTION(Category="Display", BlueprintCallable)
+	UFUNCTION(Category="Display", BlueprintCallable, NetMulticast, Reliable)
 	void DisableDisplay();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

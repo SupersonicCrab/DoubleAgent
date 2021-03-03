@@ -3,6 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+
+#include "FMODAudioComponent.h"
 #include "Chaos/AABBTree.h"
 #include "GameFramework/Character.h"
 #include "Perception/AISightTargetInterface.h"
@@ -100,8 +102,8 @@ public:
 	bool bSelfLit = false;
 
 	//Speaker
-	UPROPERTY(BlueprintReadOnly)
-	bool bIsSpeaking = false;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UFMODAudioComponent* VoiceComponent;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	EGender Gender;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -118,7 +120,7 @@ public:
 	
 	//Animation rpc
 	UFUNCTION(BlueprintCallable, NetMulticast, Reliable)
-	void NetPlayAnimation(UAnimSequence* AnimationSequence);
+	void NetPlayAnimation(UAnimSequence* AnimationSequence, float BlendInTime = 0.25, float BlendOutTime = 0.25);
 	UFUNCTION(BlueprintCallable, NetMulticast, Reliable)
 	void NetResumeAnimation();
 	UFUNCTION(BlueprintCallable, NetMulticast, Reliable)
@@ -126,7 +128,7 @@ public:
 
 	//Client only animation rpc
 	UFUNCTION(BlueprintCallable, NetMulticast, Reliable)
-	void NetPlayAnimationClient(UAnimSequence* AnimationSequence);
+	void NetPlayAnimationClient(UAnimSequence* AnimationSequence, float BlendInTime = 0.25, float BlendOutTime = 0.25);
 	UFUNCTION(BlueprintCallable, NetMulticast, Reliable)
 	void NetStopAnimationClient();
 
