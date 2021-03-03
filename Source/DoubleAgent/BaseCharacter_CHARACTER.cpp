@@ -29,8 +29,8 @@ void ABaseCharacter_CHARACTER::Speak(ESpeechEvent NewSpeech)
     //Register speech event
     UAISense_Hearing::ReportNoiseEvent(GetWorld(), GetActorLocation(), 1, this, 0, FName("Speech"));
 
-    UFMODEvent* Sound = LoadObject<UFMODEvent>(NULL, TEXT("FMODEvent'/Game/Audio/SoundEffects/LightSwitch/Lightswitch_Cue.uasset.Lightswitch_Cue'"));
-    UFMODBlueprintStatics::PlayEventAttached()
+    //UFMODEvent* Sound = LoadObject<UFMODEvent>(NULL, TEXT("FMODEvent'/Game/Audio/SoundEffects/LightSwitch/Lightswitch_Cue.uasset.Lightswitch_Cue'"));
+    //UFMODBlueprintStatics::PlayEventAttached()
 }
 
 float ABaseCharacter_CHARACTER::GetSpeechTimeRemaining()
