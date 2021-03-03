@@ -8,7 +8,7 @@
 
 EBTNodeResult::Type UBTTask_ChangeSpeed::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
-    UCharacterMovementComponent* CharacterMovement = Cast<ACharacter>(Cast<AAIController>(OwnerComp.GetOwner())->GetPawn())->GetCharacterMovement();
+    UCharacterMovementComponent* CharacterMovement = Cast<ACharacter>(OwnerComp.GetAIOwner()->GetPawn())->GetCharacterMovement();
     
     switch (NewSpeed)
     {

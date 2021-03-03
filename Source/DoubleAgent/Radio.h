@@ -3,7 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-
 #include "AI/AICharacterBase_CHARACTER.h"
 #include "GameFramework/Actor.h"
 #include "Radio.generated.h"
@@ -53,4 +52,7 @@ class DOUBLEAGENT_API ARadio : public AActor
 public:	
 	// Sets default values for this actor's properties
 	ARadio(){};
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bBusy;
 };

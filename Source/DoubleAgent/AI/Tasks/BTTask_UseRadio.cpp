@@ -6,6 +6,7 @@
 #include "DoubleAgent/AI/NPC/AIControllerBase.h"
 #include "DoubleAgent/Security/RadioHub.h"
 #include "Kismet/GameplayStatics.h"
+#include "Misc/OutputDeviceNull.h"
 
 EBTNodeResult::Type UBTTask_UseRadio::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
@@ -21,6 +22,7 @@ EBTNodeResult::Type UBTTask_UseRadio::ExecuteTask(UBehaviorTreeComponent& OwnerC
 
     //Update radio event structure
     NewRadioEvent.NPC = Cast<AAICharacterBase_CHARACTER>(Cast<AAIControllerBase>(OwnerComp.GetOwner())->GetPawn());
+    
     //Use NPC location if custom location not provided
     if (!bUseBlackboardLocation)
         NewRadioEvent.Location = OwnerComp.GetOwner()->GetActorLocation();
@@ -33,7 +35,22 @@ EBTNodeResult::Type UBTTask_UseRadio::ExecuteTask(UBehaviorTreeComponent& OwnerC
     if (!RadioHub->StartRadioEvent(NewRadioEvent))
         return EBTNodeResult::Failed;
 
-    
+    //Speak depending on radio event
+    switch (NewRadioEvent.RadioEvent)
+    {
+        case (ERadioEvent::Radio_Alert):
+            Cast<ABaseCharacter_CHARACTER>(OwnerComp.GetAIOwner()->GetPawn())->Speak(ESpeechEvent::SpeechEvent_Radio_Alert);
+        case (ERadioEvent::Radio_Chatter):
+            Cast<ABaseCharacter_CHARACTER>(OwnerComp.GetAIOwner()->GetPawn())->Speak(ESpeechEvent::SpeechEvent_Radio_Chatter);
+        case (ERadioEvent::Radio_Engage):
+            Cast<ABaseCharacter_CHARACTER>(OwnerComp.GetAIOwner()->GetPawn())->Speak(ESpeechEvent::SpeechEvent_Radio_Engage);
+        default:
+            break;
+    }
+
+    FOutputDeviceNull OutputDeviceNull;
+    const TCHAR* CmdAndParams = TEXT("NetRadio True");
+    OwnerComp.GetAIOwner()->GetPawn()->CallFunctionByNameWithArguments(CmdAndParams, OutputDeviceNull, nullptr, true);    
 
     return EBTNodeResult::Succeeded;
 

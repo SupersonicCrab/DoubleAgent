@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "BaseCharacter_CHARACTER.h"
+#include "FMODBlueprintStatics.h"
 #include "Animation/AnimInstance.h"
 #include "Components/LightComponent.h"
 #include "Engine/DemoNetDriver.h"
@@ -27,6 +28,9 @@ void ABaseCharacter_CHARACTER::Speak(ESpeechEvent NewSpeech)
 
     //Register speech event
     UAISense_Hearing::ReportNoiseEvent(GetWorld(), GetActorLocation(), 1, this, 0, FName("Speech"));
+
+    UFMODEvent* Sound = LoadObject<UFMODEvent>(NULL, TEXT("FMODEvent'/Game/Audio/SoundEffects/LightSwitch/Lightswitch_Cue.uasset.Lightswitch_Cue'"));
+    UFMODBlueprintStatics::PlayEventAttached()
 }
 
 float ABaseCharacter_CHARACTER::GetSpeechTimeRemaining()
@@ -180,12 +184,12 @@ void ABaseCharacter_CHARACTER::NetStopAnimationClient_Implementation()
 }
 
 
-void ABaseCharacter_CHARACTER::NetPlayAnimationClient_Implementation(UAnimSequence* AnimationSequence)
+void ABaseCharacter_CHARACTER::NetPlayAnimationClient_Implementation(UAnimSequence* AnimationSequence, float BlendInTime, float BlendOutTime)
 {
     //If not server
     if (!UKismetSystemLibrary::IsServer(GetWorld()))
         //Play montage with default parameters
-        GetMesh()->GetAnimInstance()->PlaySlotAnimationAsDynamicMontage(AnimationSequence, "DefaultSlot");
+        GetMesh()->GetAnimInstance()->PlaySlotAnimationAsDynamicMontage(AnimationSequence, "DefaultSlot", BlendInTime, BlendOutTime);
 }
 
 void ABaseCharacter_CHARACTER::NetPauseAnimation_Implementation()
@@ -198,8 +202,8 @@ void ABaseCharacter_CHARACTER::NetResumeAnimation_Implementation()
     GetMesh()->GetAnimInstance()->Montage_Resume(NULL);
 }
 
-void ABaseCharacter_CHARACTER::NetPlayAnimation_Implementation(UAnimSequence* AnimationSequence)
+void ABaseCharacter_CHARACTER::NetPlayAnimation_Implementation(UAnimSequence* AnimationSequence, float BlendInTime, float BlendOutTime)
 {
     //Play montage with default parameters
-    GetMesh()->GetAnimInstance()->PlaySlotAnimationAsDynamicMontage(AnimationSequence, "DefaultSlot");
+    GetMesh()->GetAnimInstance()->PlaySlotAnimationAsDynamicMontage(AnimationSequence, "DefaultSlot", BlendInTime, BlendOutTime);
 }
