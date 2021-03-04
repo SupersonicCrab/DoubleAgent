@@ -5,7 +5,7 @@
 			<value>Toilet Flush</value>
 		</property>
 		<property name="outputFormat">
-			<value>1</value>
+			<value>2</value>
 		</property>
 		<relationship name="folder">
 			<destination>{f7c3f03c-b530-475c-a24d-94596fc7bcda}</destination>
@@ -118,6 +118,7 @@
 	<object class="MixerBusEffectChain" id="{b6007cc2-db4e-4ec8-9187-3f3ca55d42cc}">
 		<relationship name="effects">
 			<destination>{be94eddc-8b7f-438a-80b3-6722982692bd}</destination>
+			<destination>{90dd6914-0475-4f37-b482-d6a6a14104fa}</destination>
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{1c0ed195-c4f1-4d48-9939-776a3e5250bf}" />
@@ -134,5 +135,10 @@
 	</object>
 	<object class="MixerBusPanner" id="{7d37f11c-a9a9-4620-9bb0-a7c2ace09e38}" />
 	<object class="MixerBusFader" id="{be94eddc-8b7f-438a-80b3-6722982692bd}" />
+	<object class="SpatialiserEffect" id="{90dd6914-0475-4f37-b482-d6a6a14104fa}">
+		<property name="maximumDistance">
+			<value>5000</value>
+		</property>
+	</object>
 	<object class="MixerBusFader" id="{42a7c524-90db-49a9-9be8-81acfa02bd0c}" />
 </objects>

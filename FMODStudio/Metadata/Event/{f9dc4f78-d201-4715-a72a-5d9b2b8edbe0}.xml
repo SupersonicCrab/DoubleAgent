@@ -5,7 +5,7 @@
 			<value>Lightswitch</value>
 		</property>
 		<property name="outputFormat">
-			<value>1</value>
+			<value>2</value>
 		</property>
 		<relationship name="folder">
 			<destination>{f7c3f03c-b530-475c-a24d-94596fc7bcda}</destination>
@@ -151,6 +151,7 @@
 	<object class="MixerBusEffectChain" id="{70fade3d-c414-4e52-923b-4cc2a95ca4ca}">
 		<relationship name="effects">
 			<destination>{1b445b92-d0c9-45f5-8315-7ee7ebe4c832}</destination>
+			<destination>{8dfeb06f-db5d-4f87-8505-7dc22838e2aa}</destination>
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{46d65068-7f6f-47cf-9ddc-6be06a84901c}" />
@@ -191,6 +192,11 @@
 	</object>
 	<object class="MixerBusPanner" id="{bb904765-2023-4f42-afc9-175afb4e5ef5}" />
 	<object class="MixerBusFader" id="{1b445b92-d0c9-45f5-8315-7ee7ebe4c832}" />
+	<object class="SpatialiserEffect" id="{8dfeb06f-db5d-4f87-8505-7dc22838e2aa}">
+		<property name="maximumDistance">
+			<value>5000</value>
+		</property>
+	</object>
 	<object class="MixerBusFader" id="{d03bc7f5-40ca-40e9-9159-25b39311a4b4}" />
 	<object class="MixerBusFader" id="{ff3e7358-f92e-41b6-b069-171538dbeeb0}" />
 	<object class="PitchShifterEffect" id="{841e27c5-fc8f-4cc2-ac55-26f575f371d9}">

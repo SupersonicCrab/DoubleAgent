@@ -5,7 +5,7 @@
 			<value>NPC Dialogue</value>
 		</property>
 		<property name="outputFormat">
-			<value>1</value>
+			<value>2</value>
 		</property>
 		<relationship name="folder">
 			<destination>{f7c3f03c-b530-475c-a24d-94596fc7bcda}</destination>
@@ -113,6 +113,7 @@
 	<object class="MixerBusEffectChain" id="{7a61975b-5eb8-4759-9a68-d32145ded6aa}">
 		<relationship name="effects">
 			<destination>{867434ca-2225-489a-bc3f-1b498e24fcee}</destination>
+			<destination>{abeabec0-e9ea-4360-a405-cba32458ce8c}</destination>
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{842ba017-956c-4dde-89d6-a519b5a833fe}" />
@@ -124,5 +125,10 @@
 	</object>
 	<object class="MixerBusPanner" id="{18e92d99-9867-441b-9376-1f8b06f83036}" />
 	<object class="MixerBusFader" id="{867434ca-2225-489a-bc3f-1b498e24fcee}" />
+	<object class="SpatialiserEffect" id="{abeabec0-e9ea-4360-a405-cba32458ce8c}">
+		<property name="maximumDistance">
+			<value>5000</value>
+		</property>
+	</object>
 	<object class="MixerBusFader" id="{73b93186-1a11-41c9-81b8-0bbe0ec26017}" />
 </objects>

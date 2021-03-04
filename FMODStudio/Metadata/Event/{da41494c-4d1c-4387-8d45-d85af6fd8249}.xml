@@ -5,7 +5,7 @@
 			<value>Footstep</value>
 		</property>
 		<property name="outputFormat">
-			<value>1</value>
+			<value>2</value>
 		</property>
 		<relationship name="folder">
 			<destination>{f7c3f03c-b530-475c-a24d-94596fc7bcda}</destination>
@@ -206,6 +206,7 @@
 		<relationship name="effects">
 			<destination>{864396de-8009-482d-a3f3-8c9fcb818470}</destination>
 			<destination>{be8f133e-61dd-4090-ad84-3ef330677cef}</destination>
+			<destination>{03c21b70-2a6d-4726-bc9b-9533f825b4f7}</destination>
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{8b38e335-30a6-4de4-afce-62bd2e0866ea}" />
@@ -348,6 +349,11 @@
 		</property>
 		<property name="fftSize">
 			<value>1900</value>
+		</property>
+	</object>
+	<object class="SpatialiserEffect" id="{03c21b70-2a6d-4726-bc9b-9533f825b4f7}">
+		<property name="maximumDistance">
+			<value>5000</value>
 		</property>
 	</object>
 	<object class="MixerBusFader" id="{49c0b1f2-0b77-4b1a-8c64-4f9851a4b0fa}" />

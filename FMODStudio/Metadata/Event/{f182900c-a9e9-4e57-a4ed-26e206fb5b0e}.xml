@@ -5,7 +5,7 @@
 			<value>Tranquilizer Gun Fire</value>
 		</property>
 		<property name="outputFormat">
-			<value>1</value>
+			<value>2</value>
 		</property>
 		<relationship name="folder">
 			<destination>{f7c3f03c-b530-475c-a24d-94596fc7bcda}</destination>
@@ -120,6 +120,7 @@
 	<object class="MixerBusEffectChain" id="{fdf5f8ba-ab17-41a3-ab08-ebda941c9f46}">
 		<relationship name="effects">
 			<destination>{01cd102b-10ee-49e0-9815-46abedbe86bc}</destination>
+			<destination>{c12df924-ff98-4ccc-b490-7cf03e70ae24}</destination>
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{926cdba1-833f-4ead-8008-891b19936a11}" />
@@ -149,5 +150,10 @@
 	</object>
 	<object class="MixerBusPanner" id="{b91e4668-3ed2-4a35-8697-fd784fb151fe}" />
 	<object class="MixerBusFader" id="{01cd102b-10ee-49e0-9815-46abedbe86bc}" />
+	<object class="SpatialiserEffect" id="{c12df924-ff98-4ccc-b490-7cf03e70ae24}">
+		<property name="maximumDistance">
+			<value>5000</value>
+		</property>
+	</object>
 	<object class="MixerBusFader" id="{52736e3d-4fdb-45b8-97f1-029683f63415}" />
 </objects>

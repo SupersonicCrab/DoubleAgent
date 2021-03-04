@@ -5,7 +5,7 @@
 			<value>Drink</value>
 		</property>
 		<property name="outputFormat">
-			<value>1</value>
+			<value>2</value>
 		</property>
 		<relationship name="folder">
 			<destination>{f7c3f03c-b530-475c-a24d-94596fc7bcda}</destination>
@@ -118,6 +118,7 @@
 	<object class="MixerBusEffectChain" id="{7b2f425a-2a2c-4b79-b101-b722ce408dd3}">
 		<relationship name="effects">
 			<destination>{830c7e34-1138-4b21-a313-5ff426a50304}</destination>
+			<destination>{b6707535-0505-4a4a-9083-bfb4e269a4ea}</destination>
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{38b590e8-ddc1-425b-bf9f-7802869588d5}" />
@@ -152,5 +153,10 @@
 	</object>
 	<object class="MixerBusPanner" id="{13adeb45-40f9-4658-b2e7-ffb7ed7af840}" />
 	<object class="MixerBusFader" id="{830c7e34-1138-4b21-a313-5ff426a50304}" />
+	<object class="SpatialiserEffect" id="{b6707535-0505-4a4a-9083-bfb4e269a4ea}">
+		<property name="maximumDistance">
+			<value>5000</value>
+		</property>
+	</object>
 	<object class="MixerBusFader" id="{249d7c80-9f80-4537-ba49-1a6083b80ede}" />
 </objects>

@@ -5,7 +5,7 @@
 			<value>Cloth Rip</value>
 		</property>
 		<property name="outputFormat">
-			<value>1</value>
+			<value>2</value>
 		</property>
 		<relationship name="folder">
 			<destination>{f7c3f03c-b530-475c-a24d-94596fc7bcda}</destination>
@@ -118,6 +118,7 @@
 	<object class="MixerBusEffectChain" id="{bf59097a-5753-4ee4-94e8-a2866195299a}">
 		<relationship name="effects">
 			<destination>{9086d831-f994-4a27-b2e7-21e088ea62ab}</destination>
+			<destination>{01225953-1181-4859-8921-2dadd11c8014}</destination>
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{1e7e5f76-3563-4c8b-a743-b5f3035f7ac8}" />
@@ -134,5 +135,10 @@
 	</object>
 	<object class="MixerBusPanner" id="{d784d8bc-9105-48b0-a028-191ffe88c353}" />
 	<object class="MixerBusFader" id="{9086d831-f994-4a27-b2e7-21e088ea62ab}" />
+	<object class="SpatialiserEffect" id="{01225953-1181-4859-8921-2dadd11c8014}">
+		<property name="maximumDistance">
+			<value>5000</value>
+		</property>
+	</object>
 	<object class="MixerBusFader" id="{57aac343-f5d4-4681-a0e6-86a12be21ed9}" />
 </objects>
