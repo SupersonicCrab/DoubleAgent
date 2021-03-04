@@ -231,7 +231,7 @@ void AStaffAIController::CameraVisionUpdate(AActor* CurrentActor, FAIStimulus& C
 }
 
 void AStaffAIController::CameraHubVisionUpdate(AActor* CurrentActor, FAIStimulus& CurrentStimulus)
-{
+{   
     ACameraHub* CameraHub = Cast<ACameraHub>(CurrentActor);
     Blackboard->SetValueAsBool("CamerasActive", CameraHub->OperatorNPC != nullptr);
     if (CameraHub->bDisplayOn && CameraHub->OperatorNPC == nullptr)
@@ -307,6 +307,10 @@ void AStaffAIController::HandleRadioEvent(FRadioEvent* RadioEvent)
 
 void AStaffAIController::MarkSearchLocationSearched(ASearchLocation* SearchLocation)
 {
+    //Error handling
+    if (SearchLocation == nullptr)
+        return;
+    
     SearchedLocations.Add(SearchLocation);
     //Iterate through all rooms that contain this search location
     for (int i = 0; i < SearchLocation->RoomVolumes.Num(); i++)
