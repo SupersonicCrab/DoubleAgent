@@ -20,44 +20,44 @@ enum class EGender : uint8
 UENUM(BlueprintType)
 enum class EVoiceActor : uint8
 {
-	VoiceActor_MaleCivilian1,
-	VoiceActor_MaleCivilian2,
-	VoiceActor_FemaleCivilian1,
-	VoiceActor_FemaleCivilian2,
-	VoiceActor_MaleWaiter,
-	VoiceActor_FemaleWaiter,
-	VoiceActor_MaleGuard1,
-	VoiceActor_MaleGuard2,
-	VoiceActor_FemaleGuard1,
-	VoiceActor_FemaleGuard2,
-	VoiceActor_MobBoss,
-	VoiceActor_Butler,
+	VoiceActor_MaleCivilian1 UMETA(DisplayName="MaleCivilian1"),
+	VoiceActor_MaleCivilian2 UMETA(DisplayName="MaleCivilian2"),
+	VoiceActor_FemaleCivilian1 UMETA(DisplayName="FemaleCivilian1"),
+	VoiceActor_FemaleCivilian2 UMETA(DisplayName="FemaleCivilian2"),
+	VoiceActor_MaleWaiter UMETA(DisplayName="MaleWaiter"),
+	VoiceActor_FemaleWaiter UMETA(DisplayName="FemaleWaiter"),
+	VoiceActor_MaleGuard1 UMETA(DisplayName="MaleGuard1"),
+	VoiceActor_MaleGuard2 UMETA(DisplayName="MaleGuard2"),
+	VoiceActor_FemaleGuard1 UMETA(DisplayName="FemaleGuard1"),
+	VoiceActor_FemaleGuard2 UMETA(DisplayName="FemaleGuard2"),
+	VoiceActor_MobBoss UMETA(DisplayName="MobBoss"),
+	VoiceActor_Butler UMETA(DisplayName="Butler"),
 };
 
 UENUM(BlueprintType)
 enum class ESpeechEvent : uint8
 {
-	SpeechEvent_Idle,
-	SpeechEvent_Patrol,
-	SpeechEvent_Radio_Chatter,
-	SpeechEvent_Action_Cleaning,
-	SpeechEvent_Action_BathroomBreak,
-	SpeechEvent_Action_IdleTransition,
-	SpeechEvent_Cautious,
-	SpeechEvent_Action_BodySearch,
-	SpeechEvent_Action_NoiseInvestigation,
-	SpeechEvent_Action_PowerBox,
-	SpeechEvent_Action_CameraHub,
-	SpeechEvent_Alert,
-	SpeechEvent_Radio_Alert,
-	SpeechEvent_Subduing,
-	SpeechEvent_Searching,
-	SpeechEvent_Engaging,
-	SpeechEvent_Radio_Engage,
-	SpeechEvent_Action_Restocking,
-	SpeechEvent_Action_Backup,
-	SpeechEvent_Action_Reloading,
-	SpeechEvent_Action_Revive,
+	SpeechEvent_Idle UMETA(DisplayName="Idle"),
+	SpeechEvent_Patrol UMETA(DisplayName="Patrol"),
+	SpeechEvent_Radio_Chatter UMETA(DisplayName="RadioChatter"),
+	SpeechEvent_Action_Cleaning UMETA(DisplayName="Cleaning"),
+	SpeechEvent_Action_BathroomBreak UMETA(DisplayName="BathroomBreak"),
+	SpeechEvent_Action_IdleTransition UMETA(DisplayName="IdleTransition"),
+	SpeechEvent_Cautious UMETA(DisplayName="Cautious"),
+	SpeechEvent_Action_BodySearch UMETA(DisplayName="BodySearch"),
+	SpeechEvent_Action_NoiseInvestigation UMETA(DisplayName="NoiseInvestigation"),
+	SpeechEvent_Action_PowerBox UMETA(DisplayName="PowerBox"),
+	SpeechEvent_Action_CameraHub UMETA(DisplayName="CameraHub"),
+	SpeechEvent_Alert UMETA(DisplayName="Alert"),
+	SpeechEvent_Radio_Alert UMETA(DisplayName="RadioAlert"),
+	SpeechEvent_Subduing UMETA(DisplayName="Subduing"),
+	SpeechEvent_Searching UMETA(DisplayName="Searching"),
+	SpeechEvent_Engaging UMETA(DisplayName="Engaging"),
+	SpeechEvent_Radio_Engage UMETA(DisplayName="RadioEngage"),
+	SpeechEvent_Action_Restocking UMETA(DisplayName="Restocking"),
+	SpeechEvent_Action_Backup UMETA(DisplayName="Backup"),
+	SpeechEvent_Action_Reloading UMETA(DisplayName="Reload"),
+	SpeechEvent_Action_Revive UMETA(DisplayName="Revive"),
 };
 
 UENUM(BlueprintType, meta = (DisplayName = "Visibilty Level", ToolTip = "Amount of light visible on character"))
@@ -103,24 +103,24 @@ public:
 
 	//Speaker
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UFMODAudioComponent* VoiceComponent;
+	UFMODAudioComponent* VoiceComponent = nullptr;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	EGender Gender;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	EVoiceActor VoiceActor;
+	UPROPERTY()
+	ESpeechEvent CurrentSpeechEvent;
 
 	UFUNCTION(BlueprintCallable)
 	virtual void Speak(ESpeechEvent NewSpeech);
 	UFUNCTION(BlueprintCallable)
 	float GetSpeechTimeRemaining();
 	UFUNCTION(BlueprintCallable)
-	ESpeechEvent GetCurrentSpeechEvent();
-	UFUNCTION(BlueprintCallable)
 	void StopSpeaking();	
 	
 	//Animation rpc
 	UFUNCTION(BlueprintCallable, NetMulticast, Reliable)
-	void NetPlayAnimation(UAnimSequence* AnimationSequence, float BlendInTime = 0.25, float BlendOutTime = 0.25);
+	void NetPlayAnimation(UAnimSequence* AnimationSequence, float BlendInTime = 0.25, float BlendOutTime = 0.25, float InTimeToStartMontageAt = 0);
 	UFUNCTION(BlueprintCallable, NetMulticast, Reliable)
 	void NetResumeAnimation();
 	UFUNCTION(BlueprintCallable, NetMulticast, Reliable)

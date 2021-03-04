@@ -89,6 +89,9 @@
 	</object>
 	<object class="MixerBusPanner" id="{2ffe016b-63c0-40a2-a914-6c960f578e0a}" />
 	<object class="ProgrammerSound" id="{1cea0e14-6339-4b0c-a4a3-633281e12f4d}">
+		<property name="isAsync">
+			<value>true</value>
+		</property>
 		<property name="length">
 			<value>6</value>
 		</property>
@@ -127,7 +130,7 @@
 	<object class="MixerBusFader" id="{867434ca-2225-489a-bc3f-1b498e24fcee}" />
 	<object class="SpatialiserEffect" id="{abeabec0-e9ea-4360-a405-cba32458ce8c}">
 		<property name="maximumDistance">
-			<value>5000</value>
+			<value>25</value>
 		</property>
 	</object>
 	<object class="MixerBusFader" id="{73b93186-1a11-41c9-81b8-0bbe0ec26017}" />

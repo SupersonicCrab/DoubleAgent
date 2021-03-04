@@ -31,7 +31,7 @@ void AAICharacterBase_CHARACTER::Speak(ESpeechEvent NewSpeech)
 	else
 	{
 		//If new speech event greater than current
-		if (NewSpeech > Speaker->GetCurrentSpeechEvent())
+		if (NewSpeech > Speaker->CurrentSpeechEvent)
 		{
 			StopSpeaking();
 			Super::Speak(NewSpeech);

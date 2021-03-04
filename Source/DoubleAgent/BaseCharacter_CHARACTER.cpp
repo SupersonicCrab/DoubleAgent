@@ -2,6 +2,7 @@
 
 #include "BaseCharacter_CHARACTER.h"
 #include "FMODBlueprintStatics.h"
+#include "FMODEvent.h"
 #include "Animation/AnimInstance.h"
 #include "Components/LightComponent.h"
 #include "Engine/DemoNetDriver.h"
@@ -29,22 +30,35 @@ void ABaseCharacter_CHARACTER::Speak(ESpeechEvent NewSpeech)
     //Register speech event
     UAISense_Hearing::ReportNoiseEvent(GetWorld(), GetActorLocation(), 1, this, 0, FName("Speech"));
 
-    //UFMODEvent* Sound = LoadObject<UFMODEvent>(NULL, TEXT("FMODEvent'/Game/Audio/SoundEffects/LightSwitch/Lightswitch_Cue.uasset.Lightswitch_Cue'"));
-    //UFMODBlueprintStatics::PlayEventAttached()
+    UFMODEvent* DialogueEvent = LoadObject<UFMODEvent>(NULL, TEXT("FMODEvent'/Game/FMOD/Events/NPC_Dialogue.NPC_Dialogue'"));
+
+    VoiceComponent = UFMODBlueprintStatics::PlayEventAttached(DialogueEvent, RootComponent, "", FVector(0), EAttachLocation::SnapToTargetIncludingScale, true, false, true);
+    FString DialogueLine = UEnum::GetDisplayValueAsText(VoiceActor).ToString() + UEnum::GetDisplayValueAsText(NewSpeech).ToString();
+    VoiceComponent->SetProgrammerSoundName(DialogueLine + "1");
+    VoiceComponent->Play();
+
+    CurrentSpeechEvent = NewSpeech;
 }
 
 float ABaseCharacter_CHARACTER::GetSpeechTimeRemaining()
 {
-    return -1;
-}
+    //Return -1 if not speaking
+    if (VoiceComponent == nullptr)
+        return -1;
 
-ESpeechEvent ABaseCharacter_CHARACTER::GetCurrentSpeechEvent()
-{
-    return ESpeechEvent::SpeechEvent_Idle;
+    if (!VoiceComponent->IsPlaying())
+        return -1;
+    
+    return (VoiceComponent->GetLength() - VoiceComponent->GetTimelinePosition())/1000;
 }
 
 void ABaseCharacter_CHARACTER::StopSpeaking()
 {
+    if (VoiceComponent == nullptr)
+        return;
+    
+    VoiceComponent->Stop();
+    CurrentSpeechEvent = ESpeechEvent::SpeechEvent_Idle;
 }
 
 bool ABaseCharacter_CHARACTER::CanBeSeenFrom(const FVector& ObserverLocation, FVector& OutSeenLocation, int32& NumberOfLoSChecksPerformed, float& OutSightStrength, const AActor* IgnoreActor) const
@@ -202,8 +216,8 @@ void ABaseCharacter_CHARACTER::NetResumeAnimation_Implementation()
     GetMesh()->GetAnimInstance()->Montage_Resume(NULL);
 }
 
-void ABaseCharacter_CHARACTER::NetPlayAnimation_Implementation(UAnimSequence* AnimationSequence, float BlendInTime, float BlendOutTime)
+void ABaseCharacter_CHARACTER::NetPlayAnimation_Implementation(UAnimSequence* AnimationSequence, float BlendInTime, float BlendOutTime, float InTimeToStartMontageAt)
 {
     //Play montage with default parameters
-    GetMesh()->GetAnimInstance()->PlaySlotAnimationAsDynamicMontage(AnimationSequence, "DefaultSlot", BlendInTime, BlendOutTime);
+    GetMesh()->GetAnimInstance()->PlaySlotAnimationAsDynamicMontage(AnimationSequence, "DefaultSlot", BlendInTime, BlendOutTime,1,1,-1, InTimeToStartMontageAt);
 }

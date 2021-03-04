@@ -46,7 +46,7 @@ public:
 	void DisableLightGroup(bool  bFromPowerBox); //This is the function that turns off all the lights in the associated light group
 
 	UFUNCTION(NetMulticast, Unreliable)
-	void MulticastPlaySound(float Pitch);
+	void MulticastPlaySound(bool TurnOn);
 	
 	UFUNCTION(Server, Reliable)
 	void RestoreLights(); //This is the function that gets called when the power to the lights was shut off and then turned back on - Instead of just turning all lights back on, it'll check if that light group was on when the power went out

@@ -1,6 +1,9 @@
 // Please don't steal
 
 #include "LightSwitch.h"
+
+#include "FMODBlueprintStatics.h"
+#include "FMODEvent.h"
 #include "HouseLight.h"
 #include "../AI/RoomVolume.h"
 #include "DoubleAgent/AI/AICharacterBase_CHARACTER.h"
@@ -40,7 +43,7 @@ void ALightSwitch::EnableLightGroup_Implementation(){
     }
     bLightGroupOn = true;
     AssociatedRoom->UpdateLight(true); //Update the rooms understanding of the light
-    MulticastPlaySound(0.9f);
+    MulticastPlaySound(true);
 
     MeshSwitch->SetRelativeRotation(FRotator(0, 0, 0), false);
 }
@@ -53,7 +56,7 @@ void ALightSwitch::DisableLightGroup_Implementation(bool bFromPowerBox){ //Check
         bLightGroupOn = false;
     }
     AssociatedRoom->UpdateLight(false);
-    MulticastPlaySound(1.0f);
+    MulticastPlaySound(false);
 
     MeshSwitch->SetRelativeRotation(FRotator(0, 0, 180), false);
 }
@@ -76,11 +79,12 @@ void ALightSwitch::BeginPlay(){
     dynamic_cast<APowerBox*>(UGameplayStatics::GetActorOfClass(GetWorld(), APowerBox::StaticClass()))->bLightsOn;
 }
 
-void ALightSwitch::MulticastPlaySound_Implementation(float Pitch)
+void ALightSwitch::MulticastPlaySound_Implementation(bool TurnOn)
 {
-    //Play sound
-    USoundBase* Sound = LoadObject<USoundBase>(NULL, TEXT("SoundCue'/Game/Audio/SoundEffects/LightSwitch/Lightswitch_Cue.uasset.Lightswitch_Cue'"));
-    UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, GetActorLocation(), FRotator(), 1, Pitch, 0, nullptr, nullptr, this);
+    UFMODEvent* LightSwitchEvent = LoadObject<UFMODEvent>(NULL, TEXT("FMODEvent'/Game/FMOD/Events/Lightswitch.Lightswitch'"));
+    FFMODEventInstance InstanceWrapper = UFMODBlueprintStatics::PlayEventAtLocation(GetWorld(), LightSwitchEvent, GetActorTransform(), false);
+    InstanceWrapper.Instance->setParameterByName("lightswitchState", TurnOn);
+    InstanceWrapper.Instance->start();
 }
 
 void ALightSwitch::FindRoomAndLights()
