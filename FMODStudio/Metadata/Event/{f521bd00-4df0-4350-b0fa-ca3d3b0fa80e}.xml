@@ -102,6 +102,9 @@
 		<property name="length">
 			<value>2.7246666666666668</value>
 		</property>
+		<property name="startOffset">
+			<value>32.5</value>
+		</property>
 		<relationship name="triggerConditions">
 			<destination>{e6381622-42b2-4c40-81c1-d0c5c3935a9f}</destination>
 		</relationship>
@@ -113,6 +116,9 @@
 		<property name="name">
 			<value>Activate</value>
 		</property>
+		<relationship name="modulators">
+			<destination>{d9b84ba7-fbdb-49fc-8be6-97ba37673d25}</destination>
+		</relationship>
 		<relationship name="effectChain">
 			<destination>{62ce6a17-3564-440d-bb20-24f9cae8f827}</destination>
 		</relationship>
@@ -176,9 +182,42 @@
 			<destination>{5ecdcc0b-f1c9-4a35-93c8-2036aa1c2f57}</destination>
 		</relationship>
 	</object>
+	<object class="ADSRModulator" id="{d9b84ba7-fbdb-49fc-8be6-97ba37673d25}">
+		<property name="nameOfPropertyBeingModulated">
+			<value>volume</value>
+		</property>
+		<property name="initialValue">
+			<value>-80</value>
+		</property>
+		<property name="attackTime">
+			<value>240</value>
+		</property>
+		<property name="peakValue">
+			<value>0.577777863</value>
+		</property>
+		<property name="holdTime">
+			<value>880</value>
+		</property>
+		<property name="decayTime">
+			<value>46000</value>
+		</property>
+		<property name="sustainValue">
+			<value>-80</value>
+		</property>
+		<property name="releaseTime">
+			<value>0</value>
+		</property>
+		<property name="releaseShape">
+			<value>-0.0158339627</value>
+		</property>
+		<property name="finalValue">
+			<value>-80</value>
+		</property>
+	</object>
 	<object class="MixerBusEffectChain" id="{62ce6a17-3564-440d-bb20-24f9cae8f827}">
 		<relationship name="effects">
 			<destination>{169884d5-4631-4c0d-a384-3dc856434838}</destination>
+			<destination>{b9244fc3-1392-41c6-99ec-78419c5315bc}</destination>
 		</relationship>
 	</object>
 	<object class="MixerBusPanner" id="{464e79b0-3340-43e9-9a36-7be852e398ab}" />
@@ -235,5 +274,10 @@
 	<object class="MixerBusPanner" id="{88376d70-4ee5-4559-9b11-f50ffcdefd26}" />
 	<object class="MixerBusFader" id="{b8ee5c07-f7c9-40ae-b78b-454cb30b730e}" />
 	<object class="MixerBusFader" id="{169884d5-4631-4c0d-a384-3dc856434838}" />
+	<object class="PitchShifterEffect" id="{b9244fc3-1392-41c6-99ec-78419c5315bc}">
+		<property name="pitch">
+			<value>0.669999957</value>
+		</property>
+	</object>
 	<object class="MixerBusFader" id="{9d738720-1598-45a6-bc08-49af1d7fd4e8}" />
 </objects>
