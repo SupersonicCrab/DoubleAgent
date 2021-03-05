@@ -65,7 +65,7 @@ bool SpeakToCrowd::PerformAction(AFSMController* Controller)
         return true;
     }
     
-    Cast<ABaseCharacter_CHARACTER>(Controller->GetPawn())->Speak(ESpeechEvent::SpeechEvent_Idle);
+    Cast<ABaseCharacter_CHARACTER>(Controller->GetPawn())->NetRequestSpeak(ESpeechEvent::SpeechEvent_Idle);
     return true;
 }
 

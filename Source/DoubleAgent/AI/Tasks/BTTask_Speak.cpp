@@ -20,14 +20,14 @@ EBTNodeResult::Type UBTTask_Speak::ExecuteTask(UBehaviorTreeComponent& OwnerComp
 		Blackboard->SetValueAsEnum("ActionStatus", static_cast<uint8>(NewActionStatus));
 
 		//Speak
-		Cast<AAICharacterBase_CHARACTER>(NPC)->Speak(GetSpeechEvent());
+		Cast<AAICharacterBase_CHARACTER>(NPC)->NetRequestSpeak(GetSpeechEvent());
 
 		return EBTNodeResult::Succeeded;
 	}
 	
 	//If vocal status was raised or restating
 	if (Cast<AStaffAIController>(OwnerComp.GetOwner())->RaiseVocalStatus(NewVocalStatus) || bRestateVocalStatus)
-		Cast<AAICharacterBase_CHARACTER>(NPC)->Speak(GetSpeechEvent());
+		Cast<AAICharacterBase_CHARACTER>(NPC)->NetRequestSpeak(GetSpeechEvent());
 
 	return EBTNodeResult::Succeeded;
 }

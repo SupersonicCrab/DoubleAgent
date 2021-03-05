@@ -39,11 +39,11 @@ EBTNodeResult::Type UBTTask_UseRadio::ExecuteTask(UBehaviorTreeComponent& OwnerC
     switch (NewRadioEvent.RadioEvent)
     {
         case (ERadioEvent::Radio_Alert):
-            Cast<ABaseCharacter_CHARACTER>(OwnerComp.GetAIOwner()->GetPawn())->Speak(ESpeechEvent::SpeechEvent_Radio_Alert);
+            Cast<ABaseCharacter_CHARACTER>(OwnerComp.GetAIOwner()->GetPawn())->NetRequestSpeak(ESpeechEvent::SpeechEvent_Radio_Alert);
         case (ERadioEvent::Radio_Chatter):
-            Cast<ABaseCharacter_CHARACTER>(OwnerComp.GetAIOwner()->GetPawn())->Speak(ESpeechEvent::SpeechEvent_Radio_Chatter);
+            Cast<ABaseCharacter_CHARACTER>(OwnerComp.GetAIOwner()->GetPawn())->NetRequestSpeak(ESpeechEvent::SpeechEvent_Radio_Chatter);
         case (ERadioEvent::Radio_Engage):
-            Cast<ABaseCharacter_CHARACTER>(OwnerComp.GetAIOwner()->GetPawn())->Speak(ESpeechEvent::SpeechEvent_Radio_Engage);
+            Cast<ABaseCharacter_CHARACTER>(OwnerComp.GetAIOwner()->GetPawn())->NetRequestSpeak(ESpeechEvent::SpeechEvent_Radio_Engage);
         default:
             break;
     }
