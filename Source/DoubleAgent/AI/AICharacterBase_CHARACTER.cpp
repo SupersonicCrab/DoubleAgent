@@ -12,20 +12,20 @@
 void AAICharacterBase_CHARACTER::QueueSpeech(ESpeechEvent Speech, float TimeToWait)
 {
 	FTimerDelegate QueueDelegate;
-	QueueDelegate.BindUFunction(this, FName("Speak"), Speech);
+	QueueDelegate.BindUFunction(this, FName("NetRequestSpeak"), Speech);
 	FTimerHandle QueueHandle;
 	GetWorldTimerManager().SetTimer(QueueHandle, QueueDelegate, TimeToWait, false);
 	QueuedSpeech = Speech;
 }
 
-void AAICharacterBase_CHARACTER::Speak(ESpeechEvent NewSpeech)
+void AAICharacterBase_CHARACTER::NetRequestSpeak(ESpeechEvent NewSpeech)
 {
 	UBlackboardComponent* Blackboard = UAIBlueprintHelperLibrary::GetBlackboard(this);
 	ABaseCharacter_CHARACTER* Speaker = Cast<AAICharacterBase_CHARACTER>(Blackboard->GetValueAsObject("Speaker"));
 	
 	//Is no one speaking
 	if (!IsValid(Speaker))
-		Super::Speak(NewSpeech);
+		Super::NetRequestSpeak(NewSpeech);
 	
 	//If someone is speaking
 	else
@@ -34,7 +34,7 @@ void AAICharacterBase_CHARACTER::Speak(ESpeechEvent NewSpeech)
 		if (NewSpeech > Speaker->CurrentSpeechEvent)
 		{
 			StopSpeaking();
-			Super::Speak(NewSpeech);
+			Super::NetRequestSpeak(NewSpeech);
 		}
 		else
 			QueueSpeech(NewSpeech, Speaker->GetSpeechTimeRemaining() + UKismetMathLibrary::RandomFloatInRange(0, 2));

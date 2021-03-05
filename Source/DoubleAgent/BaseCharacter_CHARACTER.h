@@ -24,8 +24,8 @@ enum class EVoiceActor : uint8
 	VoiceActor_MaleCivilian2 UMETA(DisplayName="MaleCivilian2"),
 	VoiceActor_FemaleCivilian1 UMETA(DisplayName="FemaleCivilian1"),
 	VoiceActor_FemaleCivilian2 UMETA(DisplayName="FemaleCivilian2"),
-	VoiceActor_MaleWaiter UMETA(DisplayName="MaleWaiter"),
-	VoiceActor_FemaleWaiter UMETA(DisplayName="FemaleWaiter"),
+	VoiceActor_MaleWaiter UMETA(DisplayName="MaleWaiter1"),
+	VoiceActor_FemaleWaiter UMETA(DisplayName="FemaleWaiter1"),
 	VoiceActor_MaleGuard1 UMETA(DisplayName="MaleGuard1"),
 	VoiceActor_MaleGuard2 UMETA(DisplayName="MaleGuard2"),
 	VoiceActor_FemaleGuard1 UMETA(DisplayName="FemaleGuard1"),
@@ -46,7 +46,7 @@ enum class ESpeechEvent : uint8
 	SpeechEvent_Cautious UMETA(DisplayName="Cautious"),
 	SpeechEvent_Action_BodySearch UMETA(DisplayName="BodySearch"),
 	SpeechEvent_Action_NoiseInvestigation UMETA(DisplayName="NoiseInvestigation"),
-	SpeechEvent_Action_PowerBox UMETA(DisplayName="PowerBox"),
+	SpeechEvent_Action_PowerBox UMETA(DisplayName="Powerbox"),
 	SpeechEvent_Action_CameraHub UMETA(DisplayName="CameraHub"),
 	SpeechEvent_Alert UMETA(DisplayName="Alert"),
 	SpeechEvent_Radio_Alert UMETA(DisplayName="RadioAlert"),
@@ -111,8 +111,10 @@ public:
 	UPROPERTY()
 	ESpeechEvent CurrentSpeechEvent;
 
-	UFUNCTION(BlueprintCallable)
-	virtual void Speak(ESpeechEvent NewSpeech);
+	UFUNCTION(BlueprintCallable, Server, Reliable)
+	virtual void NetRequestSpeak(ESpeechEvent NewSpeech);
+	UFUNCTION(BlueprintCallable, NetMulticast, Reliable)
+	void NetSpeak(const FString& DialogueLine, int Line);
 	UFUNCTION(BlueprintCallable)
 	float GetSpeechTimeRemaining();
 	UFUNCTION(BlueprintCallable)

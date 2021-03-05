@@ -7,6 +7,7 @@
 #include "Components/LightComponent.h"
 #include "Engine/DemoNetDriver.h"
 #include "Engine/SkeletalMeshSocket.h"
+#include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Perception/AISense_Hearing.h"
 #include "Power/HouseLight.h"
@@ -23,21 +24,45 @@ ABaseCharacter_CHARACTER::ABaseCharacter_CHARACTER()
     Sockets.Add("calfRightSocket");
 }
 
-void ABaseCharacter_CHARACTER::Speak(ESpeechEvent NewSpeech)
+void ABaseCharacter_CHARACTER::NetSpeak_Implementation(const FString& DialogueLine, int Line)
 {
-    UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("%s spoke with status %s"),  *AActor::GetDebugName(GetOwner()), *UEnum::GetDisplayValueAsText(NewSpeech).ToString()), true, true, FLinearColor::Red);
+    //FMOD programmer sound
+    UFMODEvent* DialogueEvent = LoadObject<UFMODEvent>(NULL, TEXT("FMODEvent'/Game/FMOD/Events/NPC_Dialogue.NPC_Dialogue'"));
+    VoiceComponent = UFMODBlueprintStatics::PlayEventAttached(DialogueEvent, RootComponent, "", FVector(0), EAttachLocation::SnapToTargetIncludingScale, true, false, true);
+    VoiceComponent->SetProgrammerSoundName(DialogueLine + FString::FromInt(Line));
+    VoiceComponent->Play(); 
+}
 
+void ABaseCharacter_CHARACTER::NetRequestSpeak_Implementation(ESpeechEvent NewSpeech)
+{
     //Register speech event
     UAISense_Hearing::ReportNoiseEvent(GetWorld(), GetActorLocation(), 1, this, 0, FName("Speech"));
 
-    UFMODEvent* DialogueEvent = LoadObject<UFMODEvent>(NULL, TEXT("FMODEvent'/Game/FMOD/Events/NPC_Dialogue.NPC_Dialogue'"));
-
-    VoiceComponent = UFMODBlueprintStatics::PlayEventAttached(DialogueEvent, RootComponent, "", FVector(0), EAttachLocation::SnapToTargetIncludingScale, true, false, true);
     FString DialogueLine = UEnum::GetDisplayValueAsText(VoiceActor).ToString() + UEnum::GetDisplayValueAsText(NewSpeech).ToString();
-    VoiceComponent->SetProgrammerSoundName(DialogueLine + "1");
-    VoiceComponent->Play();
 
+    FMOD::Studio::System* StudioSystem = IFMODStudioModule::Get().GetStudioSystem(EFMODSystemContext::Runtime);
+    FMOD_STUDIO_SOUND_INFO SoundInfo = { 0 };
+
+    //Find out how many lines there are to choose from
+    int Lines;
+    for (Lines = 1; Lines < 18; Lines++)
+    {
+        FMOD_RESULT Result = StudioSystem->getSoundInfo(TCHAR_TO_UTF8(*FString(DialogueLine + FString::FromInt(Lines))), &SoundInfo);
+        if (Result != FMOD_OK)
+        {
+            if (Lines > 1)
+                Lines--;
+            break;
+        }
+    }
+
+    //Play random line
+    int Line = UKismetMathLibrary::RandomIntegerInRange(1, Lines);
+
+    UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("%s spoke with status %s line %i"),  *AActor::GetDebugName(GetOwner()), *UEnum::GetDisplayValueAsText(NewSpeech).ToString(), Line), true, true, FLinearColor::Red);
+    
     CurrentSpeechEvent = NewSpeech;
+    NetSpeak(DialogueLine, Line);
 }
 
 float ABaseCharacter_CHARACTER::GetSpeechTimeRemaining()

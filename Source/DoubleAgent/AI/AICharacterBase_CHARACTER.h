@@ -23,7 +23,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void QueueSpeech(ESpeechEvent Speech, float TimeToWait);
-    virtual void Speak(ESpeechEvent NewSpeech) override;
+    virtual void NetRequestSpeak(ESpeechEvent NewSpeech) override;
 	
 	//Disable NPC behaviour and perceptions
 	UFUNCTION(CallInEditor, BlueprintCallable, Category = "Debug")
