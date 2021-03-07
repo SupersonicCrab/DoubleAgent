@@ -6,10 +6,9 @@
 #include "Online.h"
 #include "OnlineSubsystem.h"
 #include "AdvancedFriendsGameInstance.h"
+#include "../../Plugins/Developer/FMODStudio/Source/FMODStudio/Public/FMOD/fmod_studio.hpp"
 #include "UObject/ObjectMacros.h"
-
 #include "SpyGameInstance.generated.h"
-
 
 /**
  * 
@@ -26,7 +25,32 @@ UCLASS()
 class DOUBLEAGENT_API USpyGameInstance : public UAdvancedFriendsGameInstance{
 	GENERATED_BODY()
 public:
-
+    UFUNCTION()
+    virtual void Init();
+    
     UFUNCTION(BlueprintCallable)
     static EOnlineStatus GetPlayerOnline(class APlayerController* PlayerController);
+
+    UFUNCTION(BlueprintCallable)
+    void UpdateVCAs();
+
+    UFUNCTION(BlueprintCallable)
+    void UpdateVCA(float NewVolume, int VolumeType);
+
+    FMOD::Studio::VCA* FXVca;    
+    FMOD::Studio::VCA* MasterVCA;
+    FMOD::Studio::VCA* MusicVCA;
+    FMOD::Studio::VCA* VoiceVCA;
+    FMOD::Studio::VCA* UIVCA;
+
+    UPROPERTY(Category="Audio", meta = (ClampMin = "-80", ClampMax = "10"), EditAnywhere, BlueprintReadWrite)
+    float FXVolume;
+    UPROPERTY(Category="Audio", meta = (ClampMin = "-80", ClampMax = "10"), EditAnywhere, BlueprintReadWrite)
+    float MusicVolume;
+    UPROPERTY(Category="Audio", meta = (ClampMin = "-80", ClampMax = "10"), EditAnywhere, BlueprintReadWrite)
+    float VoiceVolume;
+    UPROPERTY(Category="Audio", meta = (ClampMin = "-80", ClampMax = "10"), EditAnywhere, BlueprintReadWrite)
+    float UIVolume;
+    UPROPERTY(Category="Audio", meta = (ClampMin = "-80", ClampMax = "10"), EditAnywhere, BlueprintReadWrite)
+    float MasterVolume;
 };
