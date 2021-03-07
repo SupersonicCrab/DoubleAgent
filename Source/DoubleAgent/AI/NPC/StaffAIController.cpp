@@ -559,15 +559,36 @@ bool AStaffAIController::HandleHearing(AActor* CurrentActor, FAIStimulus& Curren
             //UnconsciousNPC
             UObject* UnconsciousNPC = Cast<AAIControllerBase>(Cast<AAICharacterBase_CHARACTER>(CurrentActor)->GetController())->GetBlackboardComponent()->GetValueAsObject("UnconsciousNPC");
             if (UnconsciousNPC != nullptr)
-                Blackboard->SetValueAsObject("UnconsciousNPC", UnconsciousNPC);           
+            {
+                Blackboard->SetValueAsObject("UnconsciousNPC", UnconsciousNPC);
+                return true;
+            }
         }
 
         //Movement
-        else if (CurrentStimulus.Tag == "Movement" && Blackboard->GetValueAsFloat("Detection") < 90)
-            Blackboard->SetValueAsVector("NoiseLocation", CurrentStimulus.StimulusLocation);
+        if (CurrentStimulus.Tag == "Movement" && Blackboard->GetValueAsFloat("Detection") < 90)
+        {
+            //Get which rooms actor is inside
+            TArray<AActor*> Rooms;
+            CurrentActor->GetOverlappingActors(Rooms, ARoomVolume::StaticClass());
+
+            //If there is no room
+            if (Rooms.Num() == 0)
+            {
+                Blackboard->SetValueAsVector("NoiseLocation", CurrentStimulus.StimulusLocation);
+                return true;
+            }
             
-        //Something was perceived
-        return true;
+            for (int i = 0; i < Rooms.Num(); i++)
+            {
+                //If the room isn't public
+                if (!Cast<ARoomVolume>(Rooms[i])->bPublic)
+                {
+                    Blackboard->SetValueAsVector("NoiseLocation", CurrentStimulus.StimulusLocation);
+                    return true;
+                }
+            }
+        }
     }
 
     //Nothing could be perceived

@@ -9,6 +9,7 @@
 #include "Engine/SkeletalMeshSocket.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Misc/OutputDeviceNull.h"
 #include "Perception/AISense_Hearing.h"
 #include "Power/HouseLight.h"
 
@@ -30,7 +31,11 @@ void ABaseCharacter_CHARACTER::NetSpeak_Implementation(const FString& DialogueLi
     UFMODEvent* DialogueEvent = LoadObject<UFMODEvent>(NULL, TEXT("FMODEvent'/Game/FMOD/Events/NPC_Dialogue.NPC_Dialogue'"));
     VoiceComponent = UFMODBlueprintStatics::PlayEventAttached(DialogueEvent, RootComponent, "", FVector(0), EAttachLocation::SnapToTargetIncludingScale, true, false, true);
     VoiceComponent->SetProgrammerSoundName(DialogueLine + FString::FromInt(Line));
-    VoiceComponent->Play(); 
+    VoiceComponent->Play();
+
+    FOutputDeviceNull OutputDeviceNull;
+    const TCHAR* CmdAndParams = TEXT("NetSpeaking True");
+    CallFunctionByNameWithArguments(CmdAndParams, OutputDeviceNull, nullptr, true);    
 }
 
 void ABaseCharacter_CHARACTER::NetRequestSpeak_Implementation(ESpeechEvent NewSpeech)
@@ -68,10 +73,7 @@ void ABaseCharacter_CHARACTER::NetRequestSpeak_Implementation(ESpeechEvent NewSp
 float ABaseCharacter_CHARACTER::GetSpeechTimeRemaining()
 {
     //Return -1 if not speaking
-    if (VoiceComponent == nullptr)
-        return -1;
-
-    if (!VoiceComponent->IsPlaying())
+    if (VoiceComponent == nullptr || !VoiceComponent->IsPlaying())
         return -1;
     
     return (VoiceComponent->GetLength() - VoiceComponent->GetTimelinePosition())/1000;

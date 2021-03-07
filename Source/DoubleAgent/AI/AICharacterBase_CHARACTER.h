@@ -18,12 +18,11 @@ public:
 	AAICharacterBase_CHARACTER(){};
 
 	//Speaker
-	UPROPERTY(BlueprintReadOnly)
-	ESpeechEvent QueuedSpeech;
-
+	virtual void NetRequestSpeak(ESpeechEvent NewSpeech) override;
+	
+	//Checks if anyone is speaking within hearing distance
 	UFUNCTION(BlueprintCallable)
-	void QueueSpeech(ESpeechEvent Speech, float TimeToWait);
-    virtual void NetRequestSpeak(ESpeechEvent NewSpeech) override;
+	ABaseCharacter_CHARACTER* GetNearbySpeaker();
 	
 	//Disable NPC behaviour and perceptions
 	UFUNCTION(CallInEditor, BlueprintCallable, Category = "Debug")

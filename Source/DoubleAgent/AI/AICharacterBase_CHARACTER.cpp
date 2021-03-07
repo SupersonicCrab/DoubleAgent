@@ -9,36 +9,40 @@
 #include "NPC/AIControllerBase.h"
 #include "Perception/AIPerceptionComponent.h"
 
-void AAICharacterBase_CHARACTER::QueueSpeech(ESpeechEvent Speech, float TimeToWait)
-{
-	FTimerDelegate QueueDelegate;
-	QueueDelegate.BindUFunction(this, FName("NetRequestSpeak"), Speech);
-	FTimerHandle QueueHandle;
-	GetWorldTimerManager().SetTimer(QueueHandle, QueueDelegate, TimeToWait, false);
-	QueuedSpeech = Speech;
-}
-
 void AAICharacterBase_CHARACTER::NetRequestSpeak(ESpeechEvent NewSpeech)
 {
-	UBlackboardComponent* Blackboard = UAIBlueprintHelperLibrary::GetBlackboard(this);
-	ABaseCharacter_CHARACTER* Speaker = Cast<AAICharacterBase_CHARACTER>(Blackboard->GetValueAsObject("Speaker"));
+	ABaseCharacter_CHARACTER* Speaker = GetNearbySpeaker();
 	
 	//Is no one speaking
-	if (!IsValid(Speaker))
+	if (Speaker == nullptr)
 		Super::NetRequestSpeak(NewSpeech);
-	
-	//If someone is speaking
-	else
+
+	//If new speech event greater than current
+	else if (NewSpeech > Speaker->CurrentSpeechEvent)
 	{
-		//If new speech event greater than current
-		if (NewSpeech > Speaker->CurrentSpeechEvent)
-		{
-			StopSpeaking();
-			Super::NetRequestSpeak(NewSpeech);
-		}
-		else
-			QueueSpeech(NewSpeech, Speaker->GetSpeechTimeRemaining() + UKismetMathLibrary::RandomFloatInRange(0, 2));
+		StopSpeaking();
+		Super::NetRequestSpeak(NewSpeech);
 	}
+}
+
+ABaseCharacter_CHARACTER* AAICharacterBase_CHARACTER::GetNearbySpeaker()
+{
+	TArray<AActor*> Characters;
+	
+	TArray<TEnumAsByte<EObjectTypeQuery>> traceObjectTypes;
+	traceObjectTypes.Add(UEngineTypes::ConvertToObjectType(ECollisionChannel::ECC_Pawn));
+	
+	TArray<AActor*> ignoreActors;
+	
+	UKismetSystemLibrary::SphereOverlapActors(GetWorld(), GetActorLocation(), Cast<AAIControllerBase>(GetController())->HearingRange, traceObjectTypes, ABaseCharacter_CHARACTER::StaticClass(), ignoreActors, Characters);
+	
+	for (int i = 0; i < Characters.Num(); i++)
+	{
+		if (Cast<ABaseCharacter_CHARACTER>(Characters[i])->GetSpeechTimeRemaining() > 0)
+			return Cast<ABaseCharacter_CHARACTER>(Characters[i]);
+	}
+
+	return nullptr;
 }
 
 void AAICharacterBase_CHARACTER::DisableNPC()
