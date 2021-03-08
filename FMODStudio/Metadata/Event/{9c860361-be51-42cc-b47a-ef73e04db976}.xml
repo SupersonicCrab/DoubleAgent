@@ -98,6 +98,7 @@
 		<property name="length">
 			<value>6</value>
 		</property>
+		<property name="name" />
 		<relationship name="placeholder">
 			<destination>{75d8a729-72f3-4798-8c3a-77b139e1a749}</destination>
 		</relationship>

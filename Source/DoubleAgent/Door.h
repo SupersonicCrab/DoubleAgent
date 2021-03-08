@@ -49,6 +49,9 @@ class DOUBLEAGENT_API ADoor : public ANavLinkProxy, public IAISightTargetInterfa
 	void OnOverlapEnd(class AActor* OverlappedActor, class AActor* OtherActor);
 	
 public:
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	bool bPublic = false;
+	
 	//Animation data
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UCurveFloat* OpenCurve;

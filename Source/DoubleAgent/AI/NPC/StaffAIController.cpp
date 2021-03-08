@@ -242,8 +242,8 @@ void AStaffAIController::DoorVisionUpdate(AActor* CurrentActor, FAIStimulus& Cur
 {
     ADoor* Door = Cast<ADoor>(CurrentActor);
 
-    //If door is being used by an NPC
-    if (Door->InteractingNPC != nullptr)
+    //If door is being used by an NPC or public
+    if (Door->InteractingNPC != nullptr || Door->bPublic)
         return;
     
     //Search for door in memory
