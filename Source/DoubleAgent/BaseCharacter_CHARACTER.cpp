@@ -43,11 +43,25 @@ void ABaseCharacter_CHARACTER::NetRequestSpeak_Implementation(ESpeechEvent NewSp
     //Register speech event
     UAISense_Hearing::ReportNoiseEvent(GetWorld(), GetActorLocation(), 1, this, 0, FName("Speech"));
 
-    FString DialogueLine = UEnum::GetDisplayValueAsText(VoiceActor).ToString() + UEnum::GetDisplayValueAsText(NewSpeech).ToString();
-
     FMOD::Studio::System* StudioSystem = IFMODStudioModule::Get().GetStudioSystem(EFMODSystemContext::Runtime);
     FMOD_STUDIO_SOUND_INFO SoundInfo = { 0 };
 
+    FString DialogueLine;
+    
+    if (NewSpeech == ESpeechEvent::SpeechEvent_Idle)
+    {
+        DialogueLine = UEnum::GetDisplayValueAsText(VoiceActor).ToString() + UEnum::GetDisplayValueAsText(ESpeechEvent::SpeechEvent_Common).ToString();
+        
+        FMOD_RESULT Result = StudioSystem->getSoundInfo(TCHAR_TO_UTF8(*FString(DialogueLine + FString::FromInt(1))), &SoundInfo);
+
+        if (Result != FMOD_OK || UKismetMathLibrary::RandomBoolWithWeight(0.5))
+        {
+            DialogueLine = UEnum::GetDisplayValueAsText(VoiceActor).ToString() + UEnum::GetDisplayValueAsText(NewSpeech).ToString();
+        }
+    }
+    else
+        DialogueLine = UEnum::GetDisplayValueAsText(VoiceActor).ToString() + UEnum::GetDisplayValueAsText(NewSpeech).ToString();
+    
     //Find out how many lines there are to choose from
     int Lines;
     for (Lines = 1; Lines < 18; Lines++)
@@ -64,7 +78,7 @@ void ABaseCharacter_CHARACTER::NetRequestSpeak_Implementation(ESpeechEvent NewSp
     //Play random line
     int Line = UKismetMathLibrary::RandomIntegerInRange(1, Lines);
 
-    UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("%s spoke with status %s line %i"),  *AActor::GetDebugName(GetOwner()), *UEnum::GetDisplayValueAsText(NewSpeech).ToString(), Line), true, true, FLinearColor::Red);
+    UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("%s spoke with status %s"),  *AActor::GetDebugName(GetOwner()), *FString(DialogueLine + FString::FromInt(Line))), true, true, FLinearColor::Red);
     
     CurrentSpeechEvent = NewSpeech;
     NetSpeak(DialogueLine, Line);
