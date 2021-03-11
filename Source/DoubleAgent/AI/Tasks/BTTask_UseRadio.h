@@ -18,6 +18,8 @@ class DOUBLEAGENT_API UBTTask_UseRadio : public UBTTaskNode
 {
 	GENERATED_BODY()
 
+	UBTTask_UseRadio();
+	
     UPROPERTY(EditAnywhere)
     FRadioEvent NewRadioEvent;
 
@@ -29,4 +31,5 @@ class DOUBLEAGENT_API UBTTask_UseRadio : public UBTTaskNode
     
 public:
     virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
+	virtual void TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds) override;
 };

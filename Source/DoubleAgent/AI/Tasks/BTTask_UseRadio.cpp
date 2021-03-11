@@ -8,6 +8,11 @@
 #include "Kismet/GameplayStatics.h"
 #include "Misc/OutputDeviceNull.h"
 
+UBTTask_UseRadio::UBTTask_UseRadio()
+{
+    bNotifyTick = true;
+}
+
 EBTNodeResult::Type UBTTask_UseRadio::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
     //Print to log and screen
@@ -52,6 +57,17 @@ EBTNodeResult::Type UBTTask_UseRadio::ExecuteTask(UBehaviorTreeComponent& OwnerC
     const TCHAR* CmdAndParams = TEXT("NetRadio True");
     OwnerComp.GetAIOwner()->GetPawn()->CallFunctionByNameWithArguments(CmdAndParams, OutputDeviceNull, nullptr, true);    
 
-    return EBTNodeResult::Succeeded;
+    return EBTNodeResult::InProgress;
+}
 
+void UBTTask_UseRadio::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
+{
+    AAICharacterBase_CHARACTER* NPC = Cast<AAICharacterBase_CHARACTER>(OwnerComp.GetAIOwner()->GetPawn());
+    if (NPC->GetSpeechTimeRemaining() <= 0)
+    {
+        FOutputDeviceNull OutputDeviceNull;
+        const TCHAR* CmdAndParams = TEXT("NetRadio False");
+        NPC->CallFunctionByNameWithArguments(CmdAndParams, OutputDeviceNull, nullptr, true);
+        FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+    }
 }

@@ -71,19 +71,22 @@ FTrackedDoor::FTrackedDoor(ADoor* Door_)
 
 void AStaffAIController::PlayerVisionTick(AActor* CurrentPlayer, FAIStimulus& CurrentStimulus, float DeltaTime)
 {
+    int PlayerMemoryReference = -1;
+    
     //Update last stimulus
     for (int i = 0; i < Memory.Players.Num(); i++)
     {
         if (Memory.Players[i].Actor == CurrentPlayer)
         {
             Memory.Players[i].LastSensedStimuli = CurrentStimulus;
+            PlayerMemoryReference = i;
             break;
         }
     }
     
     //Skip detection calculations if player is doing nothing wrong
     APlayer_Character* Player = Cast<APlayer_Character>(CurrentPlayer);
-    if (!Player->IsThreat())
+    if (!Player->IsThreat() && (PlayerMemoryReference == -1 || Memory.Players[PlayerMemoryReference].Detection < 40))
         return;
     
     //Setup

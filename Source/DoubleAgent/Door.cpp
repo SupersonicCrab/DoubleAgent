@@ -3,6 +3,7 @@
 #include "Door.h"
 #include "AIController.h"
 #include "Editor.h"
+#include "FMODBlueprintStatics.h"
 #include "Player_Character.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "Builders/CubeBuilder.h"
@@ -53,27 +54,6 @@ void ADoor::CloseAnimation()
 void ADoor::UpdateRotation_Implementation(float Yaw)
 {
     DoorMesh->SetRelativeRotation(FQuat(FRotator(0.f, Yaw, 0.f)), false, NULL, ETeleportType::TeleportPhysics);
-}
-
-void ADoor::NPCInteraction(AActor* NPC, const FVector& Destination)
-{
-    InteractingNPC = Cast<AAICharacterBase_CHARACTER>(NPC);
-
-    UBlackboardComponent* NPCBlackboard = UAIBlueprintHelperLibrary::GetBlackboard(InteractingNPC);
-    if (NPCBlackboard->GetValueAsObject("ClosedDoor") != nullptr && NPCBlackboard->GetValueAsObject("ClosedDoor") == this)
-        NPCBlackboard->ClearValue("ClosedDoor");
-        
-    //If a player tries to interact with the door the same frame the NPC is
-    if (DoorTimeline != NULL)
-    {
-        ForceOpenDoor(NPC);
-
-        NPCBlackboard->SetValueAsVector("NoiseLocation", GetActorLocation());
-    }
-    
-    //If door is closed
-    if (!bDoorOpen)
-        OpenDoor(NPC);
 }
 
 void ADoor::Unlock()
@@ -141,6 +121,27 @@ void ADoor::OnOverlapEnd(AActor* OverlappedActor, AActor* OtherActor)
     CloseDoor(OtherActor);
 }
 
+void ADoor::NPCInteraction_Implementation(AActor* NPC, const FVector& Destination)
+{
+    InteractingNPC = Cast<AAICharacterBase_CHARACTER>(NPC);
+
+    UBlackboardComponent* NPCBlackboard = UAIBlueprintHelperLibrary::GetBlackboard(InteractingNPC);
+    if (NPCBlackboard->GetValueAsObject("ClosedDoor") != nullptr && NPCBlackboard->GetValueAsObject("ClosedDoor") == this)
+        NPCBlackboard->ClearValue("ClosedDoor");
+        
+    //If a player tries to interact with the door the same frame the NPC is
+    if (DoorTimeline != NULL)
+    {
+        ForceOpenDoor(NPC);
+
+        NPCBlackboard->SetValueAsVector("NoiseLocation", GetActorLocation());
+    }
+    
+    //If door is closed
+    if (!bDoorOpen)
+        OpenDoor(NPC);
+}
+
 void ADoor::OpenDoor_Implementation(AActor* Interactor)
 {
     //Get all overlapping characters
@@ -174,7 +175,7 @@ void ADoor::OpenDoor_Implementation(AActor* Interactor)
         bDoorOpen = true;
       
         //Play sound
-        PlaySound(LoadObject<USoundBase>(NULL, TEXT("SoundCue'/Game/Audio/SoundEffects/Door/Wooden/WoodenDoorOpen_Cue.WoodenDoorOpen_Cue'")));
+        PlaySound(false);
     }
 }
 
@@ -201,13 +202,15 @@ void ADoor::CloseDoor_Implementation(AActor* Interactor)
         bDoorOpen = false;
 
         //Play sound
-        PlaySound(LoadObject<USoundBase>(NULL, TEXT("SoundCue'/Game/Audio/SoundEffects/Door/Wooden/WoodenDoorClose_Cue.WoodenDoorClose_Cue'")));
+        PlaySound(true);
     }
 }
 
-void ADoor::PlaySound_Implementation(USoundBase* Sound)
+void ADoor::PlaySound_Implementation(bool bOpen)
 {
-    UGameplayStatics::PlaySoundAtLocation(GetWorld(), Sound, GetActorLocation(), GetActorRotation(), FMath::RandRange(0.9f, 1.0f), 1.0f, 0.0f, nullptr, nullptr, this);
+    FFMODEventInstance EventInstance = UFMODBlueprintStatics::PlayEventAtLocation(GetWorld(), DoorEvent, GetActorTransform(), false);
+    EventInstance.Instance->setParameterByName(TCHAR_TO_ANSI(*SoundParameter), bOpen, false);
+    EventInstance.Instance->start();
 }
 
 void ADoor::UpdateCutout()

@@ -34,10 +34,6 @@ class DOUBLEAGENT_API ADoor : public ANavLinkProxy, public IAISightTargetInterfa
 	//Timeline for animation
 	UTimelineComponent* DoorTimeline;
 	
-	//NPC interaction
-	UFUNCTION()
-	void NPCInteraction(AActor* NPC, const FVector& Destination);
-	
 	//Unlock navmesh access
 	UFUNCTION()
     void Unlock();
@@ -51,6 +47,10 @@ class DOUBLEAGENT_API ADoor : public ANavLinkProxy, public IAISightTargetInterfa
 public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	bool bPublic = false;
+
+	//NPC interaction
+	UFUNCTION(BlueprintNativeEvent)
+    void NPCInteraction(AActor* NPC, const FVector& Destination);
 	
 	//Animation data
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -71,8 +71,14 @@ public:
 	UFUNCTION(BlueprintCallable, Server, Reliable)
 	void CloseDoor(AActor* Interactor);
 
+	UPROPERTY(BlueprintReadWrite)
+	UFMODEvent* DoorEvent;
+
+	UPROPERTY(BlueprintReadWrite)
+	FString SoundParameter;
+	
 	UFUNCTION(NetMulticast, Reliable)
-	void PlaySound(USoundBase* Sound);
+	void PlaySound(bool bOpen);
 	
 	//NPC interaction
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
