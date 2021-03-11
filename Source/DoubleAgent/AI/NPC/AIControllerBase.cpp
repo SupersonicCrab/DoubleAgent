@@ -172,8 +172,11 @@ void AAIControllerBase::NPCVisionTick(AActor* CurrentActor, FAIStimulus& Current
     }
     else if (UnconsciousNPC == NULL && !Cast<AAIControllerBase>(Cast<AAICharacterBase_CHARACTER>(CurrentActor)->GetController())->BrainComponent->IsRunning())
     {
-        Blackboard->SetValueAsObject("UnconsciousNPC", CurrentActor);
         RaiseDetection(90.0f);
+
+        //If character is not tranquilizers
+        if (!Cast<AAICharacterBase_CHARACTER>(CurrentActor)->bTranquilized)
+            Blackboard->SetValueAsObject("UnconsciousNPC", CurrentActor);
     }
 
     //Copy detection

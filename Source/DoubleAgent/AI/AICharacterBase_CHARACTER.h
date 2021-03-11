@@ -20,6 +20,9 @@ public:
 	//Speaker
 	virtual void NetRequestSpeak(ESpeechEvent NewSpeech) override;
 	
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	bool bTranquilized;
+	
 	//Checks if anyone is speaking within hearing distance
 	UFUNCTION(BlueprintCallable)
 	ABaseCharacter_CHARACTER* GetNearbySpeaker();
