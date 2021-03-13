@@ -85,11 +85,6 @@ void AStaffAIController::PlayerVisionTick(AActor* CurrentPlayer, FAIStimulus& Cu
         }
     }
     
-    //Skip detection calculations if player is doing nothing wrong
-    APlayer_Character* Player = Cast<APlayer_Character>(CurrentPlayer);
-    if (!Player->IsThreat() && (PlayerMemoryReference == -1 || Memory.Players[PlayerMemoryReference].Detection < 40))
-        return;
-    
     //Setup
     float DetectionStep = 0;
 
@@ -99,6 +94,11 @@ void AStaffAIController::PlayerVisionTick(AActor* CurrentPlayer, FAIStimulus& Cu
         Blackboard->SetValueAsObject("LastPlayer", CurrentPlayer);
     }
 
+    //Skip detection calculations if player is doing nothing wrong
+    APlayer_Character* Player = Cast<APlayer_Character>(CurrentPlayer);
+    if (!Player->IsThreat() && (PlayerMemoryReference == -1 || Memory.Players[PlayerMemoryReference].Detection < 40))
+        return;
+    
     //If no players have been seen before
     if (Memory.Players.Num() == 0)
     {
@@ -305,6 +305,7 @@ void AStaffAIController::HandleRadioEvent(FRadioEvent* RadioEvent)
     case ERadioEvent::Radio_Engage:
         Blackboard->SetValueAsVector("LoudNoiseLocation", RadioEvent->Location);
         Blackboard->ClearValue("InitialLastSeen");
+        Blackboard->ClearValue("PlayerLastSeen");
         RaiseVocalStatus(EVocalStatus::Vocal_Engaging);
         InheritPlayerMemory(Cast<AStaffAIController>(RadioEvent->NPC->GetController()));
         break;

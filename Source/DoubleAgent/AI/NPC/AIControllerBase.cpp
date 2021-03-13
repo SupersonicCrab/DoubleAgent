@@ -132,19 +132,15 @@ bool AAIControllerBase::RaiseVocalStatus(EVocalStatus NewVocalStatus)
 {
     //If cautious
     if (NewVocalStatus == EVocalStatus::Vocal_Cautious)
-    {
         RaiseDetection(40.0f);
-    }
     
     //If greater than cautious
     else if (NewVocalStatus > EVocalStatus::Vocal_Cautious)
-    {
         RaiseDetection(90.0f);
-    }
     
     //If new vocal status is greater than current
     if (static_cast<EVocalStatus>(Blackboard->GetValueAsEnum("VocalStatus")) < NewVocalStatus)
-    {
+    {       
         Blackboard->SetValueAsEnum("VocalStatus", static_cast<uint8>(NewVocalStatus));
         return true;
     }
