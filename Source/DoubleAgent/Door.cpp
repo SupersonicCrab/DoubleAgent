@@ -98,8 +98,8 @@ void ADoor::OnOverlapEnd(AActor* OverlappedActor, AActor* OtherActor)
     //Get NPC blackboard
     UBlackboardComponent* Blackboard = UAIBlueprintHelperLibrary::GetBlackboard(OtherActor);
     
-    //If blackboard is invalid or detection is above or at 90
-    if (Blackboard == nullptr || Blackboard->GetValueAsFloat("Detection") >= 90)
+    //If blackboard is invalid or detection is above or at 90 and not important
+    if (Blackboard == nullptr || (Blackboard->GetValueAsFloat("Detection") >= 90 && !bImportant))
         return;
 
     //Get overlapping players
