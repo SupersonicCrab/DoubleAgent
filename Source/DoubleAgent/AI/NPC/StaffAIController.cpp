@@ -48,6 +48,7 @@ void AStaffAIController::HandleSight(AActor* CurrentActor, FAIStimulus& CurrentS
 
 void AStaffAIController::StaffVisionUpdate(AActor* CurrentActor, FAIStimulus& CurrentStimulus)
 {
+    InheritPlayerMemory(Cast<AStaffAIController>(Cast<APawn>(CurrentActor)->GetController()));
 }
 
 FTrackedCharacter::FTrackedCharacter(AActor* Actor_, FVector Location_, float Detection_)
@@ -263,7 +264,7 @@ void AStaffAIController::DoorVisionUpdate(AActor* CurrentActor, FAIStimulus& Cur
     if (SearchResult != -1)
     {
         //If alert or greater and door closed
-        if (Blackboard->GetValueAsFloat("Detection") >= 90 && !Door->bDoorOpen && Blackboard->GetValueAsObject("ClosedDoor") == nullptr)
+        if (Blackboard->GetValueAsFloat("Detection") >= 90 && !Door->bDoorOpen && !Door->bImportant && Blackboard->GetValueAsObject("ClosedDoor") == nullptr)
         {
             Blackboard->SetValueAsObject("ClosedDoor", Door);
 
@@ -276,8 +277,8 @@ void AStaffAIController::DoorVisionUpdate(AActor* CurrentActor, FAIStimulus& Cur
             }
         }
         
-        //If door was previously closed
-        if (Door->bDoorOpen && !Memory.Doors[SearchResult].bDoorOpen && Blackboard->GetValueAsObject("OpenedDoor") == nullptr)
+        //If door was open and previously closed or important
+        if (Door->bDoorOpen && (!Memory.Doors[SearchResult].bDoorOpen || Door->bImportant) && Blackboard->GetValueAsObject("OpenedDoor") == nullptr)
         {
             Blackboard->SetValueAsObject("OpenedDoor", Door);
             RaiseDetection(40);
@@ -297,6 +298,7 @@ void AStaffAIController::HandleRadioEvent(FRadioEvent* RadioEvent)
     case ERadioEvent::Radio_Alert:
         Blackboard->SetValueAsVector("LoudNoiseLocation", RadioEvent->Location);
         RaiseVocalStatus(EVocalStatus::Vocal_Alert);
+        InheritPlayerMemory(Cast<AStaffAIController>(RadioEvent->NPC->GetController()));
         break;
 
         //Engage
@@ -304,6 +306,7 @@ void AStaffAIController::HandleRadioEvent(FRadioEvent* RadioEvent)
         Blackboard->SetValueAsVector("LoudNoiseLocation", RadioEvent->Location);
         Blackboard->ClearValue("InitialLastSeen");
         RaiseVocalStatus(EVocalStatus::Vocal_Engaging);
+        InheritPlayerMemory(Cast<AStaffAIController>(RadioEvent->NPC->GetController()));
         break;
     }
 }
@@ -349,6 +352,35 @@ void AStaffAIController::RemoveRoomSearchLocations(ARoomVolume* RoomVolume)
     for (int i = 0; i < SearchLocations.Num(); i++)
     {
         SearchedLocations.Remove(Cast<ASearchLocation>(SearchLocations[i]));
+    }
+}
+
+void AStaffAIController::InheritPlayerMemory(AStaffAIController* OtherNPC)
+{
+    //Iterate through OtherNPC memory
+    for (int i = 0; i < OtherNPC->Memory.Players.Num(); i++)
+    {
+        //If player detection is above cautious
+        if (OtherNPC->Memory.Players[i].Detection >= 40.0f)
+        {
+            bool bFound = false;
+            //Iterate through memory
+            for (int a = 0; a < Memory.Players.Num(); a++)
+            {
+                if (OtherNPC->Memory.Players[i].Actor == Memory.Players[a].Actor)
+                {
+                    bFound = true;
+                    if (OtherNPC->Memory.Players[i].Detection > Memory.Players[a].Detection)
+                    {
+                        Memory.Players[a].Detection = OtherNPC->Memory.Players[i].Detection;
+                    }
+                    break;
+                }
+            }
+
+            if (!bFound)
+                Memory.Players.Add(FTrackedCharacter(OtherNPC->Memory.Players[i].Actor, OtherNPC->Memory.Players[i].Location, OtherNPC->Memory.Players[i].Detection));
+        }
     }
 }
 
@@ -452,6 +484,18 @@ void AStaffAIController::OnPossess(APawn* InPawn)
     {
         Memory.Cameras.Add(Cast<ACamera>(Cameras[i]));
     }
+
+    //Iterate through all doors
+    TArray<AActor*> Doors;
+    UGameplayStatics::GetAllActorsOfClass(GetWorld(), ADoor::StaticClass(), Doors);
+
+    for (int i = 0; i < Doors.Num(); i++)
+    {
+        //If door is important
+        if (Cast<ADoor>(Doors[i])->bImportant)
+            //Save door to memory
+            Memory.Doors.Add(FTrackedDoor(Cast<ADoor>(Doors[i])));
+    }
 }
 
 void AStaffAIController::NPCVisionTick(AActor* CurrentActor, FAIStimulus& CurrentStimulus)
@@ -471,12 +515,6 @@ void AStaffAIController::NPCVisionTick(AActor* CurrentActor, FAIStimulus& Curren
         Blackboard->SetValueAsVector("PlayerLastSeen", OtherNPCBlackboard->GetValueAsVector("PlayerLastSeen"));
     }
 
-    //Disable backup if not set
-    else if (Blackboard->GetValueAsBool("BackupAvailable") && !OtherNPCBlackboard->GetValueAsBool("BackupAvailable"))
-    {
-        Blackboard->SetValueAsBool("BackupAvailable", false);
-    }
-
     //Inherit vocal status if higher
     else if (Blackboard->GetValueAsEnum("VocalStatus") < OtherNPCBlackboard->GetValueAsEnum("VocalStatus"))
     {
@@ -493,10 +531,16 @@ void AStaffAIController::StaffVisionTick(AActor* CurrentActor, FAIStimulus& Curr
     UBlackboardComponent* OtherNPCBlackboard = Cast<AAIController>(Cast<APawn>(CurrentActor)->GetController())->GetBlackboardComponent();
     EActionStatus ActionStatus = static_cast<EActionStatus>(Blackboard->GetValueAsEnum("ActionStatus"));
 
+    //Disable backup if not set
+    if (Blackboard->GetValueAsBool("BackupAvailable") && !OtherNPCBlackboard->GetValueAsBool("BackupAvailable"))
+    {
+        Blackboard->SetValueAsBool("BackupAvailable", false);
+    }
+    
     //If other staff is using cameras
     if (OtherNPCBlackboard->GetValueAsBool("UsingCameras"))
         Blackboard->SetValueAsBool("CamerasActive", true);
-        
+
     //If action status is not idle and both staffAI are performing the same action
     if (ActionStatus != EActionStatus::Action_Idle && static_cast<EActionStatus>(OtherNPCBlackboard->GetValueAsEnum("ActionStatus")) == ActionStatus)
     {
@@ -566,6 +610,9 @@ bool AStaffAIController::HandleHearing(AActor* CurrentActor, FAIStimulus& Curren
                 Blackboard->SetValueAsObject("UnconsciousNPC", UnconsciousNPC);
                 return true;
             }
+
+            if (Cast<AStaffAIController>(Cast<APawn>(CurrentActor)->GetController()) != nullptr)
+                InheritPlayerMemory(Cast<AStaffAIController>(Cast<APawn>(CurrentActor)->GetController()));
         }
 
         //Movement

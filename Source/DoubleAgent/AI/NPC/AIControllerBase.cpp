@@ -8,6 +8,7 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "DoubleAgent/AI/AICharacterBase_CHARACTER.h"
+#include "DoubleAgent/AI/RoomVolume.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 AAIControllerBase::AAIControllerBase()
@@ -204,7 +205,28 @@ bool AAIControllerBase::HandleHearing(AActor* CurrentActor, FAIStimulus& Current
 
         //Noise
         if (CurrentStimulus.Tag == "Noise")
-            Blackboard->SetValueAsVector("NoiseLocation", CurrentStimulus.StimulusLocation);
+        {
+            //Get which rooms actor is inside
+            TArray<AActor*> Rooms;
+            CurrentActor->GetOverlappingActors(Rooms, ARoomVolume::StaticClass());
+
+            //If there is no room or detection is above or at 90
+            if (Rooms.Num() == 0 || Blackboard->GetValueAsFloat("Detection") >= 90)
+            {
+                Blackboard->SetValueAsVector("NoiseLocation", CurrentStimulus.StimulusLocation);
+                return true;
+            }
+
+            for (int i = 0; i < Rooms.Num(); i++)
+            {
+                //If the room isn't public
+                if (!Cast<ARoomVolume>(Rooms[i])->bPublic)
+                {
+                    Blackboard->SetValueAsVector("NoiseLocation", CurrentStimulus.StimulusLocation);
+                    return true;
+                }
+            }
+        }
         
         //LoudNoise
         else if (CurrentStimulus.Tag == "LoudNoise")
