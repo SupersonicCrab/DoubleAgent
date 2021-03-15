@@ -94,6 +94,8 @@ void ADoor::OnOverlapEnd(AActor* OverlappedActor, AActor* OtherActor)
     //If this wasn't the interacting NPC
     if (InteractingNPC == nullptr || OtherActor != InteractingNPC)
         return;
+
+    ResumePathFollowing(InteractingNPC);
     
     //Get NPC blackboard
     UBlackboardComponent* Blackboard = UAIBlueprintHelperLibrary::GetBlackboard(OtherActor);
