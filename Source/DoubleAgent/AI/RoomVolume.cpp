@@ -68,12 +68,10 @@ void ARoomVolume::UpdateLight(bool bRoomLit_){
 
 void ARoomVolume::UpdateNPC(AActor* NPC)
 {
-	//If not staff AI
-	if (Cast<AStaffAIController>(Cast<APawn>(NPC)->GetController()) == nullptr)
-		return;
-	
 	//Get NPC blackboard
 	UBlackboardComponent* NPCBlackboard = UAIBlueprintHelperLibrary::GetBlackboard(NPC);
+	if (NPCBlackboard == nullptr)
+		return;
 	
 	if (bLit)
 	{

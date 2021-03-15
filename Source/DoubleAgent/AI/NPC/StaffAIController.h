@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "AIControllerBase.h"
 #include "DoubleAgent/Door.h"
+#include "DoubleAgent/Player_Character.h"
 #include "DoubleAgent/Radio.h"
 #include "DoubleAgent/AI/RoomVolume.h"
 #include "StaffAIController.generated.h"
@@ -157,6 +158,8 @@ public:
 	void MarkSearchLocationSearched(ASearchLocation* SearchLocation);
 	UFUNCTION(BlueprintCallable)
 	void RemoveRoomSearchLocations(ARoomVolume* RoomVolume);
+	UFUNCTION(BlueprintCallable)
+	void InheritPlayerMemory(AStaffAIController* OtherNPC);
 
 	//Base overrides
 	virtual void Tick(float DeltaTime) override;

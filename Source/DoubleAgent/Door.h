@@ -47,6 +47,10 @@ class DOUBLEAGENT_API ADoor : public ANavLinkProxy, public IAISightTargetInterfa
 public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	bool bPublic = false;
+	
+	//Should be kept closed
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	bool bImportant = false;
 
 	//NPC interaction
 	UFUNCTION(BlueprintNativeEvent)
