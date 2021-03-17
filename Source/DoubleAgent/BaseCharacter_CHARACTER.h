@@ -37,6 +37,7 @@ enum class EVoiceActor : uint8
 UENUM(BlueprintType)
 enum class ESpeechEvent : uint8
 {
+	SpeechEvent_Common UMETA(DisplayName="Common"),
 	SpeechEvent_Idle UMETA(DisplayName="Idle"),
 	SpeechEvent_Patrol UMETA(DisplayName="Patrol"),
 	SpeechEvent_Radio_Chatter UMETA(DisplayName="RadioChatter"),

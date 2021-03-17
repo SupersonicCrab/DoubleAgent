@@ -46,6 +46,9 @@ public:
 	//Variables
 	UPROPERTY(BlueprintReadWrite, Category = "Default", EditAnywhere = "True")
 	bool bPublic = false;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Default" , EditAnywhere)
+	bool bCivilianGather = false;
 	
 	UPROPERTY(BlueprintReadWrite, Category = "Default", EditAnywhere = "True")
 	bool bLit = true;

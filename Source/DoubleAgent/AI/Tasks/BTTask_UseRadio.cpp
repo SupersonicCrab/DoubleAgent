@@ -8,6 +8,11 @@
 #include "Kismet/GameplayStatics.h"
 #include "Misc/OutputDeviceNull.h"
 
+UBTTask_UseRadio::UBTTask_UseRadio()
+{
+    bNotifyTick = true;
+}
+
 EBTNodeResult::Type UBTTask_UseRadio::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
     //Print to log and screen
@@ -38,20 +43,34 @@ EBTNodeResult::Type UBTTask_UseRadio::ExecuteTask(UBehaviorTreeComponent& OwnerC
     //Speak depending on radio event
     switch (NewRadioEvent.RadioEvent)
     {
+        case (ERadioEvent::Radio_Chatter):
+        Cast<ABaseCharacter_CHARACTER>(OwnerComp.GetAIOwner()->GetPawn())->NetRequestSpeak(ESpeechEvent::SpeechEvent_Radio_Chatter);
+        break;
         case (ERadioEvent::Radio_Alert):
             Cast<ABaseCharacter_CHARACTER>(OwnerComp.GetAIOwner()->GetPawn())->NetRequestSpeak(ESpeechEvent::SpeechEvent_Radio_Alert);
-        case (ERadioEvent::Radio_Chatter):
-            Cast<ABaseCharacter_CHARACTER>(OwnerComp.GetAIOwner()->GetPawn())->NetRequestSpeak(ESpeechEvent::SpeechEvent_Radio_Chatter);
+        break;
         case (ERadioEvent::Radio_Engage):
             Cast<ABaseCharacter_CHARACTER>(OwnerComp.GetAIOwner()->GetPawn())->NetRequestSpeak(ESpeechEvent::SpeechEvent_Radio_Engage);
+        break;
         default:
-            break;
+        break;
     }
 
     FOutputDeviceNull OutputDeviceNull;
     const TCHAR* CmdAndParams = TEXT("NetRadio True");
     OwnerComp.GetAIOwner()->GetPawn()->CallFunctionByNameWithArguments(CmdAndParams, OutputDeviceNull, nullptr, true);    
 
-    return EBTNodeResult::Succeeded;
+    return EBTNodeResult::InProgress;
+}
 
+void UBTTask_UseRadio::TickTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
+{
+    AAICharacterBase_CHARACTER* NPC = Cast<AAICharacterBase_CHARACTER>(OwnerComp.GetAIOwner()->GetPawn());
+    if (NPC->GetSpeechTimeRemaining() <= 0)
+    {
+        FOutputDeviceNull OutputDeviceNull;
+        const TCHAR* CmdAndParams = TEXT("NetRadio False");
+        NPC->CallFunctionByNameWithArguments(CmdAndParams, OutputDeviceNull, nullptr, true);
+        FinishLatentTask(OwnerComp, EBTNodeResult::Succeeded);
+    }
 }

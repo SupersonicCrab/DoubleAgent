@@ -5,6 +5,7 @@
 #include "Components/RectLightComponent.h"
 #include "Components/SpotLightComponent.h"
 #include "Engine/EngineTypes.h"
+#include "Kismet/KismetMathLibrary.h"
 
 // Sets default values
 AHouseLight::AHouseLight()
@@ -67,26 +68,23 @@ void AHouseLight::UpdateLight()
 			{
 				Light = NewObject<UPointLightComponent>(this, UPointLightComponent::StaticClass());
 				Light->RegisterComponent();
-				Light->AttachToComponent(RootComponent, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
-				Light->SetMobility(EComponentMobility::Stationary);
-				Light->SetRelativeLocation(StaticMesh->GetSocketLocation(FName("Light")) - StaticMesh->GetComponentLocation() + StaticMesh->GetRelativeLocation());
+				Light->AttachToComponent(StaticMesh, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+				Light->SetMobility(EComponentMobility::Movable);
+				Light->SetRelativeLocation(UKismetMathLibrary::MakeRelativeTransform(FTransform(StaticMesh->GetSocketLocation(FName("Light"))), StaticMesh->GetComponentTransform()).GetTranslation());
 				UPointLightComponent* PointLight = Cast<UPointLightComponent>(Light);
 				PointLight->Intensity = 2.0f;
 				PointLight->AttenuationRadius = 700.0f;
 				PointLight->bUseInverseSquaredFalloff = false;
 				PointLight->LightFalloffExponent = 1.0;
-				PointLight->LightmassSettings.ShadowExponent = 1.0f;
-				PointLight->IndirectLightingIntensity = 3.0f;
-				PointLight->VolumetricScatteringIntensity = 3.0f;
 			}
 		break;
 		case ELightType::Light_Rect:
 			{
 				Light = NewObject<URectLightComponent>(this, URectLightComponent::StaticClass());
 				Light->RegisterComponent();
-				Light->AttachToComponent(RootComponent, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
-				Light->SetMobility(EComponentMobility::Stationary);
-				Light->SetRelativeLocation(StaticMesh->GetSocketLocation(FName("Light")) - StaticMesh->GetComponentLocation() + StaticMesh->GetRelativeLocation());
+				Light->AttachToComponent(StaticMesh, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+				Light->SetMobility(EComponentMobility::Movable);
+				Light->SetRelativeLocation(UKismetMathLibrary::MakeRelativeTransform(FTransform(StaticMesh->GetSocketLocation(FName("Light"))), StaticMesh->GetComponentTransform()).GetTranslation());
 				if (MeshType == ELightMesh::Mesh_Wall)
 				{
 					Light->SetRelativeLocation(FVector(1, 0, 0), false);
@@ -100,30 +98,24 @@ void AHouseLight::UpdateLight()
 				RectLight->AttenuationRadius = 750.0f;
 				RectLight->SourceWidth = RectLight->SourceHeight = 50.0f;
 				RectLight->BarnDoorAngle = RectLight->BarnDoorLength = 0.0f;
-				RectLight->LightmassSettings.ShadowExponent = 1.0f;
-				RectLight->IndirectLightingIntensity = 3.0f;
-				RectLight->VolumetricScatteringIntensity = 3.0f;
 			}
 		break;
 		case ELightType::Light_Spot:
 			{
 				Light = NewObject<USpotLightComponent>(this, USpotLightComponent::StaticClass());
 				Light->RegisterComponent();
-				Light->AttachToComponent(RootComponent, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
-				Light->SetMobility(EComponentMobility::Stationary);
-				Light->SetRelativeLocation(StaticMesh->GetSocketLocation(FName("Light")) - StaticMesh->GetComponentLocation() + StaticMesh->GetRelativeLocation());
+				Light->AttachToComponent(StaticMesh, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
+				Light->SetMobility(EComponentMobility::Movable);
+				Light->SetRelativeLocation(UKismetMathLibrary::MakeRelativeTransform(FTransform(StaticMesh->GetSocketLocation(FName("Light"))), StaticMesh->GetComponentTransform()).GetTranslation());
 				if (MeshType != ELightMesh::Mesh_Wall)
-					Light->SetRelativeRotation(FRotator(-90, 0, 0), false);
+					Light->SetRelativeRotation(FRotator(90, 0, 0), false);
 				USpotLightComponent* SpotLight = Cast<USpotLightComponent>(Light);
 				SpotLight->Intensity = 3.0;
-				SpotLight->AttenuationRadius = 700.0f;
+				SpotLight->AttenuationRadius = 1000.0f;
 				SpotLight->InnerConeAngle = 60.0f;
 				SpotLight->OuterConeAngle = 90.0f;
 				SpotLight->bUseInverseSquaredFalloff = false;
 				SpotLight->LightFalloffExponent = 1.0;
-				SpotLight->LightmassSettings.ShadowExponent = 1.0f;
-				SpotLight->IndirectLightingIntensity = 3.0f;
-				SpotLight->VolumetricScatteringIntensity = 3.0f;
 			}
 		break;
 	}

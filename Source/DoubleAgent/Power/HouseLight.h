@@ -23,11 +23,8 @@ enum class ELightMesh : uint8
 UENUM()
 enum class ELightType : uint8
 {
-	//Space efficient
-	Light_Spot UMETA(DisplayName="Spot"),
-	//Good overall coverage
 	Light_Point UMETA(DisplayName="Point"),
-	//One direction
+	Light_Spot UMETA(DisplayName="Spot"),
 	Light_Rect UMETA(DisplayName="Rectangle"),
 };
 
