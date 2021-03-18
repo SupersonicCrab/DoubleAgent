@@ -246,8 +246,8 @@ void AStaffAIController::DoorVisionUpdate(AActor* CurrentActor, FAIStimulus& Cur
 {
     ADoor* Door = Cast<ADoor>(CurrentActor);
 
-    //If door is being used by an NPC or public
-    if (Door->InteractingNPC != nullptr || Door->bPublic)
+    //If door is being used by an NPC
+    if (Door->InteractingNPC != nullptr)
         return;
     
     //Search for door in memory
@@ -263,7 +263,7 @@ void AStaffAIController::DoorVisionUpdate(AActor* CurrentActor, FAIStimulus& Cur
     //If door was not found in memory
     if (SearchResult != -1)
     {
-        //If alert or greater and door closed
+        //If alert or greater, not important, and door closed
         if (Blackboard->GetValueAsFloat("Detection") >= 90 && !Door->bDoorOpen && !Door->bImportant && Blackboard->GetValueAsObject("ClosedDoor") == nullptr)
         {
             Blackboard->SetValueAsObject("ClosedDoor", Door);
@@ -281,7 +281,8 @@ void AStaffAIController::DoorVisionUpdate(AActor* CurrentActor, FAIStimulus& Cur
         if (Door->bDoorOpen && (!Memory.Doors[SearchResult].bDoorOpen || Door->bImportant) && Blackboard->GetValueAsObject("OpenedDoor") == nullptr)
         {
             Blackboard->SetValueAsObject("OpenedDoor", Door);
-            RaiseDetection(40);
+            if (!Door->bPublic)
+                RaiseDetection(40);
         }
     }
 
