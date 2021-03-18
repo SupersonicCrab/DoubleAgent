@@ -102,7 +102,10 @@ void ADoor::OnOverlapEnd(AActor* OverlappedActor, AActor* OtherActor)
     
     //If blackboard is invalid or detection is above or at 90 and not important
     if (Blackboard == nullptr || (Blackboard->GetValueAsFloat("Detection") >= 90 && !bImportant))
+    {
+        InteractingNPC = nullptr;
         return;
+    }
 
     //Get overlapping players
     TArray<AActor*> Players;
