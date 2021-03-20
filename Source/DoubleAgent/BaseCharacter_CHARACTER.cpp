@@ -229,6 +229,8 @@ void ABaseCharacter_CHARACTER::GetLifetimeReplicatedProps(::TArray<FLifetimeProp
 
     DOREPLIFETIME(ABaseCharacter_CHARACTER, Visibility);
     DOREPLIFETIME(ABaseCharacter_CHARACTER, bSelfLit);
+    DOREPLIFETIME(ABaseCharacter_CHARACTER, Gender);
+    DOREPLIFETIME(ABaseCharacter_CHARACTER, VoiceActor);
 }
 
 void ABaseCharacter_CHARACTER::NetStopAnimationClient_Implementation()

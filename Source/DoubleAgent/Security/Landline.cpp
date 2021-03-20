@@ -12,6 +12,7 @@ ALandline::ALandline()
     UStaticMesh* Mesh = LoadObject<UStaticMesh>(NULL, TEXT("StaticMesh'/Game/Art/Meshes/Security/Landline/SM_Landline.SM_Landline'"));
     StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
     StaticMesh->SetStaticMesh(Mesh);
+    RootComponent = StaticMesh;
 }
 
 bool ALandline::CallBackup(){

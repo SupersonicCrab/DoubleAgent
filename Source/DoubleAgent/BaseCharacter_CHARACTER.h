@@ -105,9 +105,9 @@ public:
 	//Speaker
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UFMODAudioComponent* VoiceComponent = nullptr;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
 	EGender Gender;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Replicated)
 	EVoiceActor VoiceActor;
 	UPROPERTY()
 	ESpeechEvent CurrentSpeechEvent;
