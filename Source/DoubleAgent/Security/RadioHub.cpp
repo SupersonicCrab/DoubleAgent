@@ -10,6 +10,7 @@ ARadioHub::ARadioHub()
     UStaticMesh* Mesh = LoadObject<UStaticMesh>(NULL, TEXT("StaticMesh'/Game/Art/Meshes/Security/RadioHub/SM_RadioHub.SM_RadioHub'"));
     StaticMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
     StaticMesh->SetStaticMesh(Mesh);
+    RootComponent = StaticMesh;
 }
 
 bool ARadioHub::StartRadioEvent(FRadioEvent RadioEvent_)

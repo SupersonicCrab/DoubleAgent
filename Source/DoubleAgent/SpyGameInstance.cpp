@@ -6,6 +6,7 @@
 #include "../../Plugins/Developer/FMODStudio/Source/FMODStudio/Public/FMODStudioModule.h"
 
 void USpyGameInstance::Init(){
+    Super::Init();
     if (IFMODStudioModule::IsAvailable()){
         FMOD::Studio::System* StudioSystem = IFMODStudioModule::Get().GetStudioSystem(EFMODSystemContext::Runtime);
         if (StudioSystem){

@@ -38,7 +38,7 @@ ABaseCharacter_CHARACTER* AAICharacterBase_CHARACTER::GetNearbySpeaker()
 	
 	for (int i = 0; i < Characters.Num(); i++)
 	{
-		if (Cast<ABaseCharacter_CHARACTER>(Characters[i])->GetSpeechTimeRemaining() > 0)
+		if (Cast<ABaseCharacter_CHARACTER>(Characters[i])->VoiceComponent != nullptr)
 			return Cast<ABaseCharacter_CHARACTER>(Characters[i]);
 	}
 

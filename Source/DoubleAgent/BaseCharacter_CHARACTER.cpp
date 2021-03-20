@@ -48,9 +48,9 @@ void ABaseCharacter_CHARACTER::NetRequestSpeak_Implementation(ESpeechEvent NewSp
 
     FString DialogueLine;
     
-    if (NewSpeech == ESpeechEvent::SpeechEvent_Idle)
+    if (NewSpeech == ESpeechEvent::Idle)
     {
-        DialogueLine = UEnum::GetDisplayValueAsText(VoiceActor).ToString() + UEnum::GetDisplayValueAsText(ESpeechEvent::SpeechEvent_Common).ToString();
+        DialogueLine = UEnum::GetDisplayValueAsText(VoiceActor).ToString() + UEnum::GetDisplayValueAsText(ESpeechEvent::Common).ToString();
         
         FMOD_RESULT Result = StudioSystem->getSoundInfo(TCHAR_TO_UTF8(*FString(DialogueLine + FString::FromInt(1))), &SoundInfo);
 
@@ -99,7 +99,7 @@ void ABaseCharacter_CHARACTER::StopSpeaking()
         return;
     
     VoiceComponent->Stop();
-    CurrentSpeechEvent = ESpeechEvent::SpeechEvent_Idle;
+    CurrentSpeechEvent = ESpeechEvent::Idle;
 }
 
 bool ABaseCharacter_CHARACTER::CanBeSeenFrom(const FVector& ObserverLocation, FVector& OutSeenLocation, int32& NumberOfLoSChecksPerformed, float& OutSightStrength, const AActor* IgnoreActor) const
@@ -229,6 +229,8 @@ void ABaseCharacter_CHARACTER::GetLifetimeReplicatedProps(::TArray<FLifetimeProp
 
     DOREPLIFETIME(ABaseCharacter_CHARACTER, Visibility);
     DOREPLIFETIME(ABaseCharacter_CHARACTER, bSelfLit);
+    DOREPLIFETIME(ABaseCharacter_CHARACTER, Gender);
+    DOREPLIFETIME(ABaseCharacter_CHARACTER, VoiceActor);
 }
 
 void ABaseCharacter_CHARACTER::NetStopAnimationClient_Implementation()

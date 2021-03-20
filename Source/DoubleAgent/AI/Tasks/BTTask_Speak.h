@@ -25,6 +25,9 @@ class DOUBLEAGENT_API UBTTask_Speak : public UBTTaskNode
 	UPROPERTY(EditAnywhere)
 	bool bRestateVocalStatus;
 
+	UPROPERTY(EditAnywhere)
+	bool bOverwriteVocalStatus;
+
 public:
     virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory) override;
 

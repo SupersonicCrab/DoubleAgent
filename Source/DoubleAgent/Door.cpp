@@ -2,23 +2,20 @@
 
 #include "Door.h"
 #include "AIController.h"
-#include "Editor.h"
 #include "FMODBlueprintStatics.h"
 #include "Player_Character.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "Builders/CubeBuilder.h"
+#include "Editor.h"
 #include "Components/BrushComponent.h"
 #include "Components/LightComponent.h"
 #include "Components/StaticMeshComponent.h"
 #include "Components/TimelineComponent.h"
 #include "Engine/DemoNetDriver.h"
 #include "Engine/Polys.h"
-#include "Engine/SkeletalMeshSocket.h"
 #include "Kismet/GameplayStatics.h"
-#include "Tasks/AITask_MoveTo.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Power/HouseLight.h"
-#include "Sound/SoundBase.h"
 
 ADoor::ADoor()
 {
@@ -56,12 +53,6 @@ void ADoor::UpdateRotation_Implementation(float Yaw)
     DoorMesh->SetRelativeRotation(FQuat(FRotator(0.f, Yaw, 0.f)), false, NULL, ETeleportType::TeleportPhysics);
 }
 
-void ADoor::Unlock()
-{
-    //Unlock smart link
-    SetSmartLinkEnabled(true);
-}
-
 void ADoor::ForceOpenDoor(AActor* Interactor)
 {
     //Determine direction
@@ -75,14 +66,7 @@ void ADoor::ForceOpenDoor(AActor* Interactor)
     TimelineCallback.BindUFunction(this, FName("OpenAnimation"));
     DoorTimeline = NewObject<UTimelineComponent>(this, FName("DoorAnimation"));
     DoorTimeline->AddInterpFloat(OpenCurve, TimelineCallback);
-    FOnTimelineEventStatic TimelineFinishedCallback;
-    TimelineFinishedCallback.BindUFunction(this, FName("Unlock"));
-    DoorTimeline->SetTimelineFinishedFunc(TimelineFinishedCallback);
     DoorTimeline->RegisterComponent();
-
-    //Lock smart link
-    bSmartLinkIsRelevant = false;
-    SetSmartLinkEnabled(false);
         
     //Play timeline
     DoorTimeline->PlayFromStart();
@@ -94,15 +78,16 @@ void ADoor::OnOverlapEnd(AActor* OverlappedActor, AActor* OtherActor)
     //If this wasn't the interacting NPC
     if (InteractingNPC == nullptr || OtherActor != InteractingNPC)
         return;
-
-    ResumePathFollowing(InteractingNPC);
     
     //Get NPC blackboard
     UBlackboardComponent* Blackboard = UAIBlueprintHelperLibrary::GetBlackboard(OtherActor);
     
     //If blackboard is invalid or detection is above or at 90 and not important
     if (Blackboard == nullptr || (Blackboard->GetValueAsFloat("Detection") >= 90 && !bImportant))
+    {
+        InteractingNPC = nullptr;
         return;
+    }
 
     //Get overlapping players
     TArray<AActor*> Players;
@@ -125,7 +110,12 @@ void ADoor::OnOverlapEnd(AActor* OverlappedActor, AActor* OtherActor)
 
 void ADoor::NPCInteraction_Implementation(AActor* NPC, const FVector& Destination)
 {
+    if (InteractingNPC != nullptr)
+        return;
+    
     InteractingNPC = Cast<AAICharacterBase_CHARACTER>(NPC);
+
+    ResumePathFollowing(NPC);
 
     UBlackboardComponent* NPCBlackboard = UAIBlueprintHelperLibrary::GetBlackboard(InteractingNPC);
     if (NPCBlackboard->GetValueAsObject("ClosedDoor") != nullptr && NPCBlackboard->GetValueAsObject("ClosedDoor") == this)
@@ -152,10 +142,7 @@ void ADoor::OpenDoor_Implementation(AActor* Interactor)
 
     //If the door is actually closed, there isn't an animation playing, and there is no interacting NPC or is an NPC
     if (!bDoorOpen && DoorTimeline == NULL && (InteractingNPC == nullptr || Interactor->IsA(AAICharacterBase_CHARACTER::StaticClass())))
-    {
-        //Lock smart link
-        SetSmartLinkEnabled(false);
-        
+    {       
         //Determine direction
         if (FVector().DotProduct(UKismetMathLibrary::FindLookAtRotation(Interactor->GetActorLocation(), GetActorLocation()).Vector(), OpenDirection->GetForwardVector()) > 0)
             Direction = 1;
@@ -167,9 +154,6 @@ void ADoor::OpenDoor_Implementation(AActor* Interactor)
         TimelineCallback.BindUFunction(this, FName("OpenAnimation"));
         DoorTimeline = NewObject<UTimelineComponent>(this, FName("DoorAnimation"));
         DoorTimeline->AddInterpFloat(OpenCurve, TimelineCallback);
-        FOnTimelineEventStatic TimelineFinishedCallback;
-        TimelineFinishedCallback.BindUFunction(this, FName("Unlock"));
-        DoorTimeline->SetTimelineFinishedFunc(TimelineFinishedCallback);
         DoorTimeline->RegisterComponent();
         
         //Play timeline
@@ -191,13 +175,7 @@ void ADoor::CloseDoor_Implementation(AActor* Interactor)
         TimelineCallback.BindUFunction(this, FName("CloseAnimation"));
         DoorTimeline = NewObject<UTimelineComponent>(this, FName("DoorAnimation"));
         DoorTimeline->AddInterpFloat(CloseCurve, TimelineCallback);
-        FOnTimelineEventStatic TimelineFinishedCallback;
-        TimelineFinishedCallback.BindUFunction(this, FName("Unlock"));
-        DoorTimeline->SetTimelineFinishedFunc(TimelineFinishedCallback);
         DoorTimeline->RegisterComponent();
-
-        //Lock smart link
-        SetSmartLinkEnabled(false);
         
         //Play timeline
         DoorTimeline->PlayFromStart();
