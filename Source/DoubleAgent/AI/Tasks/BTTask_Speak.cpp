@@ -47,27 +47,27 @@ ESpeechEvent UBTTask_Speak::GetSpeechEvent()
 		switch (NewActionStatus)
 		{
 		case (EActionStatus::Action_Cleaning):
-			return ESpeechEvent::SpeechEvent_Action_Cleaning;
+			return ESpeechEvent::Cleaning;
 		case (EActionStatus::Action_Washroom):
-			return ESpeechEvent::SpeechEvent_Action_BathroomBreak;
+			return ESpeechEvent::BathroomBreak;
 		case (EActionStatus::Action_IdleTransition):
-			return ESpeechEvent::SpeechEvent_Action_IdleTransition;
+			return ESpeechEvent::IdleTransition;
 		case (EActionStatus::Action_BodySearch):
-			return ESpeechEvent::SpeechEvent_Action_BodySearch;
+			return ESpeechEvent::BodySearch;
 		case (EActionStatus::Action_NoiseInvestigation):
-			return ESpeechEvent::SpeechEvent_Action_NoiseInvestigation;
+			return ESpeechEvent::NoiseInvestigation;
 		case (EActionStatus::Action_PowerBox):
-			return ESpeechEvent::SpeechEvent_Action_PowerBox;
+			return ESpeechEvent::Powerbox;
 		case (EActionStatus::Action_CameraHub):
-			return ESpeechEvent::SpeechEvent_Action_CameraHub;
+			return ESpeechEvent::CameraHub;
 		case (EActionStatus::Action_Restock):
-			return ESpeechEvent::SpeechEvent_Action_Restocking;
+			return ESpeechEvent::Restocking;
 		case (EActionStatus::Action_Backup):
-			return ESpeechEvent::SpeechEvent_Action_Backup;
+			return ESpeechEvent::Backup;
 		case (EActionStatus::Action_Reloading):
-			return ESpeechEvent::SpeechEvent_Action_Reloading;
+			return ESpeechEvent::Reload;
 		case (EActionStatus::Action_Revive):
-			return ESpeechEvent::SpeechEvent_Action_Revive;
+			return ESpeechEvent::Revive;
 		default:
 			break;
 		}
@@ -75,21 +75,21 @@ ESpeechEvent UBTTask_Speak::GetSpeechEvent()
 		switch (NewVocalStatus)
 		{
 		case (EVocalStatus::Vocal_Idle):
-			return ESpeechEvent::SpeechEvent_Idle;
+			return ESpeechEvent::Idle;
 		case (EVocalStatus::Vocal_Patrol):
-			return ESpeechEvent::SpeechEvent_Patrol;
+			return ESpeechEvent::Patrol;
 		case (EVocalStatus::Vocal_Cautious):
-			return ESpeechEvent::SpeechEvent_Cautious;
+			return ESpeechEvent::Cautious;
 		case (EVocalStatus::Vocal_Alert):
-			return ESpeechEvent::SpeechEvent_Alert;
+			return ESpeechEvent::Alert;
 		case (EVocalStatus::Vocal_Subduing):
-			return ESpeechEvent::SpeechEvent_Subduing;
+			return ESpeechEvent::Subduing;
 		case (EVocalStatus::Vocal_Searching):
-			return ESpeechEvent::SpeechEvent_Searching;
+			return ESpeechEvent::Searching;
 		case (EVocalStatus::Vocal_Engaging):
-			return ESpeechEvent::SpeechEvent_Engaging;
+			return ESpeechEvent::Engaging;
 		default:
 			break;
 		}
-	return ESpeechEvent::SpeechEvent_Idle;
+	return ESpeechEvent::Idle;
 }

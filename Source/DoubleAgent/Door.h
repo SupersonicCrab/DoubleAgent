@@ -33,10 +33,6 @@ class DOUBLEAGENT_API ADoor : public ANavLinkProxy, public IAISightTargetInterfa
 
 	//Timeline for animation
 	UTimelineComponent* DoorTimeline;
-	
-	//Unlock navmesh access
-	UFUNCTION()
-    void Unlock();
 
 	//Used to prevent NPCs from breaking 
 	void ForceOpenDoor(AActor* Interactor);
