@@ -34,11 +34,11 @@ ABaseCharacter_CHARACTER* AAICharacterBase_CHARACTER::GetNearbySpeaker()
 	
 	TArray<AActor*> ignoreActors;
 	
-	UKismetSystemLibrary::SphereOverlapActors(GetWorld(), GetActorLocation(), Cast<AAIControllerBase>(GetController())->HearingRange, traceObjectTypes, ABaseCharacter_CHARACTER::StaticClass(), ignoreActors, Characters);
+	UKismetSystemLibrary::SphereOverlapActors(GetWorld(), GetActorLocation(), 2000.0f, traceObjectTypes, ABaseCharacter_CHARACTER::StaticClass(), ignoreActors, Characters);
 	
 	for (int i = 0; i < Characters.Num(); i++)
 	{
-		if (Cast<ABaseCharacter_CHARACTER>(Characters[i])->VoiceComponent != nullptr)
+		if (Cast<ABaseCharacter_CHARACTER>(Characters[i])->GetSpeechTimeRemaining() > 0.1)
 			return Cast<ABaseCharacter_CHARACTER>(Characters[i]);
 	}
 
