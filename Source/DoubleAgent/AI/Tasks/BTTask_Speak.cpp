@@ -28,7 +28,7 @@ EBTNodeResult::Type UBTTask_Speak::ExecuteTask(UBehaviorTreeComponent& OwnerComp
 	//If overwriting
 	if (bOverwriteVocalStatus)
 	{
-		Cast<AAIControllerBase>(OwnerComp.GetOwner())->GetBlackboardComponent()->SetValueAsEnum("VocalStatus", static_cast<uint8>(NewVocalStatus));
+		Cast<AAIControllerBase>(OwnerComp.GetAIOwner())->GetBlackboardComponent()->SetValueAsEnum("VocalStatus", static_cast<uint8>(NewVocalStatus));
 		Cast<AAICharacterBase_CHARACTER>(NPC)->NetRequestSpeak(GetSpeechEvent());
 		return EBTNodeResult::Succeeded;
 	}
