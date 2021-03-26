@@ -193,7 +193,7 @@ void ACamera::NetRequestRotate_Implementation(int Direction_){
 
 void ACamera::OnPerceptionUpdated(const TArray<AActor*>& DetectedActors)
 {
-    if (CameraHub->OperatorNPC == nullptr)
+    if (CameraHub == nullptr || CameraHub->OperatorNPC == nullptr)
         return;
 
     TArray<AActor*> temp;
