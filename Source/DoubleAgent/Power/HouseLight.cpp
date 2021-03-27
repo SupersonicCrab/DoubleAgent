@@ -85,14 +85,7 @@ void AHouseLight::UpdateLight()
 				Light->AttachToComponent(StaticMesh, FAttachmentTransformRules::SnapToTargetNotIncludingScale);
 				Light->SetMobility(EComponentMobility::Movable);
 				Light->SetRelativeLocation(UKismetMathLibrary::MakeRelativeTransform(FTransform(StaticMesh->GetSocketLocation(FName("Light"))), StaticMesh->GetComponentTransform()).GetTranslation());
-				if (MeshType == ELightMesh::Mesh_Wall)
-				{
-					Light->SetRelativeLocation(FVector(1, 0, 0), false);
-				}
-				else
-				{
-					Light->SetRelativeRotation(FRotator(-90, 0, 0), false);				
-				}
+				Light->SetRelativeRotation(FRotator(-90, 0, 0), false);				
 				URectLightComponent* RectLight = Cast<URectLightComponent>(Light);
 				RectLight->Intensity = 22500.0f;
 				RectLight->AttenuationRadius = 750.0f;
