@@ -100,11 +100,13 @@ void APowerBox::TurnLandlinesOff(){
 }
 
 void APowerBox::TurnRadiosOn(){
+	bRadiosOn = false;
 	if (RadioHub != nullptr)
 		RadioHub->PowerOn();
 }
 
 void APowerBox::TurnRadiosOff(){
+	bRadiosOn = false;
 	if (RadioHub != nullptr)
 		RadioHub->PowerOff();
 }
