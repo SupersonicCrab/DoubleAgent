@@ -12,9 +12,6 @@
 		</relationship>
 	</object>
 	<object class="GameParameter" id="{f70f67f2-902e-45e8-8275-ec04927f318c}">
-		<property name="parameterType">
-			<value>4</value>
-		</property>
 		<property name="minimum">
 			<value>-180</value>
 		</property>
@@ -23,9 +20,6 @@
 		</property>
 		<property name="initialValue">
 			<value>0</value>
-		</property>
-		<property name="isExposedRecursively">
-			<value>false</value>
 		</property>
 	</object>
 </objects>
