@@ -13,7 +13,9 @@ ACameraHub::ACameraHub(){
 	PrimaryActorTick.bCanEverTick = true;
 	//Create the root
 	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
-	this->SetRootComponent(Root);
+	SetRootComponent(Root);
+	Root->Mobility = EComponentMobility::Static;
+	
 	OperatorPosition = CreateDefaultSubobject<USceneComponent>(TEXT("OperatorPosition"));
 	OperatorPosition->SetupAttachment(Root);
 	OperatorPosition->SetRelativeLocation(FVector(0, 200, 0), false);
@@ -32,6 +34,7 @@ ACameraHub::ACameraHub(){
 	//Set up table and stand static mesh and attach to the root component
 	TableMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("TableAndStand"));
 	TableMesh->SetupAttachment(Root);
+	TableMesh->Mobility = EComponentMobility::Static;
 
 	UStaticMesh* Mesh;
 	Mesh = LoadObject<UStaticMesh>(NULL, TEXT("StaticMesh'/Game/Art/Meshes/Security/CameraHub/SM_CameraHub.SM_CameraHub'"));
@@ -43,35 +46,48 @@ ACameraHub::ACameraHub(){
 	ScreenMeshes[0]->SetupAttachment(TableMesh);
 	Mesh = LoadObject<UStaticMesh>(NULL, TEXT("StaticMesh'/Game/Art/Meshes/Security/CameraHub/SM_CameraHub_001.SM_CameraHub_001'"));
 	ScreenMeshes[0]->SetStaticMesh(Mesh);
+	ScreenMeshes[0]->Mobility = EComponentMobility::Static;
+	
 	//Screen 002
 	ScreenMeshes.Add(CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Screen2")));
 	ScreenMeshes[1]->SetupAttachment(TableMesh);
 	Mesh = LoadObject<UStaticMesh>(NULL, TEXT("StaticMesh'/Game/Art/Meshes/Security/CameraHub/SM_CameraHub_002.SM_CameraHub_002'"));
 	ScreenMeshes[1]->SetStaticMesh(Mesh);
+	ScreenMeshes[1]->Mobility = EComponentMobility::Static;
+	
 	//Screen 003
 	ScreenMeshes.Add(CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Screen3")));
 	ScreenMeshes[2]->SetupAttachment(TableMesh);
 	Mesh = LoadObject<UStaticMesh>(NULL, TEXT("StaticMesh'/Game/Art/Meshes/Security/CameraHub/SM_CameraHub_003.SM_CameraHub_003'"));
 	ScreenMeshes[2]->SetStaticMesh(Mesh);
+	ScreenMeshes[2]->Mobility = EComponentMobility::Static;
+	
 	//Screen 004
 	ScreenMeshes.Add(CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Screen4")));
 	ScreenMeshes[3]->SetupAttachment(TableMesh);
 	Mesh = LoadObject<UStaticMesh>(NULL, TEXT("StaticMesh'/Game/Art/Meshes/Security/CameraHub/SM_CameraHub_004.SM_CameraHub_004'"));
 	ScreenMeshes[3]->SetStaticMesh(Mesh);
+	ScreenMeshes[3]->Mobility = EComponentMobility::Static;
+	
 	//Screen 005
 	ScreenMeshes.Add(CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Screen5")));
 	ScreenMeshes[4]->SetupAttachment(TableMesh);
 	Mesh = LoadObject<UStaticMesh>(NULL, TEXT("StaticMesh'/Game/Art/Meshes/Security/CameraHub/SM_CameraHub_005.SM_CameraHub_005'"));
 	ScreenMeshes[4]->SetStaticMesh(Mesh);
+	ScreenMeshes[4]->Mobility = EComponentMobility::Static;
+	
 	//Screen 006
 	ScreenMeshes.Add(CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Screen6")));
 	ScreenMeshes[5]->SetupAttachment(TableMesh);
 	Mesh = LoadObject<UStaticMesh>(NULL, TEXT("StaticMesh'/Game/Art/Meshes/Security/CameraHub/SM_CameraHub_006.SM_CameraHub_006'"));
 	ScreenMeshes[5]->SetStaticMesh(Mesh);
+	ScreenMeshes[5]->Mobility = EComponentMobility::Static;
+	
 	//Increase scale so that the table is a more appropriate size
 	//Rotate the CameraHub mesh so that it'll match with the collision box
 	TableMesh->SetRelativeScale3D(FVector(1.3f,1.3f,1.3f));
 	TableMesh->SetRelativeRotation(FRotator(0.0f, 90.0f,0.0f));
+	TableMesh->Mobility = EComponentMobility::Static;
 
 	//Load texture targets
 	UTextureRenderTarget2D* TextureRenderTarget2D = LoadObject<UTextureRenderTarget2D>(NULL, TEXT("TextureRenderTarget2D'/Game/SecuritySystem/Cam_Input/RT_CameraFeed.RT_CameraFeed'"));
