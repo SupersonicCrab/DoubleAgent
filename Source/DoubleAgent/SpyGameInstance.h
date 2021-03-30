@@ -43,6 +43,9 @@ public:
     FMOD::Studio::VCA* VoiceVCA;
     FMOD::Studio::VCA* UIVCA;
 
+    UPROPERTY(EditAnywhere, BlueprintReadWrite)
+    bool bCensorMode;
+
     UPROPERTY(Category="Audio", meta = (ClampMin = "-80", ClampMax = "10"), EditAnywhere, BlueprintReadWrite)
     float FXVolume;
     UPROPERTY(Category="Audio", meta = (ClampMin = "-80", ClampMax = "10"), EditAnywhere, BlueprintReadWrite)
