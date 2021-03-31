@@ -8,6 +8,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Perception/AIPerceptionComponent.h"
 #include "NavigationSystem.h"
+#include "DoubleAgent/AI/Senses/StaffSenseConfig_Sight.h"
 #include "Engine/EngineTypes.h"
 
 void AStaffAIController::HandleSightTick(AActor* CurrentActor, FAIStimulus& CurrentStimulus, float DeltaTime)
@@ -466,6 +467,30 @@ void AStaffAIController::DetectionDecay(float DeltaTime)
                 Blackboard->SetValueAsFloat("Detection", 40.0f);
         }
     }
+}
+
+AStaffAIController::AStaffAIController()
+{
+    //Create default sense config
+    SightConfig = CreateDefaultSubobject<UStaffSenseConfig_Sight>(TEXT("Staff Sight Config"));
+
+    //Create perception component
+    GetPerceptionComponent()->DestroyComponent();
+    SetPerceptionComponent(*CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("Staff Perception Component")));
+    PerceptionComponent = GetPerceptionComponent();
+
+    //Setup hearing
+    PerceptionComponent->ConfigureSense(*HearingConfig);
+        
+    //Setup sight
+    SightConfig->SightRadius = SightRadius;
+    SightConfig->LoseSightRadius = LoseSightRadius;
+    SightConfig->PeripheralVisionAngleDegrees = FOV;
+    SightConfig->SetMaxAge(MaxStimulusAge);
+    SightConfig->DetectionByAffiliation.bDetectEnemies = true;
+    SightConfig->DetectionByAffiliation.bDetectNeutrals = true;
+    SightConfig->DetectionByAffiliation.bDetectFriendlies = true;
+    PerceptionComponent->ConfigureSense(*SightConfig);
 }
 
 void AStaffAIController::OnPossess(APawn* InPawn)

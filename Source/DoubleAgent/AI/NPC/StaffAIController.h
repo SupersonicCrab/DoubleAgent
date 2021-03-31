@@ -113,6 +113,8 @@ class DOUBLEAGENT_API AStaffAIController : public AAIControllerBase
 	void DetectionDecay(float DeltaTime);
 	
 public:
+	AStaffAIController();
+	
 	//Staff memory of specific actors
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FStaffMemory Memory;
