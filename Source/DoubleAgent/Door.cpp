@@ -7,6 +7,7 @@
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "Builders/CubeBuilder.h"
 #include "Editor.h"
+#include "AI/NPC/StaffAIController.h"
 #include "Components/BrushComponent.h"
 #include "Components/LightComponent.h"
 #include "Components/StaticMeshComponent.h"
@@ -83,7 +84,7 @@ void ADoor::OnOverlapEnd(AActor* OverlappedActor, AActor* OtherActor)
     UBlackboardComponent* Blackboard = UAIBlueprintHelperLibrary::GetBlackboard(OtherActor);
     
     //If blackboard is invalid or detection is above or at 90 and not important
-    if (Blackboard == nullptr || (Blackboard->GetValueAsFloat("Detection") >= 90 && !bImportant))
+    if (Blackboard == nullptr || (Blackboard->GetValueAsFloat("Detection") >= 90 && (!bImportant || !Blackboard->GetOwner()->IsA(AStaffAIController::StaticClass()) )))
     {
         InteractingNPC = nullptr;
         return;

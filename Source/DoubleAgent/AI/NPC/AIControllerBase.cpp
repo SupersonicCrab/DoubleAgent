@@ -9,12 +9,13 @@
 #include "Blueprint/AIBlueprintHelperLibrary.h"
 #include "DoubleAgent/AI/AICharacterBase_CHARACTER.h"
 #include "DoubleAgent/AI/RoomVolume.h"
+#include "DoubleAgent/AI/Senses/AISenseConfig_SightBase.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 AAIControllerBase::AAIControllerBase()
 {
     //Create default sense config
-    SightConfig = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("Sight Config"));
+    SightConfig = CreateDefaultSubobject<UAISenseConfig_SightBase>(TEXT("Sight Config"));
     HearingConfig = CreateDefaultSubobject<UAISenseConfig_Hearing>(TEXT("Hearing Config"));
 
     //Create perception component

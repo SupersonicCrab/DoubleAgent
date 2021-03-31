@@ -9,6 +9,11 @@
 #include "NPC/AIControllerBase.h"
 #include "Perception/AIPerceptionComponent.h"
 
+AAICharacterBase_CHARACTER::AAICharacterBase_CHARACTER()
+{
+	SetActorTickInterval(0.5f);
+}
+
 void AAICharacterBase_CHARACTER::NetRequestSpeak(ESpeechEvent NewSpeech)
 {
 	ABaseCharacter_CHARACTER* Speaker = GetNearbySpeaker();
