@@ -11,7 +11,7 @@
 
 AAICharacterBase_CHARACTER::AAICharacterBase_CHARACTER()
 {
-	SetActorTickInterval(0.5f);
+	SetActorTickInterval(2.5f);
 }
 
 void AAICharacterBase_CHARACTER::NetRequestSpeak(ESpeechEvent NewSpeech)
