@@ -34,7 +34,6 @@ void AHouseLight::UpdateLight()
 				Mesh = LoadObject<UStaticMesh>(NULL, TEXT("StaticMesh'/Game/Art/Meshes/Building/HouseLights/Combined/SM_House_Light_002.SM_House_Light_002'"));
 				StaticMesh->SetStaticMesh(Mesh);
 				StaticMesh->SetRelativeRotation(FRotator(-180, 0, 0), false);
-				StaticMesh->SetRelativeLocation(FVector(0, 0, -1), false);
 			}
 		break;
 		case ELightMesh::Mesh_Ceiling_Large:
@@ -42,7 +41,6 @@ void AHouseLight::UpdateLight()
 				Mesh = LoadObject<UStaticMesh>(NULL, TEXT("StaticMesh'/Game/Art/Meshes/Building/HouseLights/Combined/SM_House_Light_001.SM_House_Light_001'"));
 				StaticMesh->SetStaticMesh(Mesh);
 				StaticMesh->SetRelativeRotation(FRotator(-180, 0, 0), false);
-				StaticMesh->SetRelativeLocation(FVector(0, 0, -9), false);
 			}
 		break;
 		case ELightMesh::Mesh_Wall:
