@@ -9,6 +9,14 @@ EBTNodeResult::Type UBTTask_Speak::ExecuteTask(UBehaviorTreeComponent& OwnerComp
 	//Save NPC and blackboard
 	APawn* NPC = Cast<AAIController>(OwnerComp.GetOwner())->GetPawn();
 	UBlackboardComponent* Blackboard = OwnerComp.GetBlackboardComponent();
+
+	//If overwriting
+	if (bOverwriteVocalStatus)
+	{
+		Blackboard->SetValueAsEnum("VocalStatus", static_cast<uint8>(NewVocalStatus));
+		Cast<AAICharacterBase_CHARACTER>(NPC)->NetRequestSpeak(GetSpeechEvent());
+		return EBTNodeResult::Succeeded;
+	}
 	
 	//If new action status is not idle
 	if (NewActionStatus != EActionStatus::Action_Idle)
@@ -22,14 +30,6 @@ EBTNodeResult::Type UBTTask_Speak::ExecuteTask(UBehaviorTreeComponent& OwnerComp
 		//Speak
 		Cast<AAICharacterBase_CHARACTER>(NPC)->NetRequestSpeak(GetSpeechEvent());
 
-		return EBTNodeResult::Succeeded;
-	}
-
-	//If overwriting
-	if (bOverwriteVocalStatus)
-	{
-		Cast<AAIControllerBase>(OwnerComp.GetAIOwner())->GetBlackboardComponent()->SetValueAsEnum("VocalStatus", static_cast<uint8>(NewVocalStatus));
-		Cast<AAICharacterBase_CHARACTER>(NPC)->NetRequestSpeak(GetSpeechEvent());
 		return EBTNodeResult::Succeeded;
 	}
 	
