@@ -523,6 +523,8 @@ void AStaffAIController::OnPossess(APawn* InPawn)
             //Save door to memory
             Memory.Doors.Add(FTrackedDoor(Cast<ADoor>(Doors[i])));
     }
+
+    GetPawn()->SetActorTickInterval(1);
 }
 
 void AStaffAIController::NPCVisionTick(AActor* CurrentActor, FAIStimulus& CurrentStimulus)
