@@ -36,8 +36,8 @@ EBTNodeResult::Type UBTTask_UseRadio::ExecuteTask(UBehaviorTreeComponent& OwnerC
         NewRadioEvent.Location = Cast<AAIController>(OwnerComp.GetAIOwner())->GetBlackboardComponent()->GetValueAsVector(Location.SelectedKeyName);
     }
 
-    //If radio hub does not have any power
-    if (!RadioHub->StartRadioEvent(NewRadioEvent))
+    //If radio hub does not have any power or jammed
+    if (!RadioHub->StartRadioEvent(NewRadioEvent) || RadioHub->GetJammedStatus())
         return EBTNodeResult::Failed;
 
     //Speak depending on radio event

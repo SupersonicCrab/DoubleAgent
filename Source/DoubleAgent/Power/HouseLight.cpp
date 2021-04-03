@@ -74,6 +74,7 @@ void AHouseLight::UpdateLight()
 				PointLight->AttenuationRadius = 700.0f;
 				PointLight->bUseInverseSquaredFalloff = false;
 				PointLight->LightFalloffExponent = 1.0;
+				PointLight->ShadowSharpen = 0.1;
 			}
 		break;
 		case ELightType::Light_Rect:
@@ -89,6 +90,7 @@ void AHouseLight::UpdateLight()
 				RectLight->AttenuationRadius = 750.0f;
 				RectLight->SourceWidth = RectLight->SourceHeight = 50.0f;
 				RectLight->BarnDoorAngle = RectLight->BarnDoorLength = 0.0f;
+				RectLight->ShadowSharpen = 0.1;
 			}
 		break;
 		case ELightType::Light_Spot:
@@ -107,6 +109,7 @@ void AHouseLight::UpdateLight()
 				SpotLight->OuterConeAngle = 90.0f;
 				SpotLight->bUseInverseSquaredFalloff = false;
 				SpotLight->LightFalloffExponent = 1.0;
+				SpotLight->ShadowSharpen = 0.1;
 			}
 		break;
 	}
