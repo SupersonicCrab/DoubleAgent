@@ -1,8 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "BaseCharacter_CHARACTER.h"
+
+#include "DialogueParser.h"
 #include "FMODBlueprintStatics.h"
 #include "FMODEvent.h"
+#include "SpyGameInstance.h"
 #include "Animation/AnimInstance.h"
 #include "Components/LightComponent.h"
 #include "Engine/DemoNetDriver.h"
@@ -27,12 +30,16 @@ ABaseCharacter_CHARACTER::ABaseCharacter_CHARACTER()
 
 void ABaseCharacter_CHARACTER::NetSpeak_Implementation(const FString& DialogueLine, int Line)
 {
+    //DialogueInfo DialogueInfo = DialogueParser::GetDialogueInfo(DialogueLine + FString::FromInt(Line));
+    //USpyGameInstance* GameInstance = Cast<USpyGameInstance>(GetGameInstance());
+    
     //FMOD programmer sound
     UFMODEvent* DialogueEvent = LoadObject<UFMODEvent>(NULL, TEXT("FMODEvent'/Game/FMOD/Events/NPC_Dialogue.NPC_Dialogue'"));
     VoiceComponent = UFMODBlueprintStatics::PlayEventAttached(DialogueEvent, RootComponent, "", FVector(0), EAttachLocation::SnapToTargetIncludingScale, true, false, true);
     VoiceComponent->SetProgrammerSoundName(DialogueLine + FString::FromInt(Line));
     VoiceComponent->Play();
 
+    //Update animations if needed
     FOutputDeviceNull OutputDeviceNull;
     const TCHAR* CmdAndParams = TEXT("NetSpeaking True");
     CallFunctionByNameWithArguments(CmdAndParams, OutputDeviceNull, nullptr, true);    

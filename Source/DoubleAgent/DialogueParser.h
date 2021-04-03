@@ -20,5 +20,5 @@ public:
 	DialogueParser();
 	~DialogueParser();
 
-	DialogueInfo GetDialogueInfo(FString DialogueKey);
+	static DialogueInfo GetDialogueInfo(FString DialogueKey);
 };

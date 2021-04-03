@@ -8,6 +8,7 @@
 #include "Kismet/KismetMathLibrary.h"
 #include "Perception/AIPerceptionComponent.h"
 #include "NavigationSystem.h"
+#include "Components/CapsuleComponent.h"
 #include "DoubleAgent/AI/Senses/StaffSenseConfig_Sight.h"
 #include "Engine/EngineTypes.h"
 
@@ -649,7 +650,7 @@ bool AStaffAIController::HandleHearing(AActor* CurrentActor, FAIStimulus& Curren
         {
             //Get which rooms actor is inside
             TArray<AActor*> Rooms;
-            CurrentActor->GetOverlappingActors(Rooms, ARoomVolume::StaticClass());
+            Cast<ABaseCharacter_CHARACTER>(CurrentActor)->GetCapsuleComponent()->GetOverlappingActors(Rooms, ARoomVolume::StaticClass());
 
             //If there is no room
             if (Rooms.Num() == 0)
@@ -657,15 +658,19 @@ bool AStaffAIController::HandleHearing(AActor* CurrentActor, FAIStimulus& Curren
                 Blackboard->SetValueAsVector("NoiseLocation", CurrentStimulus.StimulusLocation);
                 return true;
             }
-            
+
+            bool bPublic = false;
             for (int i = 0; i < Rooms.Num(); i++)
             {
                 //If the room isn't public
-                if (!Cast<ARoomVolume>(Rooms[i])->bPublic)
-                {
-                    Blackboard->SetValueAsVector("NoiseLocation", CurrentStimulus.StimulusLocation);
-                    return true;
-                }
+                if (Cast<ARoomVolume>(Rooms[i])->bPublic)
+                    bPublic = true;
+            }
+
+            if (!bPublic)
+            {
+                Blackboard->SetValueAsVector("NoiseLocation", CurrentStimulus.StimulusLocation);
+                return true;
             }
         }
     }

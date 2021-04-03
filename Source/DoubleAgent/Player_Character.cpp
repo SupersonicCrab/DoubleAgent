@@ -3,6 +3,7 @@
 
 #include "Player_Character.h"
 #include "AI/RoomVolume.h"
+#include "Components/CapsuleComponent.h"
 #include "Engine/DemoNetDriver.h"
 
 APlayer_Character::APlayer_Character()
@@ -19,16 +20,17 @@ void APlayer_Character::CheckRooms(class AActor* OverlappedActor, class AActor* 
 	{
 		//Get overlapping room volumes
 		TArray<AActor*> RoomVolumes;
-		GetOverlappingActors(RoomVolumes, ARoomVolume::StaticClass());
+		GetCapsuleComponent()->GetOverlappingActors(RoomVolumes, ARoomVolume::StaticClass());
 
-		bool Temp = true;		
+		bool bPublic = false;
 		for (int i = 0; i < RoomVolumes.Num(); i++)
 		{
+			//If the room isn't public
 			if (Cast<ARoomVolume>(RoomVolumes[i])->bPublic)
-				Temp = false;
+				bPublic = true;
 		}
 
-		bTresspassing = Temp;
+		bTresspassing = !bPublic;
 	}
 }
 

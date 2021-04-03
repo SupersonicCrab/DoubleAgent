@@ -7,6 +7,7 @@
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
+#include "Components/CapsuleComponent.h"
 #include "DoubleAgent/AI/AICharacterBase_CHARACTER.h"
 #include "DoubleAgent/AI/RoomVolume.h"
 #include "DoubleAgent/AI/Senses/AISenseConfig_SightBase.h"
@@ -205,7 +206,7 @@ bool AAIControllerBase::HandleHearing(AActor* CurrentActor, FAIStimulus& Current
         {
             //Get which rooms actor is inside
             TArray<AActor*> Rooms;
-            CurrentActor->GetOverlappingActors(Rooms, ARoomVolume::StaticClass());
+            Cast<ABaseCharacter_CHARACTER>(CurrentActor)->GetCapsuleComponent()->GetOverlappingActors(Rooms, ARoomVolume::StaticClass());
 
             //If there is no room or detection is above or at 90
             if (Rooms.Num() == 0 || Blackboard->GetValueAsFloat("Detection") >= 90)
@@ -214,14 +215,18 @@ bool AAIControllerBase::HandleHearing(AActor* CurrentActor, FAIStimulus& Current
                 return true;
             }
 
+            bool bPublic = false;
             for (int i = 0; i < Rooms.Num(); i++)
             {
                 //If the room isn't public
-                if (!Cast<ARoomVolume>(Rooms[i])->bPublic)
-                {
-                    Blackboard->SetValueAsVector("NoiseLocation", CurrentStimulus.StimulusLocation);
-                    return true;
-                }
+                if (Cast<ARoomVolume>(Rooms[i])->bPublic)
+                    bPublic = true;
+            }
+
+            if (!bPublic)
+            {
+                Blackboard->SetValueAsVector("NoiseLocation", CurrentStimulus.StimulusLocation);
+                return true;
             }
         }
         
