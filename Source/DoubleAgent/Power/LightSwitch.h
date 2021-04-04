@@ -23,7 +23,7 @@ public:
 	ARoomVolume* AssociatedRoom;
 
 	//Whether or not the lights are on in attached room
-	UPROPERTY(BlueprintReadWrite)
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	bool bLightGroupOn = true;
 
 	//All lights this lightswitch has control over
