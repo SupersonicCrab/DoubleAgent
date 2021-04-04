@@ -5,5 +5,5 @@
 
 UStaffSense_Sight::UStaffSense_Sight()
 {
-	MaxTracesPerTick = 50;
+	MaxTracesPerTick = 75;
 }
