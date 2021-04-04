@@ -370,4 +370,4 @@
 -ButlerCleaning2:What would this place do without my organizational skill.|02s{Butler}
 -ButlerCleaning3:If I wasn't so good at killing people, I'd be a bloody good stay at home dad.|04s{Butler}
 -ButlerRestocking1:Which one of you plunkers took my equipment.|03s{Butler}
--ButlerRestocking2:Bloody idiots just keep picking up everything they can whenever they can if it's shiny like ********.|04s{Butler}
+-ButlerRestocking2:Bloody idiots just keep picking up everything they can whenever they can if it's shiny like crows.|04s{Butler}
