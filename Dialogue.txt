@@ -1,0 +1,273 @@
+-MaleCivilian1Idle1:Yo, Waiter, can you bring some more wine my way?|__s{Male Guest 1}
+-MaleCivilian1Idle2:
+-MaleCivilian1Patrol1:
+-MaleCivilian1Patrol2:
+-MaleCivilian1Patrol3:
+-MaleCivilian1Patrol4:
+-MaleCivilian1Engaging1:
+-MaleCivilian1Engaging2:
+-MaleCivilian1Engaging3:
+-MaleCivilian1Engaging4:
+-MaleCivilian1Common1:
+-MaleCivilian1Common2:
+-MaleCivilian1Common3:
+-MaleCivilian1Common4:
+-MaleCivilian1Common5:
+-MaleCivilian1Common6:
+-MaleCivilian1Common7:
+-MaleCivilian1Common8:
+-MaleCivilian1Common9:
+-MaleCivilian1Common10:
+-MaleCivilian1Common11:
+-MaleCivilian1Common12:
+-MaleCivilian1Common13:
+-MaleCivilian1Common14:
+-MaleCivilian1Common15:
+-MaleCivilian1Common16:
+-MaleCivilian1Common17:
+-MaleCivilian1Common18:
+-MaleCivilian2Idle1:Would you like to stay for office hours?|02s{Male Guest 2}
+-MaleCivilian2Idle2:Scrumpulous!|01s{Male Guest 2}
+-MaleCivilian2Idle3:Indubitably, hmmm, quite, yes.|03s{Male Guest 2}
+-MaleCivilian2Idle4:Hoh hoh hoh, I'm hilarious.|02s{Male Guest 2}
+-MaleCivilian2Patrol1:These folks seem too simple minded for my gargantuan cranium.|04s{Male Guest 2}
+-MaleCivilian2Patrol2:A man of my esteem really ought to speak to some intellectuals.|04s{Male Guest 2}
+-MaleCivilian2Engaging1:I'm calling my lawyer!|02s{Male Guest 2}
+-MaleCivilian2Engaging2:Please, I've got too much money to live-ehh, I mean to die!|04s{Male Guest 2}
+-MaleCivilian2Common1:This wine is great!|02s{Male Guest 2}
+-MaleCivilian2Common2:This wine is horrible!|02s{Male Guest 2}
+-MaleCivilian2Common3:What a marvelous outing this is.|02s{Male Guest 2}
+-MaleCivilian2Common4:I am not a fan of this music.|02s{Male Guest 2}
+-MaleCivilian2Common5:This stuff reminds me of mozart.|02s{Male Guest 2}
+-MaleCivilian2Common6:Did you aqcuire that mask at the plebian store?|03s{Male Guest 2}
+-MaleCivilian2Common7:Your mask suits your personality.|02s{Male Guest 2}
+-MaleCivilian2Common8:Mr. Hoss sure knows how to throw a party.|03s{Male Guest 2}
+-MaleCivilian2Common9:Mr. Hoss never has any good parties.|03s{Male Guest 2}
+-MaleCivilian2Common10:Wonderful weather we're having.|02s{Male Guest 2}
+-MaleCivilian2Common11:The last good outing was before the Quebec regime!|04s{Male Guest 2}
+-MaleCivilian2Common12:I sure hope there aren't any spies at this party... 'cause I would be really upset!|05s{Male Guest 2}
+-MaleCivilian2Common13:I'm glad Mr. Hoss stuffed up security for this party.|03s{Male Guest 2}
+-MaleCivilian2Common14:Is Mr. Hoss wearing platform boots?|03s{Male Guest 2}
+-MaleCivilian2Common15:I love this charcuterie.|02s{Male Guest 2}
+-MaleCivilian2Common16:Meat and cheese? Is that all they're feeding us?|03s{Male Guest 2}
+-MaleCivilian2Common17:Wow, they have everything! Meat... cheese... crackers... wow.|08s{Male Guest 2}
+-FemaleCivilian1Idle1:You know there are two things that I love in this world, my children, and my frappuccino.|06s{Female Guest 1}
+-FemaleCivilian1Idle2:Excuse me, does this dress make it clear that I'm vegan?|03s{Female Guest 1}
+-FemaleCivilian1Idle3:Gotta watch my calories... is that wine?|04s{Female Guest 1}
+-FemaleCivilian1Patrol1:Can't have too much wine, still gotta drive my girls to soccer practice tomorrow.|04s{Female Guest 1}
+-FemaleCivilian1Patrol2:Has anyone seen the manager?|02s{Female Guest 1}
+-FemaleCivilian1Patrol3:I'm fit to drive|02s{Female Guest 1}
+-FemaleCivilian1Engaging1:The working class is expendable, I'm not!|02s{Female Guest 1}
+-FemaleCivilian1Engaging2:What do you mean you're gonna shoot me, I have coupons to use, I can't die!|03s{Female Guest 1}
+-FemaleCivilian1Engaging3:I haven't broken in these heels yet, you can't kill me!|03s{Female Guest 1}
+-FemaleCivilian1Engaging4:Euugh! Don't get your blood on my dress!|02s{Female Guest 1}
+-FemaleCivilian1Engaging5:I can't run in stilletos!|01s{Female Guest 1}
+-FemaleCivilian1Common1:This is some great wine.|02s{Female Guest 1}
+-FemaleCivilian1Common2:Wow, this wine really sucks.|03s{Female Guest 1}
+-FemaleCivilian1Common3:This is a terrible party.|02s{Female Guest 1}
+-FemaleCivilian1Common4:This is terrible music.|01s{Female Guest 1}
+-FemaleCivilian1Common5:Ohh, my girls love this song.|02s{Female Guest 1}
+-FemaleCivilian1Common6:Oh I love that mask so much, I can just steal it from ya!|03s{Female Guest 1}
+-FemaleCivilian1Common7:Your mask really suits your personality.|02s{Female Guest 1}
+-FemaleCivilian1Common8:Ooh, I saw that mask at dollar tree the other day! I would've got it but..|04s{Female Guest 1}
+-FemaleCivilian1Common9:This is the best party that Mr. Hoss ever threw.|03s{Female Guest 1}
+-FemaleCivilian1Common10:I really don't like this party.|02s{Female Guest 1}
+-FemaleCivilian1Common11:Wonderful weather we're having.|01s{Female Guest 1}
+-FemaleCivilian1Common12:There hasn't been any good parties since quebec took over.|03s{Female Guest 1}
+-FemaleCivilian1Common13:You know it would really suck if there was a spy at this party.|03s{Female Guest 1}
+-FemaleCivilian1Common14:Look at all the security guards to protect me!|02s{Female Guest 1}
+-FemaleCivilian1Common15:You know I let Mr. Hoss borrow my platform boots to make him look taller.|04s{Female Guest 1}
+-FemaleCivilian1Common16:Wow, this is some good charcuterie.|02s{Female Guest 1}
+-FemaleCivilian1Common17:The only thing I can eat at this buffet is the napkins!|03s{Female Guest 1}
+-FemaleCivilian1Common18:This cracker fucks.|01s{Female Guest 1}#
+-FemaleCivilian2Idle1:Why are there no jello shots?|02s{Female Guest 2}
+-FemaleCivilian2Idle2:Is there an open bar here?|02s{Female Guest 2}
+-FemaleCivilian2Idle3:I bet he's not that short in his pants.|04s{Female Guest 2}#
+-FemaleCivilian2Idle4:You should see the toy my husband bought me.|04s{Female Guest 2}#
+-FemaleCivilian2Patrol1:You guys are boring.|02s{Female Guest 2}
+-FemaleCivilian2Patrol2:I will go home with anyone who knows how to make a margarita.|03s{Female Guest 2}
+-FemaleCivilian2Patrol3:Is there any vegan options?|02s{Female Guest 2}
+-FemaleCivilian2Engaging1:Don't shoot me! I'm too pretty!|02s{Female Guest 2}
+-FemaleCivilian2Engaging2:AAAAAAAAAA|01s{Female Guest 2}
+-FemaleCivilian2Engaging3:I didn't want those kinds of shots!|02s{Female Guest 2}
+-FemaleCivilian2Engaging4:I'm not drunk enough to get shot at!|02s{Female Guest 2}
+-FemaleCivilian2Common1:The wine is great.|02s{Female Guest 2}
+-FemaleCivilian2Common2:This wine sucks.|02s{Female Guest 2}
+-FemaleCivilian2Common3:What a party!|01s{Female Guest 2}
+-FemaleCivilian2Common4:I'm not a fan of this music.|02s{Female Guest 2}
+-FemaleCivilian2Common5:This music is great!|01s{Female Guest 2}
+-FemaleCivilian2Common6:I love your mask|02s{Female Guest 2}
+-FemaleCivilian2Common7:You get that mask from dollar tree?|02s{Female Guest 2}
+-FemaleCivilian2Common8:Your mask suits your personality.|02s{Female Guest 2}
+-FemaleCivilian2Common9:Mr. Hoss sure knows how to throw a party.|02s{Female Guest 2}
+-FemaleCivilian2Common10:Mr. Hoss never has any good parties.|03s{Female Guest 2}
+-FemaleCivilian2Common11:Wonderful weather we're having.|02s{Female Guest 2}
+-FemaleCivilian2Common12:There haven't been any good parties since Quebec took over.|03s{Female Guest 2}
+-FemaleCivilian2Common13:I sure hope there aren't any spies at this party.|02s{Female Guest 2}
+-FemaleCivilian2Common14:I am so glad Mr. Hoss stuffed up security for this party.|03s{Female Guest 2}
+-FemaleCivilian2Common15:Is Mr. Hoss wearing platform boots?|03s{Female Guest 2}
+-FemaleCivilian2Common16:I love this charcuterie.|02s{Female Guest 2}
+-FemaleCivilian2Common17:Meat and cheese? Is that all they're feeding us?|04s{Female Guest 2}
+-FemaleCivilian2Common18:Wow, they have everything... meat, cheese, crackers? Wow.|07s{Female Guest 2}
+-MaleWaiter1Idle1:There you go, sir... Fucking dumbass.|03s{Male Waiter}#
+-MaleWaiter1Idle2:Try not to spill on yourself, okay?|02s{Male Waiter}
+-MaleWaiter1Idle3:If I have to clean this up, this mess will be your problem... not mine.|03s{Male Waiter}
+-MaleWaiter1Patrol1:These people are what's wrong with this world.|02s{Male Waiter}
+-MaleWaiter1Patrol2:If this is the current generation, then I fear the next.|03s{Male Waiter}
+-MaleWaiter1Cautious1:What was that?|01s{Male Waiter}
+-MaleWaiter1Cautious2:I don't get paid enough for this.|02s{Male Waiter}
+-MaleWaiter1Cautious3:That better not be a mess I need to clean up.|02s{Male Waiter}
+-MaleWaiter1Alert1:I assure you, nothing important is happening.|03s{Male Waiter}
+-MaleWaiter1Alert2:Pay no attention to the men with the guns.|03s{Male Waiter}
+-MaleWaiter1Alert3:This is perfectly normal for this place.|02s{Male Waiter}
+-MaleWaiter1Engaging1:Yeah, no, fuck this!|01s{Male Waiter}#
+-MaleWaiter1Engaging2:My life is worth more than this job!|01s{Male Waiter}
+-MaleWaiter1Engaging3:Nah, nah, no.|03s{Male Waiter}
+-FemaleWaiter1Idle1:One for you, one  for me.|02s{Female Waiter}
+-FemaleWaiter1Idle2:Keep your hands to yourself, asshole.|02s{Female Waiter}#
+-FemaleWaiter1Idle3:This is a slight step up from serving hookers.|02s{Female Waiter}#
+-FemaleWaiter1Idle4:You've definitely had enough to drink.|02s{Female Waiter}
+-FemaleWaiter1Patrol1:They're pretty shitty tippers.|01s{Female Waiter}#
+-FemaleWaiter1Patrol2:What, no tip?|01s{Female Waiter}
+-FemaleWaiter1Patrol3:Where did I put that flask?|01s{Female Waiter}
+-FemaleWaiter1Cautious1:You don't pay me enough for this shit.|01s{Female Waiter}#
+-FemaleWaiter1Cautious2:I'm too old for this.|01s{Female Waiter}
+-FemaleWaiter1Alert1:All drinks are on the house!|01s{Female Waiter}
+-FemaleWaiter1Alert2:Everyone, get ready for some shots.|02s{Female Waiter}
+-FemaleWaiter1Alert3:Oh no, shit's about to hit the fan.|02s{Female Waiter}#
+-FemaleWaiter1Engaging1:I'm outta here.|01s{Female Waiter}
+-FemaleWaiter1Engaging2:This has been fun, but I've had enough!|02s{Female Waiter}
+-FemaleWaiter1Engaging3:And I'm off the clock.|01s{Female Waiter}
+-FemaleWaiter1Emgagomg4:I think it's time for a new job.|01s{Female Waiter}
+-MaleGuard1Idle1:I wonder if Wentworth could spot me.|02s{Male Guard 1}
+-MaleGuard1Idle2:Shoot. I think I hit that guest back there a little too hard.|04s{Male Guard 1}
+-MaleGuard1Idle3:*cough cough* I think I'm coming down with a cold.|03s{Male Guard 1}
+-MaleGuard1IdleTransition1:Phew, good thing that was nothing.|02s{Male Guard 1}
+-MaleGuard1Patrol1:Hmm, can't remember if I checked the bathroom or not.|03s{Male Guard 1}
+-MaleGuard1Patrol2:A lot nicer than my own place.|02s{Male Guard 1}
+-MaleGuard1Patrol3:I wonder what my wife would think of these orgies.|02s{Male Guard 1}#
+-MaleGuard1Cautious1:Something feels off here.|02s{Male Guard 1}
+-MaleGuard1Cautious2:What's going on around here?|02s{Male Guard 1}
+-MaleGuard1Cautious3:What was that?|02s{Male Guard 1}
+-MaleGuard1Alert1:I hope I remember how to use this thing.|02s{Male Guard 1}
+-MaleGuard1Alert2:Gotta dust off this gun sooner or later, I guess.|02s{Male Guard 1}
+-MaleGuard1Alert3:I really hope I have enough ammo on me.|02s{Male Guard 1}
+-MaleGuard1Searching1:Is anybody there?|01s{Male Guard 1}
+-MaleGuard1Searching2:Reveal yourself, before things get ugly.|02s{Male Guard 1}
+-MaleGuard1Searching3:I don't wanna use this gun, but I will!|02s{Male Guard 1}
+-MaleGuard1Subduing1:The less you struggle, the less this will hurt.|02s{Male Guard 1}
+-MaleGuard1Subduing2:No one's gonna hurt you... ehhh- much.|03s{Male Guard 1}
+-MaleGuard1Engaging1:Running away will only make this harder for both of us.|03s{Male Guard 1}
+-MaleGuard1Engaging2:Get back here!|01s{Male Guard 1}
+-MaleGuard1Engaging3:I don't wanna chase you.|01s{Male Guard 1}
+-MaleGuard1RadioChatter1:Does this uniform make anyone elses balls itchy?|03s{Male Guard 1}#
+-MaleGuard1RadioChatter2:These masks are really uncomfortable.|02s{Male Guard 1}
+-MaleGuard1RadioChatter3:Anyone elses mask smell faintly of B.O.? No? Just me?|04s{Male Guard 1}
+-MaleGuard1RadioAlert1:I think something is going on around here.|02s{Male Guard 1}
+-MaleGuard1RadioAlert2:Somebody wanna come check this out for me.. please?|02s{Male Guard 1}
+-MaleGuard1RadioAlert3:This is definitely not good.|02s{Male Guard 1}
+-MaleGuard1RadioEngage1:Time to earn that paycheck.|01s{Male Guard 1}
+-MaleGuard1RadioEngage2:I guess I'll have to use this gun after all.|02s{Male Guard 1}
+-MaleGuard1RadioEngage3:If anyone wants to take these guys out before me, get here quick.|03s{Male Guard 1}
+-MaleGuard1BathroomBreak1:Gotta hit the can.|01s{Male Guard 1}
+-MaleGuard1BathroomBreak2:Gotta retire to the facilities|02s{Male Guard 1}
+-MaleGuard1Powerbox1:Something's wrong with the powerbox.|02s{Male Guard 1}
+-MaleGuard1Powerbox2:The power's acting strange again.|02s{Male Guard 1}
+-MaleGuard1Powerbox3:What's going on with the power?|01s{Male Guard 1}
+-MaleGuard1CameraHub1:I'm gonna go monitor the cameras.|02s{Male Guard 1}
+-MaleGuard1CameraHub2:If there's no one on the cameras, I'll go watch.|02s{Male Guard 1}
+-MaleGuard1CameraHub3:Doesn't seem like anyone's  on the cams right now.|02s{Male Guard 1}
+-MaleGuard1Revive1:On your feet.|01s{Male Guard 1}
+-MaleGuard1Revive2:I sure hope you feel better than you look right now.|02s{Male Guard 1}
+-MaleGuard1Revive3:Get up! I can't do this on my own.|02s{Male Guard 1}
+-MaleGuard1Backup1:We need backup!|01s{Male Guard 1}
+-MaleGuard1Backup2:If no one else is gonna call for backup, I will!|02s{Male Guard 1}
+-MaleGuard1Backup3:Is seriously no one calling for backup right now?|02s{Male Guard 1}
+-MaleGuard1BodySearch1:Your clothes are a little lumpy for a masquerade ball.|03s{Male Guard 1}
+-MaleGuard1BodySearch2:I'm gonna need to search you before you enter.|02s{Male Guard 1}
+-MaleGuard1NoiseInvestigation1:What was that noise?|01s{Male Guard 1}
+-MaleGuard1NoiseInvestigation2:Time to figure out what's making that racket.|02s{Male Guard 1}
+-MaleGuard1NoiseInvestigation3:I hope it's not another rat in the mansion.|02s{Male Guard 1}
+-MaleGuard1Restocking1:I'm missing equipment, I'll be right back!|02s{Male Guard 1}
+-MaleGuard1Restocking2:Cover me, I'm missing equipment.|01s{Male Guard 1}
+-MaleGuard1Reload1:I need to reload.|01s{Male Guard 1}
+-MaleGuard1Reload2:Be careful! I'm reloading!|02s{Male Guard 1}
+-MaleGuard1Reload3:I'll take him down right after I relaod.|02s{Male Guard 1}
+-MaleGuard1Reload4:Gotta reload my ammo, watch your six!|02s{Male Guard 1}
+-MaleGuard2Idle1:Man, I wish we had lunch break.|01s{Male Guard 2}
+-MaleGuard2Idle2:Is anyone there? No? Cool, I've done my job.|03s{Male Guard 2}
+-MaleGuard2Idle3:I feel my gun's gonna fall apart.|01s{Male Guard 2}
+-MaleGuard2IdleTransition1:Hmm, must've been the wind.|01s{Male Guard 2}
+-MaleGuard2Patrol1:This is really boring.|01s{Male Guard 2}
+-MaleGuard2Patrol2:The suit they gave us is really cheap.|01s{Male Guard 2}
+-MaleGuard2Cautious1:Aw man, maybe I should've been a writer.|02s{Male Guard 2}
+-MaleGuard2Cautious2:Is someone there?|01s{Male Guard 2}
+-MaleGuard2Cautious3:Come out, so I don't have to go over there.|01s{Male Guard 2}
+-MaleGuard2Alert1:I'm not getting paid enough for this.|01s{Male Guard 2}
+-MaleGuard2Alert2:What the hell is going on?|01s{Male Guard 2}
+-MaleGuard2Searching1:Marco? Huh, I thought that would work.|03s{Male Guard 2}
+-MaleGuard2Searching2:Why is this mansion so god damn big?|01s{Male Guard 2}
+-MaleGuard2Subduing1:You really shouldn't be here. Put your hands up.|02s{Male Guard 2}
+-MaleGuard2Subduing2:Can you just lie down so I can get my raise?|01s{Male Guard 2}
+-MaleGuard2Subduing3:Don't you dare move, I will shoot.|01s{Male Guard 2}
+-MaleGuard2Engaging1:Stop moving, you're making it hard for me to shoot you.|02s{Male Guard 2}
+-MaleGuard2Engaging2:Aah, I think I'd be better off throwing the gun.|02s{Male Guard 2}
+-MaleGuard2RadioChatter1:Is it break time yet?|01s{Male Guard 2}
+-MaleGuard2RadioChatter2:Is there any coffee left in security?|01s{Male Guard 2}
+-MaleGuard2RadioChatter3:Did anyone deal with that person in the bathroom?|02s{Male Guard 2}
+-MaleGuard2RadioAlert1:There is something really wrong here, and I don't wanna deal with it.|02s{Male Guard 2}
+-MaleGuard2RadioAlert2:I'm almost positive I saw somebody trespassing.|02s{Male Guard 2}
+-MaleGuard2RadioEngage1:These guys move too fast, I can't keep up with them.|02s{Male Guard 2}
+-MaleGuard2RadioEngage2:We outnumber them, this is gonna be easy.|01s{Male Guard 2}
+-MaleGuard2BathroomBreak1:Gonna go take a leak.|01s{Male Guard 2}
+-MaleGuard2BathroomBreak2:I need to go to the bathroom.|01s{Male Guard 2}
+-MaleGuard2BathroomBreak3:I really need to piss right now.|02s{Male Guard 2}
+-MaleGuard2BathroomBreak4:Gotta drop a deuce.|01s{Male Guard 2}
+-MaleGuard2CameraHub1:I'm gonna go sleep on- I mean watch the cameras.|03s{Male Guard 2}
+-MaleGuard2CameraHub2:I'm pretty sure nobody is on the cameras right now.|02s{Male Guard 2}
+-MaleGuard2CameraHub3:I'm gonna head over and check the cameras.|01s{Male Guard 2}
+-MaleGuard2Revive1:This is not the time to sleep on the job.|01s{Male Guard 2}
+-MaleGuard2Revive2:Get the hell up, doofus.|01s{Male Guard 2}
+-MaleGuard2Revive3:What are you doing on the ground, get the fuck up!|01s{Male Guard 2}#
+-MaleGuard2Backup1:There is definitely not enough people with guns right now, I'll be back.|03s{Male Guard 2}
+-MaleGuard2Backup2:We need backup right now.|01s{Male Guard 2}
+-MaleGuard2Backup3:If I call for backup, can I leave?|01s{Male Guard 2}
+-MaleGuard2Backup4:I hope that crappy landline works.|01s{Male Guard 2}
+-MaleGuard2BodySearch1:You got something under that that I should know about? I'm gonna have to pat you down.|03s{Male Guard 2}
+-MaleGuard2BodySearch2:Don't move now, I don't wanna graze anything.|01s{Male Guard 2}
+-MaleGuard2BodySearch3:Is that a pistol in your pocket, or are you just happy to see me? Stay still.|02s{Male Guard 2}
+-MaleGuard2NoiseInvestigation1:I heard that.|01s{Male Guard 2}
+-MaleGuard2NoiseInvestigation2:You should be more quiet so I don't have to investigate.|01s{Male Guard 2}
+-MaleGuard2NoiseInvestigation3:I either check on that or I get fired.|01s{Male Guard 2}
+-MaleGuard2Restocking1:Wait, where did that go? Oh no.|02s{Male Guard 2}
+-MaleGuard2Restocking2:Again? How do we keep on losing these things?|02s{Male Guard 2}
+-MaleGuard2Restocking3:I must've dropped it somewhere.. fuck.|02s{Male Guard 2}#
+-MaleGuard2Reload1:I'm reloading, fucking shoot him!|01s{Male Guard 2}#
+-MaleGuard2Reload2:What are you, a fucking bullet sponge? I'm reloading.|02s{Male Guard 2}#
+-MaleGuard2Reload3:Shit, I need to reload.|01s{Male Guard 2}#
+*********************************************************
+FEMALE GUARDS
+*********************************************************
+-MobBossIdle1:Hey, buddy. Eyes down here.|02s{Mob Boss}
+-MobBossIdle2:Isn't my massive home just so beautiful and... massive.|05s{Mob Boss}
+-MobBossIdle3:Hey, if you like the size of this ballroom, you're gonna like the size of something else.|04s{Mob Boss}#
+-MobBossIdle4:What am I paying these idiots for? I can't even get a drink in my own house?|04s{Mob Boss}
+-MobBossIdle5:Hey, if you had to guess which of my employees was a snivelling mole... which would it be?|05s{Mob Boss}
+-MobBossIdle6:Hey, you ever seen launch codes before? You wanna?|04s{Mob Boss}
+-MobBossIdleTransition1:Maybe I'm just getting too worked up.|01s{Mob Boss}
+-MobBossPatrol1:Hey, excuse me. Guy that owns the place coming through.|03s{Mob Boss}
+-MobBossPatrol2:I'm sure there's someone more attractive I could be talking to right now.|04s{Mob Boss}
+-MobBossPatrol3:That is the fifth person to tell me I'm looking taller tonight.|03s{Mob Boss}
+-MobBossPatrol4:That conversation got pretty boring when they stopped talking about me, and my success, and my really nice house.|07s{Mob Boss}
+-MobBossPatrol5:I might get Chambers to kill that person if I get bored later.|02s{Mob Boss}
+-MobBossCautious1:Today sure was a bad day to wear platform shoes!|02s{Mob Boss}
+-MobBossCautious2:Its times like this I wish I took father up on those gun range lessons.|03s{Mob Boss}
+-MobBossCautious3:That waiter's been sticking a little too closely, if you catch my drift.|03s{Mob Boss}
+-MobBossCautious4:What are you looking at?|01s{Mob Boss}
+-MobBossAlert1:First one to take his head off gets a five cent raise!|02s{Mob Boss}
+-MobBossAlert2:Get me outta here!|01s{Mob Boss}
+-MobBossAlert3:Somebody get me Chambers!|01s{Mob Boss}
+-MobBossEngaging1:I really wish I knew how to shoot a gun.|01s{Mob Boss}
+-MobBossEngaging2:Fuck!|01s{Mob Boss}#
+-MobBossEngaging3:You'll never get into my safe room without my guards keycard... wait a minute..|05s{Mob Boss}
+-MobBossEngaging4:Man, I wish I wasn't claustrophobic.|02s{Mob Boss}

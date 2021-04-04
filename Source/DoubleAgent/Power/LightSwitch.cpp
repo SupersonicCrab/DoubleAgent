@@ -75,8 +75,13 @@ void ALightSwitch::BeginPlay(){
     //Update room volume of lightswitch
     AssociatedRoom->LightSwitch = this;
 
+    if(!bLightGroupOn){
+        DisableLightGroup(false);
+    }
+
     //Update power box of light status
-    dynamic_cast<APowerBox*>(UGameplayStatics::GetActorOfClass(GetWorld(), APowerBox::StaticClass()))->bLightsOn;
+    dynamic_cast<APowerBox*>(UGameplayStatics::GetActorOfClass(GetWorld(), APowerBox::StaticClass()))->bLightsOn;    
+    
 }
 
 void ALightSwitch::MulticastPlaySound_Implementation(bool TurnOn)
