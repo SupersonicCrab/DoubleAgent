@@ -6,6 +6,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "DoubleAgent/AI/NPC/StaffAIController.h"
+#include "DoubleAgent/AI/Senses/StaffSenseConfig_Sight.h"
 #include "DoubleAgent/Power/HouseLight.h"
 #include "Kismet/KismetSystemLibrary.h"
 
@@ -40,7 +41,7 @@ ACamera::ACamera(){
     bReplicates = true;
 
     //Create default sense config
-    SightConfig = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("Sight Config"));
+    SightConfig = CreateDefaultSubobject<UStaffSenseConfig_Sight>(TEXT("Sight Config"));
     
     //Create perception component
     PerceptionComponent = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("Perception Component"));

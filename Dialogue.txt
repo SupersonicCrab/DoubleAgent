@@ -1,31 +1,30 @@
--MaleCivilian1Idle1:Yo, Waiter, can you bring some more wine my way?|__s{Male Guest 1}
--MaleCivilian1Idle2:
--MaleCivilian1Patrol1:
--MaleCivilian1Patrol2:
--MaleCivilian1Patrol3:
--MaleCivilian1Patrol4:
--MaleCivilian1Engaging1:
--MaleCivilian1Engaging2:
--MaleCivilian1Engaging3:
--MaleCivilian1Engaging4:
--MaleCivilian1Common1:
--MaleCivilian1Common2:
--MaleCivilian1Common3:
--MaleCivilian1Common4:
--MaleCivilian1Common5:
--MaleCivilian1Common6:
--MaleCivilian1Common7:
--MaleCivilian1Common8:
--MaleCivilian1Common9:
--MaleCivilian1Common10:
--MaleCivilian1Common11:
--MaleCivilian1Common12:
--MaleCivilian1Common13:
--MaleCivilian1Common14:
--MaleCivilian1Common15:
--MaleCivilian1Common16:
--MaleCivilian1Common17:
--MaleCivilian1Common18:
+-MaleCivilian1Idle1:Yo, Waiter, can you bring some more wine my way?|02s{Male Guest 1}
+-MaleCivilian1Idle2:If this place wasn't so crowded I'd be busting a dance move on the floor.|03s{Male Guest 1}
+-MaleCivilian1Patrol1:I wonder if anyone here knows how rich I am.|02s{Male Guest 1}
+-MaleCivilian1Patrol2:I gotta find some more of that charcuterie.|02s{Male Guest 1}
+-MaleCivilian1Patrol3:We were really hitting it off... until they mentioned their 4 cats.|03s{Male Guest 1}
+-MaleCivilian1Patrol4:Tinder is more effective than a masquerade party for sure.|03s{Male Guest 1}
+-MaleCivilian1Engaging1:I just came for the tail and booze! Please don't kill me!|02s{Male Guest 1}#
+-MaleCivilian1Engaging2:This was not mentioned in the invitation!|01s{Male Guest 1}
+-MaleCivilian1Engaging3:I don't wanna fucking die man!|01s{Male Guest 1}#
+-MaleCivilian1Engaging4:I'm still down for that orgy if you put the guns away.|02s{Male Guest 1}#
+-MaleCivilian1Common1:The wine is great!|01s{Male Guest 1}
+-MaleCivilian1Common2:What a party!|01s{Male Guest 1}
+-MaleCivilian1Common3:I'm not a fan of this music.|01s{Male Guest 1}
+-MaleCivilian1Common4:This music is great!|01s{Male Guest 1}
+-MaleCivilian1Common5:I love your mask.|01s{Male Guest 1}
+-MaleCivilian1Common6:You get that mask from dollar tree?|01s{Male Guest 1}
+-MaleCivilian1Common7:Your mask suits your personality.|01s{Male Guest 1}
+-MaleCivilian1Common8:Mr. Hoss sure knows how to throw a party.|02s{Male Guest 1}
+-MaleCivilian1Common9:Mr. Hoss never has any good parties.|02s{Male Guest 1}
+-MaleCivilian1Common10:Wonderful weather we're having.|01s{Male Guest 1}
+-MaleCivilian1Common11:There haven't been any good parties since Quebec took over.|02s{Male Guest 1}
+-MaleCivilian1Common12:I sure hope there aren't any spies at this party.|02s{Male Guest 1}
+-MaleCivilian1Common13:I'm glad Mr. Hoss stuffed up security for this party.|02s{Male Guest 1}
+-MaleCivilian1Common14:Is Mr. Hoss wearing platform boots.|02s{Male Guest 1}
+-MaleCivilian1Common15:I love this charcuterie.|01s{Male Guest 1}
+-MaleCivilian1Common16:Meat and Cheese? That's all they're feeding us?|03s{Male Guest 1}
+-MaleCivilian1Common17:Wow, they have everything... meat, cheese, crackers... wow.|06s{Male Guest 1}
 -MaleCivilian2Idle1:Would you like to stay for office hours?|02s{Male Guest 2}
 -MaleCivilian2Idle2:Scrumpulous!|01s{Male Guest 2}
 -MaleCivilian2Idle3:Indubitably, hmmm, quite, yes.|03s{Male Guest 2}
@@ -245,9 +244,64 @@
 -MaleGuard2Reload1:I'm reloading, fucking shoot him!|01s{Male Guard 2}#
 -MaleGuard2Reload2:What are you, a fucking bullet sponge? I'm reloading.|02s{Male Guard 2}#
 -MaleGuard2Reload3:Shit, I need to reload.|01s{Male Guard 2}#
-*********************************************************
-FEMALE GUARDS
-*********************************************************
+-FemaleGuard1Idle1:You know what? I should just ask them out... what could possibly go wrong, right?|04s{Female Guard}
+-FemaleGuard1Idle2:Ew, this place stinks, like really stinks.|04s{Female Guard}
+-FemaleGuard1Idle3:Poverty? No thanks.|02s{Female Guard}
+-FemaleGuard1Idle4:Okay, just standing here makes me feel awkward.|03s{Female Guard}
+-FemaleGuard1IdleTransition1:Man, I'm going insane. Let's just pretend that didn't happen.|04s{Female Guard}
+-FemaleGuard1Patrol1:Beep Beep! Disappointment coming through!|02s{Female Guard}
+-FemaleGuard1Patrol2:Huh, I wonder what this place would look like as a bouncy house.|03s{Female Guard}
+-FemaleGuard1Patrol3:Oh look at me, holding a gun and walking around.|03s{Female Guard}
+-FemaleGuard1Cautious1:Um, I'm getting a really bad feeling about this.|03s{Female Guard}
+-FemaleGuard1Cautious2:Okay, this mansion is definitely haunted.|03s{Female Guard}
+-FemaleGuard1Cautious3:This isn't a drill, right?|01s{Female Guard}
+-FemaleGuard1Alert1:Who's there? A ghost? I'd rather deal with a ghost.|03s{Female Guard}
+-FemaleGuard1Alert2:Alright, who's sneaking around?|03s{Female Guard}
+-FemaleGuard1Alert3:What the-? Oh, come on guys, pranks are supposed to be funny.|03s{Female Guard}
+-FemaleGuard1Searching1:I should've brushed up on my detective skills.|02s{Female Guard}
+-FemaleGuard1Searching2:If you come out I probably won't shoot you... probably.|04s{Female Guard}
+-FemaleGuard1Searching3:Listen, it'll be easier for me if I just give up.. I mean you. You give up.|05s{Female Guard}
+-FemaleGuard1Subduing1:Hey, hands up!|01s{Female Guard}
+-FemaleGuard1Subduing2:Yeah, I'm pretty sure you don't belong here.|02s{Female Guard}
+-FemaleGuard1Subduing3:Hey, you aren't authorized to be here!|02s{Female Guard}
+-FemaleGuard1Engaging1:Start proofreading your will, buddy!|01s{Female Guard}
+-FemaleGuard1Engaging2:Okay, you asked for it!|01s{Female Guard}
+-FemaleGuard1Engaging3:Don't say I didn't warn you!|01s{Female Guard}
+-FemaleGuard1RadioChatter1:Anybody up for some tennis later? I'm terrible at it, but y'know, it's fun.|05s{Female Guard}
+-FemaleGuard1RadioChatter2:I leave my fridge unplugged to save energy.|02s{Female Guard}
+-FemaleGuard1RadioChatter3:Is joe back from sick leave? I thought I saw him. What do you mean, "Who's joe"?|06s{Female Guard}
+-FemaleGuard1RadioAlert1:Uh, is this normal? I need some help.|03s{Female Guard}
+-FemaleGuard1RadioAlert2:Guys, something's going on... I'm not making it up this time.|04s{Female Guard}
+-FemaleGuard1RadioAlert3:Be on the lookout, I know I saw somebody.|03s{Female Guard}
+-FemaleGuard1RadioEngage1:I've got them in my sight.|01s{Female Guard}
+-FemaleGuard1RadioEngage2:Move in guys.|01s{Female Guard}
+-FemaleGuard1RadioEngage3:Time to make boss proud.|01s{Female Guard}
+-FemaleGuard1BathroomBreak1:Uhg, I have to pee.|01s{Female Guard}
+-FemaleGuard1BathroomBreak2:I'll be right back, just one quick break.|01s{Female Guard}
+-FemaleGuard1BathroomBreak3:I gotta wash my hands.|01s{Female Guard}
+-FemaleGuard1Powerbox1:Something weird is going on with the power again.|02s{Female Guard}
+-FemaleGuard1Powerbox2:The wiring in these kinds of buildings is so old.|02s{Female Guard}
+-FemaleGuard1Powerbox3:Maybe a ghost tripped the power? Yeah, yeah, that makes sense.|04s{Female Guard}
+-FemaleGuard1Revive1:Hey, get up.|01s{Female Guard}
+-FemaleGuard1Revive2:Oh boy, is that blood?|01s{Female Guard}
+-FemaleGuard1Revive3:On your feet, pal.|01s{Female Guard}
+-FemaleGuard1Revive4:Hey, we have assigned nap times dude.|02s{Female Guard}
+-FemaleGuard1Backup1:I gotta get some backup.|01s{Female Guard}
+-FemaleGuard1Backup2:Damnit, I need backup.|01s{Female Guard}
+-FemaleGuard1Backup3:We need serious help, I'll go call for backup.|02s{Female Guard}
+-FemaleGuard1BodySearch1:I'm guessing nobody told you this was a black tie event.|03s{Female Guard}
+-FemaleGuard1BodySearch2:Just have to do a simple body search, nothing invasive.|03s{Female Guard}
+-FemaleGuard1BodySearch3:It's just like being at the airport... uh, kinda.|04s{Female Guard}
+-FemaleGuard1BodySearch4:Well for what it's worth, I think you look great.|02s{Female Guard}
+-FemaleGuard1NoiseInvestigation1:I heard that.|01s{Female Guard}
+-FemaleGuard1NoiseInvestigation2:That wasn't a ghost, was it? Oh, please no ghosts.|03s{Female Guard}
+-FemaleGuard1NoiseInvestigation3:Hello? Who's there?|01s{Female Guard}
+-FemaleGuard1Restocking1:I need a restock.|01s{Female Guard}
+-FemaleGuard1Restocking2:Damn it. Where'd my equipment go? I'd better replace it.|03s{Female Guard}
+-FemaleGuard1Restocking3:I hope nobody saw me having to restock... again.|03s{Female Guard}
+-FemaleGuard1Reload1:I'm reloading.|01s{Female Guard}
+-FemaleGuard1Reload2:Hey, watch my six! Reloading.|02s{Female Guard}
+-FemaleGuard1Reload3:Gotta reload!|01s{Female Guard}
 -MobBossIdle1:Hey, buddy. Eyes down here.|02s{Mob Boss}
 -MobBossIdle2:Isn't my massive home just so beautiful and... massive.|05s{Mob Boss}
 -MobBossIdle3:Hey, if you like the size of this ballroom, you're gonna like the size of something else.|04s{Mob Boss}#
@@ -271,3 +325,49 @@ FEMALE GUARDS
 -MobBossEngaging2:Fuck!|01s{Mob Boss}#
 -MobBossEngaging3:You'll never get into my safe room without my guards keycard... wait a minute..|05s{Mob Boss}
 -MobBossEngaging4:Man, I wish I wasn't claustrophobic.|02s{Mob Boss}
+-ButlerIdle1:I've seen better kept pigsties.|01s{Butler}
+-ButlerIdle2:Do we test intelligence for new employees?|01s{Butler}
+-ButlerIdle3:I'd kill for a break from all this drudgery.|02s{Butler}
+-ButlerIdleTransition1:Another cock-up by the staff, what a surprise.|02s{Butler}#
+-ButlerPatrol1:Bloody hell, scuffed my shoe again.|02s{Butler}
+-ButlerPatrol2:If I took sir to a shooting range, perhaps he could hit a clay pigeon after it's been fired.|06s{Butler}
+-ButlerPatrol3:Am I the only one here with qualifications?|02s{Butler}
+-ButlerPatrol4:I hope that bloody racket ends soon.|02s{Butler}
+-ButlerCautious1:If you're here, I will find you.|03s{Butler}
+-ButlerCautious2:You are wasting both of our times, you know.|02s{Butler}
+-ButlerCautious3:You're not very subtle, are you?|01s{Butler}
+-ButlerAlert1:Must I do everything around here?|02s{Butler}
+-ButlerAlert2:Do any of these guys even know how to use a gun?|02s{Butler}
+-ButlerAlert3:Great, more work for me today.|02s{Butler}
+-ButlerSearching1:You can't hide from me.|01s{Butler}
+-ButlerSearching2:If you guys come out now, I won't hit you too hard.|02s{Butler}
+-ButlerSearching3:********************************************************
+-ButlerSearching4:You can run, you can hide. I'll even count to ten.|03s{Butler}
+-ButlerSearching5:I can practically smell your fear... it smells like a shit cologne.|05s{Butler}#
+-ButlerEngaging1:If you're going to run, you better be prepared to never stop.|03s{Butler}
+-ButlerEngaging2:The more you run, the sooner you'll have to stop.|02s{Butler}
+-ButlerEngaging3:Are you prepared to meet the one you call God?|02s{Butler}
+-ButlerEngaging4:I can do this all day.|01s{Butler}
+-ButlerEngaging5:*Angry breathing*|01s{Butler}
+-ButlerRadioChatter1:Can you all stop chattering and do your jobs?|03s{Butler}
+-ButlerRadioChatter2:You best not be faffing about.|02s{Butler}
+-ButlerRadioAlert1:Can any of you actually do your job and get over here.|02s{Butler}
+-ButlerRadioAlert2:Is this a nursery, someone do something.|02s{Butler}
+-ButlerRadioEngage1:Get over here now or I'm going to lower your pay and your life expectancy.|04s{Butler}
+-ButlerRadioEngage2:Can one of the fellows with a gun come assist me.|02s{Butler}
+-ButlerBathroomBreak1:I must use the restroom.|01s{Butler}
+-ButlerBathroomBreak2:I'm going to take five.|01s{Butler}
+-ButlerBathroomBreak3:I'm going to the washroom, don't burn the place down.|03s{Butler}
+-ButlerCameraHub1:If someone isn't on the camera station in the next ten seconds, I swear to god..|05s{Butler}
+-ButlerCameraHub2:What is the point of this state of the art security system if you don't use it.|04s{Butler}
+-ButlerCameraHub3:Will somebody please monitor the bloody cameras.|02s{Butler}
+-ButlerRevive1:Will somebody come get this buffoon.|02s{Butler}
+-ButlerRevive2:We've got another imbecile sleeping on the job over here.|02s{Butler}
+-ButlerRevive3:Is someone going to come tuck their friend in?|02s{Butler}
+-ButlerNoiseInvestigation1:If that noise was one of you simpletons, I'm not going to go easy on you.|04s{Butler}
+-ButlerNoiseInvestigation2:How did anyone make it past these incompetent guard while making such a ruckus.|04s{Butler}
+-ButlerCleaning1:How does this place manage to get so filthy.|02s{Butler}
+-ButlerCleaning2:What would this place do without my organizational skill.|02s{Butler}
+-ButlerCleaning3:If I wasn't so good at killing people, I'd be a bloody good stay at home dad.|04s{Butler}
+-ButlerRestocking1:Which one of you plunkers took my equipment.|03s{Butler}
+-ButlerRestocking2:Bloody idiots just keep picking up everything they can whenever they can if it's shiny like crows.|04s{Butler}
