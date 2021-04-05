@@ -133,7 +133,7 @@ bool ACameraHub::CanBeSeenFrom(const FVector& ObserverLocation, FVector& OutSeen
 	FHitResult HitResult;
 	NumberOfLoSChecksPerformed++;
 	
-	//If door is visible
+	//If screens are visible
 	if (!GetWorld()->LineTraceSingleByChannel(HitResult, ObserverLocation, ScreenMeshes[2]->GetComponentLocation(), ECollisionChannel(ECC_Visibility), FCollisionQueryParams(FName(TEXT("CenterLOS")), true, IgnoreActor)) || HitResult.Actor->IsOwnedBy(this))
 	{
 		OutSeenLocation = ScreenMeshes[2]->GetComponentLocation();

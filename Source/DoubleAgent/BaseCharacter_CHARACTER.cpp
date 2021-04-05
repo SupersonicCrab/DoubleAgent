@@ -40,7 +40,13 @@ void ABaseCharacter_CHARACTER::NetSpeak_Implementation(const FString& DialogueLi
     if (DialogueInfo.CensoredLine && GameInstance->bCensorMode)
         return;
 
-    Cast<ASpyPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0))->StartDialogueEvent(DialogueInfo);
+    ASpyPlayerController* PlayerController = Cast<ASpyPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0));
+
+    //Error checking
+    if (PlayerController == nullptr)
+        return;
+    
+    PlayerController->StartDialogueEvent(DialogueInfo);
     
     //FMOD programmer sound
     UFMODEvent* DialogueEvent = LoadObject<UFMODEvent>(NULL, TEXT("FMODEvent'/Game/FMOD/Events/NPC_Dialogue.NPC_Dialogue'"));
