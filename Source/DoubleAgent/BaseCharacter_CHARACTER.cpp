@@ -6,10 +6,12 @@
 #include "FMODBlueprintStatics.h"
 #include "FMODEvent.h"
 #include "SpyGameInstance.h"
+#include "SpyPlayerController.h"
 #include "Animation/AnimInstance.h"
 #include "Components/LightComponent.h"
 #include "Engine/DemoNetDriver.h"
 #include "Engine/SkeletalMeshSocket.h"
+#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Misc/OutputDeviceNull.h"
@@ -30,8 +32,15 @@ ABaseCharacter_CHARACTER::ABaseCharacter_CHARACTER()
 
 void ABaseCharacter_CHARACTER::NetSpeak_Implementation(const FString& DialogueLine, int Line)
 {
-    //DialogueInfo DialogueInfo = DialogueParser::GetDialogueInfo(DialogueLine + FString::FromInt(Line));
-    //USpyGameInstance* GameInstance = Cast<USpyGameInstance>(GetGameInstance());
+    DialogueParser Parser = DialogueParser();
+    FDialogueInfo DialogueInfo = Parser.GetDialogueInfo(DialogueLine + FString::FromInt(Line));
+    USpyGameInstance* GameInstance = Cast<USpyGameInstance>(GetGameInstance());
+
+    //Skip dialogue line if speech censor is on
+    if (DialogueInfo.CensoredLine && GameInstance->bCensorMode)
+        return;
+
+    Cast<ASpyPlayerController>(UGameplayStatics::GetPlayerController(GetWorld(), 0))->StartDialogueEvent(DialogueInfo);
     
     //FMOD programmer sound
     UFMODEvent* DialogueEvent = LoadObject<UFMODEvent>(NULL, TEXT("FMODEvent'/Game/FMOD/Events/NPC_Dialogue.NPC_Dialogue'"));
@@ -85,7 +94,7 @@ void ABaseCharacter_CHARACTER::NetRequestSpeak_Implementation(ESpeechEvent NewSp
     //Play random line
     int Line = UKismetMathLibrary::RandomIntegerInRange(1, Lines);
 
-    UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("%s spoke with status %s"),  *AActor::GetDebugName(GetOwner()), *FString(DialogueLine + FString::FromInt(Line))), true, true, FLinearColor::Red);
+    UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("%s spoke with status %s"),  *AActor::GetDebugName(GetOwner()), *FString(DialogueLine + FString::FromInt(Line))), false, true, FLinearColor::Red);
     
     CurrentSpeechEvent = NewSpeech;
     NetSpeak(DialogueLine, Line);
