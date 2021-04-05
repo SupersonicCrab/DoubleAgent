@@ -2,20 +2,16 @@
 
 
 #include "DialogueParser.h"
-
 #include <string>
-
 #include "Misc/FileHelper.h"
 
-DialogueParser::DialogueParser(){
-    
+FDialogueInfo::FDialogueInfo()
+{
 }
-DialogueParser::~DialogueParser(){}
 
-
-DialogueInfo DialogueParser::GetDialogueInfo(FString DialogueKey){
+FDialogueInfo DialogueParser::GetDialogueInfo(FString DialogueKey){
     //Declare a temp variable to store return values
-    DialogueInfo temp;
+    FDialogueInfo temp;
     //Declare an empty string to hold the incoming data
     FString DialogueScript;
     //Load the text from the designated path to the designated string

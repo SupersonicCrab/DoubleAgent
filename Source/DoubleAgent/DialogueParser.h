@@ -3,22 +3,32 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Chaos/AABBTree.h"
+#include "DialogueParser.generated.h"
 
-struct DialogueInfo{
+USTRUCT(BlueprintType)
+struct FDialogueInfo{
+	GENERATED_BODY()
+
+	FDialogueInfo();
+	
 	//This holds the display name of the person who is saying the dialogue line
-FString Speaker;
+	UPROPERTY(BlueprintReadWrite)
+	FString Speaker = "";
 	//This holds the content of the dialogue line that is being spoken
-FString Message;
+	UPROPERTY(BlueprintReadWrite)
+	FString Message = "";
 	//This holds the length of the dialogue line in seconds (Determined by the audio lines)
-float MessageLength;
+	UPROPERTY(BlueprintReadWrite)
+	float MessageLength = 0.0f;
 	//This determines whether or not the line can be said when censored lines are turned on
-bool CensoredLine;
+	UPROPERTY(BlueprintReadWrite)
+	bool CensoredLine = false;
 };
  
-class DOUBLEAGENT_API DialogueParser{
+class DialogueParser{
 public:
-	DialogueParser();
-	~DialogueParser();
+	DialogueParser(){};
 
-	static DialogueInfo GetDialogueInfo(FString DialogueKey);
+	FDialogueInfo GetDialogueInfo(FString DialogueKey);
 };
