@@ -37,14 +37,14 @@ EBTNodeResult::Type UBTTask_UseRadio::ExecuteTask(UBehaviorTreeComponent& OwnerC
     }
 
     //If radio hub does not have any power or jammed
-    if (!RadioHub->StartRadioEvent(NewRadioEvent) || RadioHub->GetJammedStatus())
+    if (!RadioHub->StartRadioEvent(NewRadioEvent) || Cast<AAICharacterBase_CHARACTER>(OwnerComp.GetAIOwner()->GetPawn())->GetJammed())
         return EBTNodeResult::Failed;
 
     //Speak depending on radio event
     switch (NewRadioEvent.RadioEvent)
     {
         case (ERadioEvent::Radio_Chatter):
-        Cast<ABaseCharacter_CHARACTER>(OwnerComp.GetAIOwner()->GetPawn())->NetRequestSpeak(ESpeechEvent::RadioChatter);
+            Cast<ABaseCharacter_CHARACTER>(OwnerComp.GetAIOwner()->GetPawn())->NetRequestSpeak(ESpeechEvent::RadioChatter);
         break;
         case (ERadioEvent::Radio_Alert):
             Cast<ABaseCharacter_CHARACTER>(OwnerComp.GetAIOwner()->GetPawn())->NetRequestSpeak(ESpeechEvent::RadioAlert);

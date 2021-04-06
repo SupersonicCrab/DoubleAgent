@@ -46,7 +46,7 @@ void ABaseCharacter_CHARACTER::NetSpeak_Implementation(const FString& DialogueLi
     if (PlayerController == nullptr)
         return;
     
-    PlayerController->StartDialogueEvent(DialogueInfo);
+    PlayerController->StartDialogueEvent(DialogueInfo, this);
     
     //FMOD programmer sound
     UFMODEvent* DialogueEvent = LoadObject<UFMODEvent>(NULL, TEXT("FMODEvent'/Game/FMOD/Events/NPC_Dialogue.NPC_Dialogue'"));
