@@ -26,6 +26,10 @@ public:
 	//Checks if anyone is speaking within hearing distance
 	UFUNCTION(BlueprintCallable)
 	ABaseCharacter_CHARACTER* GetNearbySpeaker();
+
+	//Get Jammed
+	UFUNCTION(BlueprintImplementableEvent)
+	bool GetJammed();
 	
 	//Disable NPC behaviour and perceptions
 	UFUNCTION(CallInEditor, BlueprintCallable, Category = "Debug")

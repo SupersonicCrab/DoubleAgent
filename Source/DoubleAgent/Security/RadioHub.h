@@ -23,9 +23,6 @@ public:
 	UStaticMeshComponent* StaticMesh;
 	
     bool StartRadioEvent(FRadioEvent RadioEvent_);
-
-	UFUNCTION(BlueprintImplementableEvent)
-	bool GetJammedStatus();
 	
     UFUNCTION()
     void BroadcastRadioEvent();

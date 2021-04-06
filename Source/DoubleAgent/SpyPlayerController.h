@@ -17,5 +17,5 @@ class DOUBLEAGENT_API ASpyPlayerController : public APlayerController
 
 public:
 	UFUNCTION(BlueprintImplementableEvent)
-	void StartDialogueEvent(FDialogueInfo DialogueInfo);
+	void StartDialogueEvent(FDialogueInfo DialogueInfo, AActor* NPC);
 };
