@@ -8,6 +8,7 @@
 #include "../AI/RoomVolume.h"
 #include "DoubleAgent/AI/AICharacterBase_CHARACTER.h"
 #include "Kismet/GameplayStatics.h"
+#include "Misc/OutputDeviceNull.h"
 #include "Sound/SoundCue.h"
 
 // Sets default values
@@ -45,6 +46,10 @@ void ALightSwitch::EnableLightGroup_Implementation(){
     AssociatedRoom->UpdateLight(true); //Update the rooms understanding of the light
     MulticastPlaySound(true);
 
+    FOutputDeviceNull OutputDeviceNull;
+    const TCHAR* CmdAndParams = TEXT("UpdateLightProbeCapture");
+    CallFunctionByNameWithArguments(CmdAndParams, OutputDeviceNull, nullptr, true); 
+    
     MeshSwitch->SetRelativeRotation(FRotator(0, 0, 0), false);
 }
 
@@ -57,6 +62,10 @@ void ALightSwitch::DisableLightGroup_Implementation(bool bFromPowerBox){ //Check
     }
     AssociatedRoom->UpdateLight(false);
     MulticastPlaySound(false);
+
+    FOutputDeviceNull OutputDeviceNull;
+    const TCHAR* CmdAndParams = TEXT("UpdateLightProbeCapture");
+    CallFunctionByNameWithArguments(CmdAndParams, OutputDeviceNull, nullptr, true); 
 
     MeshSwitch->SetRelativeRotation(FRotator(0, 0, 180), false);
 }

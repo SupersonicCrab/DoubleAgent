@@ -21,13 +21,13 @@ public:
 	ULightComponent* Light;
 	
 	//Sphere overlap component
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	USphereComponent* Sphere;
 	
 	UPROPERTY(EditAnywhere)
 	float BoundaryMultiplier = 1.1f;
 
-	UFUNCTION(CallInEditor)
+	UFUNCTION(CallInEditor, BlueprintCallable)
 	void UpdateSphere();
 
 	//Base overrides

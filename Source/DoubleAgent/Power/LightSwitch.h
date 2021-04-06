@@ -27,7 +27,7 @@ public:
 	bool bLightGroupOn = true;
 
 	//All lights this lightswitch has control over
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<AHouseLight*> Lights;
 
 	//Static mesh's
