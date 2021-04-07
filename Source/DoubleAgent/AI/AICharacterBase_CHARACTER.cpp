@@ -64,7 +64,8 @@ void AAICharacterBase_CHARACTER::DisableNPC()
 	GetCharacterMovement()->bUseControllerDesiredRotation = false;
 	UAIBlueprintHelperLibrary::GetAIController(this)->ClearFocus(EAIFocusPriority::Default);
 
-	InteractingDoor->InteractingNPC = nullptr;
+	if (InteractingDoor != nullptr)
+		InteractingDoor->InteractingNPC = nullptr;
 }
 
 void AAICharacterBase_CHARACTER::EnableNPC()

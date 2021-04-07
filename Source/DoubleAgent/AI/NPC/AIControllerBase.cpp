@@ -172,6 +172,7 @@ void AAIControllerBase::NPCVisionTick(AActor* CurrentActor, FAIStimulus& Current
     else if (UnconsciousNPC == NULL && !Cast<AAIControllerBase>(Cast<AAICharacterBase_CHARACTER>(CurrentActor)->GetController())->BrainComponent->IsRunning())
     {
         RaiseDetection(90.0f);
+        RaiseVocalStatus(EVocalStatus::Vocal_Engaging);
 
         //If character is not tranquilizers
         if (!Cast<AAICharacterBase_CHARACTER>(CurrentActor)->bTranquilized)
