@@ -8,6 +8,9 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "AICharacterBase_CHARACTER.generated.h"
 
+//Forward declaration
+class ADoor;
+
 UCLASS()
 class DOUBLEAGENT_API AAICharacterBase_CHARACTER : public ABaseCharacter_CHARACTER
 {
@@ -34,6 +37,9 @@ public:
 	//Disable NPC behaviour and perceptions
 	UFUNCTION(CallInEditor, BlueprintCallable, Category = "Debug")
 	virtual void DisableNPC();
+
+	UPROPERTY(BlueprintReadWrite)
+	ADoor* InteractingDoor = nullptr;
 
 	//Enable NPC behaviour and perceptions
 	UFUNCTION(CallInEditor, BlueprintCallable, Category = "Debug")

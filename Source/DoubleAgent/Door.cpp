@@ -115,6 +115,7 @@ void ADoor::NPCInteraction_Implementation(AActor* NPC, const FVector& Destinatio
         return;
     
     InteractingNPC = Cast<AAICharacterBase_CHARACTER>(NPC);
+    InteractingNPC->InteractingDoor = this;
 
     ResumePathFollowing(NPC);
 

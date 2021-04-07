@@ -15,6 +15,8 @@ ACameraHub::ACameraHub(){
 	Root = CreateDefaultSubobject<USceneComponent>(TEXT("Root"));
 	SetRootComponent(Root);
 	Root->Mobility = EComponentMobility::Static;
+
+	SetReplicates(true);	
 	
 	OperatorPosition = CreateDefaultSubobject<USceneComponent>(TEXT("OperatorPosition"));
 	OperatorPosition->SetupAttachment(Root);

@@ -3,6 +3,7 @@
 #include "AICharacterBase_CHARACTER.h"
 #include "AIController.h"
 #include "Blueprint/AIBlueprintHelperLibrary.h"
+#include "DoubleAgent/Door.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/KismetMathLibrary.h"
 #include "Kismet/KismetSystemLibrary.h"
@@ -62,6 +63,8 @@ void AAICharacterBase_CHARACTER::DisableNPC()
 
 	GetCharacterMovement()->bUseControllerDesiredRotation = false;
 	UAIBlueprintHelperLibrary::GetAIController(this)->ClearFocus(EAIFocusPriority::Default);
+
+	InteractingDoor->InteractingNPC = nullptr;
 }
 
 void AAICharacterBase_CHARACTER::EnableNPC()
