@@ -16,7 +16,7 @@ UBTTask_UseRadio::UBTTask_UseRadio()
 EBTNodeResult::Type UBTTask_UseRadio::ExecuteTask(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory)
 {
     //Print to log and screen
-    UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("%s used the radio with %s status at %s"),  *AActor::GetDebugName(OwnerComp.GetOwner()), *UEnum::GetDisplayValueAsText(NewRadioEvent.RadioEvent).ToString(), *OwnerComp.GetOwner()->GetActorLocation().ToString()), true, true, FLinearColor::Red);
+    UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("%s used the radio with %s status at %s"),  *AActor::GetDebugName(OwnerComp.GetOwner()), *UEnum::GetDisplayValueAsText(NewRadioEvent.RadioEvent).ToString(), *OwnerComp.GetOwner()->GetActorLocation().ToString()), false, true, FLinearColor::Red);
 
     //Get radio hub
     ARadioHub* RadioHub = Cast<ARadioHub>(UGameplayStatics::GetActorOfClass(GetWorld(), ARadioHub::StaticClass()));

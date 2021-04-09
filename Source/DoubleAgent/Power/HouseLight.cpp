@@ -6,6 +6,7 @@
 #include "Components/SpotLightComponent.h"
 #include "Engine/EngineTypes.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Materials/MaterialInstanceDynamic.h"
 
 // Sets default values
 AHouseLight::AHouseLight()
@@ -18,6 +19,9 @@ AHouseLight::AHouseLight()
 	StaticMesh->SetMobility(EComponentMobility::Stationary);
 	StaticMesh->CastShadow = false;
 	StaticMesh->SetupAttachment(RootComponent);
+	
+	if (StaticMesh->GetStaticMesh() != nullptr)
+		DynamicMaterial = UMaterialInstanceDynamic::Create(StaticMesh->GetMaterial(0), this);
 
 	//Network replication
 	bReplicates = true;
@@ -120,9 +124,12 @@ void AHouseLight::UpdateLight()
 void AHouseLight::TurnOn_Implementation()
 {
 	Light->SetVisibility(true);
+	StaticMesh->SetMaterial(0, DynamicMaterial);
 }
 
 void AHouseLight::TurnOff_Implementation()
 {
 	Light->SetVisibility(false);
+	UMaterial* Material = LoadObject<UMaterial>(NULL, TEXT("Material'/Engine/EngineDebugMaterials/BlackUnlitMaterial.BlackUnlitMaterial'"));
+	StaticMesh->SetMaterial(0, Material);
 }
