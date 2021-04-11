@@ -33,5 +33,5 @@ public:
 	float PingPong(float t, float length);
 
 	UFUNCTION(BlueprintCallable)
-	void UpdateLiquid(const bool& init, const float& RecoveryTime, const float& FacingScale, const float& VelocitySpeed, const float& MinVelocity, const USceneComponent *Plane, FRotator& PlaneRotator, FVector& LastVelocityOut, FVector& ppFacingOut, FVector& Facing, float& StopElapsedTime, float &MoveElapsedTime, const float deltaTime);
+	void UpdateLiquid(const bool& init, const float& VelocityFalloff, const float& FacingScale, const float& VelocitySpeed, const float& MinVelocity, const USceneComponent *Plane, FRotator& PlaneRotator, FVector& LastVelocityOut, FVector& ppFacingOut, FVector& Facing, float& StopElapsedTime, float &MoveElapsedTime, const float deltaTime);
 };

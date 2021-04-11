@@ -4,7 +4,6 @@
 #include "LiquidActor.h"
 
 #include <string>
-#include "Kismet/KismetSystemLibrary.h"
 #include "Math/UnitConversion.h"
 
 // Sets default values
@@ -16,7 +15,7 @@ float ALiquidActor::PingPong(float t, float length)
 	return length - FMath::Abs(t - length);
 }
 
-void ALiquidActor::UpdateLiquid(const bool& init, const float& RecoveryTime, const float& FacingScale, const float& VelocitySpeed, const float& MinVelocity, const USceneComponent *Plane, FRotator& PlaneRotator, FVector& LastVelocityOut, FVector& ppFacingOut, FVector& Facing, float& StopElapsedTime, float &MoveElapsedTime, const float deltaTime)
+void ALiquidActor::UpdateLiquid(const bool& init, const float& VelocityFalloff, const float& FacingScale, const float& VelocitySpeed, const float& MinVelocity, const USceneComponent *Plane, FRotator& PlaneRotator, FVector& LastVelocityOut, FVector& ppFacingOut, FVector& Facing, float& StopElapsedTime, float &MoveElapsedTime, const float deltaTime)
 {
 	float StopAngularElapsedTime = 0;
 	float MoveAngularElapsedTime = 0;
@@ -27,28 +26,35 @@ void ALiquidActor::UpdateLiquid(const bool& init, const float& RecoveryTime, con
 		Facing = FVector(0);
 		Pos = Plane->GetComponentLocation();
 		LastPos = GetActorLocation();
-		Velocity = (LastPos - GetActorLocation()) / deltaTime;
-		Velocity = Velocity.GetClampedToSize(Velocity.Size(), 1.0f);
 		AngularVelocity = (LastRot - GetActorTransform().GetRotation().Euler());
 		AngularVelocity = AngularVelocity.GetClampedToSize(AngularVelocity.Size(),1.0f);
 	}
 	
 
-	if(Velocity.Size() <= MinVelocity)
+	if(FMath::Abs(Velocity.Size()) <= MinVelocity)
 	{
 		MoveElapsedTime = 0;
 		StopElapsedTime += deltaTime;
-		const float t = PingPong(StopElapsedTime * RecoveryTime, 1);
-		FVector PPFacing = UKismetMathLibrary::VLerp(-LastVelocity, LastVelocity, t);
-		Facing = UKismetMathLibrary::VLerp(PPFacing, FVector(0), UKismetMathLibrary::MapRangeClamped(StopElapsedTime / LastVelocity.Size(),0,1,0,1));
+		Facing = (LastVelocity * (UKismetMathLibrary::Cos(StopElapsedTime * VelocitySpeed)) * FacingScale);
+		LastVelocity -= LastVelocity * (VelocityFalloff * 0.01);
+		if (LastVelocity.Size() <= 0.05f)
+		{
+			LastVelocity = FVector(0);
+		}
 	}
 	
 	else
 	{
 		StopElapsedTime = 0;
 		MoveElapsedTime += deltaTime;
-		Facing = FacingScale * Velocity * MoveElapsedTime * LastVelocity.Size();
-		LastVelocity = Velocity * FMath::Clamp(MoveElapsedTime * VelocitySpeed, 0.1f, 1.5f);
+
+		//if (MoveElapsedTime * VelocitySpeed < VelocitySpeed)
+			//Facing = UKismetMathLibrary::VLerp(Facing, Velocity.GetClampedToSize(Velocity.Size(), 1.0f) * UKismetMathLibrary::FClamp(MoveElapsedTime,0,1) * LastVelocity.Size(), MoveElapsedTime * VelocitySpeed);
+		
+		//else
+			Facing = Velocity.GetClampedToSize(Velocity.Size(), 1.0f) * UKismetMathLibrary::FClamp(MoveElapsedTime * FacingScale,0,1) * LastVelocity.GetClampedToSize(LastVelocity.Size(),1).Size() / FMath::Max(MoveElapsedTime, 1.0f);
+			
+		LastVelocity = Velocity.GetClampedToSize(Velocity.Size(),1.0f) * FMath::Clamp((MoveElapsedTime * FacingScale) * VelocitySpeed, 0.1f, 1.0f);
 		AngularVelocity = FVector(0);
 		LastAngularVelocity = FVector(0);
 	}
@@ -57,7 +63,7 @@ void ALiquidActor::UpdateLiquid(const bool& init, const float& RecoveryTime, con
 	{
 		MoveAngularElapsedTime = 0;
 		StopAngularElapsedTime += deltaTime;
-		const float t = PingPong(StopAngularElapsedTime * RecoveryTime,1);
+		const float t = PingPong(StopAngularElapsedTime * VelocityFalloff,1);
 		FVector PPFacing = UKismetMathLibrary::VLerp(-LastAngularVelocity,LastAngularVelocity, t);
 		Facing += UKismetMathLibrary::VLerp(PPFacing, FVector(0), UKismetMathLibrary::Clamp(StopAngularElapsedTime / LastAngularVelocity.Size(),0,1 ));
 	}
@@ -86,8 +92,8 @@ void ALiquidActor::UpdateLiquid(const bool& init, const float& RecoveryTime, con
             );
 	}
 
-	Velocity = (LastPos - GetActorLocation()) / deltaTime;
-	Velocity = Velocity.GetClampedToSize(Velocity.Size(),1.0f);
+	Velocity = FacingScale * ((LastPos - GetActorLocation()) / deltaTime);
+	//Velocity = Velocity.GetSafeNormal();
 	
 	AngularVelocity = (LastRot - GetActorRotation().Euler() / deltaTime);
 	AngularVelocity = AngularVelocity.GetClampedToSize(AngularVelocity.Size(), 1.0f);
@@ -98,6 +104,6 @@ void ALiquidActor::UpdateLiquid(const bool& init, const float& RecoveryTime, con
 
 	LastVelocityOut = LastVelocity;
 
-	PlaneRotator = UKismetMathLibrary::FindLookAtRotation(Plane->GetComponentLocation(), Plane->GetComponentLocation() - FVector::UpVector + Facing) + FRotator(90,0,0);
-
+	//PlaneRotator = UKismetMathLibrary::FindLookAtRotation(Plane->GetComponentLocation(), Plane->GetComponentLocation() - FVector::UpVector * 2 + Facing) + FRotator(90,0,0);
+	PlaneRotator = UKismetMathLibrary::FindLookAtRotation(Plane->GetComponentTransform().GetLocation(), Plane->GetComponentTransform().GetLocation() + FVector::UpVector + Facing)+ FRotator(90,0,0);
 }
