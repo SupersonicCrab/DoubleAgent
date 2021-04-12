@@ -19,9 +19,6 @@ AHouseLight::AHouseLight()
 	StaticMesh->SetMobility(EComponentMobility::Stationary);
 	StaticMesh->CastShadow = false;
 	StaticMesh->SetupAttachment(RootComponent);
-	
-	if (StaticMesh->GetStaticMesh() != nullptr)
-		DynamicMaterial = UMaterialInstanceDynamic::Create(StaticMesh->GetMaterial(0), this);
 
 	//Network replication
 	bReplicates = true;
@@ -124,7 +121,8 @@ void AHouseLight::UpdateLight()
 void AHouseLight::TurnOn_Implementation()
 {
 	Light->SetVisibility(true);
-	StaticMesh->SetMaterial(0, DynamicMaterial);
+	UMaterial* Material = LoadObject<UMaterial>(NULL, TEXT("Material'/Game/Art/Meshes/Building/HouseLights/Materials/MI_Lights_Emissive.MI_Lights_Emissive'"));
+	StaticMesh->SetMaterial(0, Material);
 }
 
 void AHouseLight::TurnOff_Implementation()
