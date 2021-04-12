@@ -40,9 +40,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UStaticMeshComponent* StaticMesh;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UMaterialInstanceDynamic* DynamicMaterial;
-
 	UFUNCTION(CallInEditor)
 	void UpdateLight();
 	
