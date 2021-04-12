@@ -9,7 +9,7 @@
 #include "Landline.generated.h"
 
 UCLASS()
-class DOUBLEAGENT_API ALandline : public APowerComponent, public IInteractInterface{
+class DOUBLEAGENT_API ALandline : public APowerComponent{
 	GENERATED_BODY()
 public:	
 	// Sets default values for this actor's properties
@@ -26,8 +26,4 @@ public:
 	void EnableLandline();
 	UFUNCTION(BlueprintCallable)
 	void DisableLandline();
-
-	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, Category="Interaction") //Setting up the Interact interface to use it's functionality in C++
-    void Interact(AActor* Interactor);
-	virtual void Interact_Implementation(AActor* Interactor) override;
 };

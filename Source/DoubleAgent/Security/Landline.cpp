@@ -42,7 +42,3 @@ void ALandline::EnableLandline(){
 void ALandline::DisableLandline(){
     bPowerOn = false;
 }
-
-void ALandline::Interact_Implementation(AActor* Interactor){
-    
-}
