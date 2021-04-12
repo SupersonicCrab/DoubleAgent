@@ -1,4 +1,4 @@
-Thank you for playing Double Agent v0.0.2.0!
+Thank you for playing Double Agent v0.1.0.0!
 
 Launching:
 In this folder you should see an application named "DoubleAgent" this is what you will use to launch the game
@@ -22,3 +22,9 @@ Joining a multiplayer game:
 Troubleshooting:
 If you have troubles launching the game, your computer might be missing some prerequisites to run unreal engine, these can be
 found in "WindowsNoEditor\Engine\Extras\Redist\en-us", run "UE4PrereqSetup_x64.exe" and you should be good to go
+
+If you want to contact the developers with an issue:
+@DevEr0x
+@Cjor100
+@DoubleAgentGame
+on twitter!
