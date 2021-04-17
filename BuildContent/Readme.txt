@@ -1,4 +1,4 @@
-Thank you for playing Double Agent v0.1.0.0!
+Thank you for playing Double Agent v0.1.0.1!
 
 Launching:
 In this folder you should see an application named "DoubleAgent" this is what you will use to launch the game
