@@ -14,17 +14,26 @@ EBTNodeResult::Type UBTTask_ChangeSpeed::ExecuteTask(UBehaviorTreeComponent& Own
     {
         //Change speed to walking
         case EMoveSpeed::Speed_Walk:
-            CharacterMovement->MaxWalkSpeed = 130.0f;
+            {            
+                CharacterMovement->MaxWalkSpeed = 130.0f;
+                CharacterMovement->MaxWalkSpeedCrouched = 130.0f;
+            }
         break;
 
         //Change speed to jogging
         case EMoveSpeed::Speed_Jog:
-            CharacterMovement->MaxWalkSpeed = 345.0f;
+            {
+                CharacterMovement->MaxWalkSpeed = 345.0f;
+                CharacterMovement->MaxWalkSpeedCrouched = 345.0f;
+            }
         break;
 
         //Change speed to running
         case EMoveSpeed::Speed_Run:
-            CharacterMovement->MaxWalkSpeed = 630.0f;
+            {
+                CharacterMovement->MaxWalkSpeed = 630.0f;
+                CharacterMovement->MaxWalkSpeedCrouched = 630.0f;
+            }
         break;
     }
      
